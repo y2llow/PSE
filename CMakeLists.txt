@@ -18,8 +18,8 @@ set(RELEASE_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeMain.cpp
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
 set(DEBUG_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeTests.cpp
-        specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
-        specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h
+        "specificatie_1/1.1 Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp"
+        "specificatie_1/1.1 Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h"
         specificatie_1/Elementen/BAAN.cpp
         specificatie_1/Elementen/BAAN.h
         specificatie_1/Elementen/VERKEERSLICHT.cpp

@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 #include "TicTacToe.h"
 
+
 class TicTactToeTest: public ::testing::Test {
 protected:
 	virtual void SetUp() {}
