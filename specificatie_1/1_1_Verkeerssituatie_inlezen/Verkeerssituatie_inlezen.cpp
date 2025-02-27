@@ -19,8 +19,17 @@ void printXMLElements(const std::string& filename) {
     for (TiXmlElement* elem = root; elem != nullptr; elem = elem->NextSiblingElement()) {
         std::cout << "Element: " << elem->Value() << std::endl;
 
+        if (elem->Value() == "BAAN") {
+            BAAN baan;
+        }
+
         // Loop door de subelementen van elk element
         for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
+
+            if (elem->Value() == "BAAN") {
+                baan.naam = subElem->Value() ;
+            }
+
             std::cout << "  " << subElem->Value() << ": " << (subElem->GetText() ? subElem->GetText() : "N/A") << std::endl;
         }
     }
