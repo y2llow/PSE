@@ -18,16 +18,16 @@ set(RELEASE_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeMain.cpp
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
 set(DEBUG_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeTests.cpp
-        Specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
-        Specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h
-        Specificatie_1/Elementen/BAAN.cpp
-        Specificatie_1/Elementen/BAAN.h
-        Specificatie_1/Elementen/VERKEERSLICHT.cpp
-        Specificatie_1/Elementen/VERKEERSLICHT.h
-        Specificatie_1/Elementen/VOERTUIG.cpp
-        Specificatie_1/Elementen/VOERTUIG.h
-        Specificatie_1/Elementen/VOERTUIGGENERATOR.cpp
-        Specificatie_1/Elementen/VOERTUIGGENERATOR.h
+        specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
+        specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h
+        specificatie_1/Elementen/BAAN.cpp
+        specificatie_1/Elementen/BAAN.h
+        specificatie_1/Elementen/VERKEERSLICHT.cpp
+        specificatie_1/Elementen/VERKEERSLICHT.h
+        specificatie_1/Elementen/VOERTUIG.cpp
+        specificatie_1/Elementen/VOERTUIG.h
+        specificatie_1/Elementen/VOERTUIGGENERATOR.cpp
+        specificatie_1/Elementen/VOERTUIGGENERATOR.h
         src/DesignByContract.h)
 # Create RELEASE target
 add_executable(release_target ${RELEASE_SOURCE_FILES})
