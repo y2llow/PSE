@@ -13,21 +13,21 @@ link_directories(./gtest/lib)
 # Only add cpp files, no h files!
 # Only add files with functionality here, no test files!
 # Make sure the "main" function is in "main_release"!
-set(RELEASE_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeMain.cpp)
+set(RELEASE_SOURCE_FILES main.cpp specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp src/TinyXML/tinystr.cpp src/TinyXML/tinyxml.cpp src/TinyXML/tinyxmlerror.cpp src/TinyXML/tinyxmlparser.cpp )
 # Set source files for DEBUG target
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
-set(DEBUG_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeTests.cpp
-        "specificatie 1/1.1 Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp"
-        "specificatie 1/1.1 Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h"
-        "specificatie 1/Elementen/BAAN.cpp"
-        "specificatie 1/Elementen/BAAN.h"
-        "specificatie 1/Elementen/VERKEERSLICHT.cpp"
-        "specificatie 1/Elementen/VERKEERSLICHT.h"
-        "specificatie 1/Elementen/VOERTUIG.cpp"
-        "specificatie 1/Elementen/VOERTUIG.h"
-        "specificatie 1/Elementen/VOERTUIGGENERATOR.cpp"
-        "specificatie 1/Elementen/VOERTUIGGENERATOR.h"
+set(DEBUG_SOURCE_FILES
+        "specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp"
+        "specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h"
+        "specificatie_1/Elementen/BAAN.cpp"
+        "specificatie_1/Elementen/BAAN.h"
+        "specificatie_1/Elementen/VERKEERSLICHT.cpp"
+        "specificatie_1/Elementen/VERKEERSLICHT.h"
+        "specificatie_1/Elementen/VOERTUIG.cpp"
+        "specificatie_1/Elementen/VOERTUIG.h"
+        "specificatie_1/Elementen/VOERTUIGGENERATOR.cpp"
+        "specificatie_1/Elementen/VOERTUIGGENERATOR.h"
         src/DesignByContract.h)
 # Create RELEASE target
 add_executable(release_target ${RELEASE_SOURCE_FILES})
