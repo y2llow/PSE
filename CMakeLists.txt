@@ -13,13 +13,13 @@ link_directories(./gtest/lib)
 # Only add cpp files, no h files!
 # Only add files with functionality here, no test files!
 # Make sure the "main" function is in "main_release"!
-set(RELEASE_SOURCE_FILES ./src/TicTacToe.cpp ./src/TicTacToeMain.cpp)
+set(RELEASE_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeMain.cpp)
 # Set source files for DEBUG target
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
-set(DEBUG_SOURCE_FILES ./src/TicTacToe.cpp ./src/TicTacToeTests.cpp
-        Specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
-        Specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h
+set(DEBUG_SOURCE_FILES voorbeelden/TicTacToe.cpp voorbeelden/TicTacToeTests.cpp
+        Specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
+        Specificatie_1/1.1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h
         Specificatie_1/Elementen/BAAN.cpp
         Specificatie_1/Elementen/BAAN.h
         Specificatie_1/Elementen/VERKEERSLICHT.cpp
@@ -27,7 +27,8 @@ set(DEBUG_SOURCE_FILES ./src/TicTacToe.cpp ./src/TicTacToeTests.cpp
         Specificatie_1/Elementen/VOERTUIG.cpp
         Specificatie_1/Elementen/VOERTUIG.h
         Specificatie_1/Elementen/VOERTUIGGENERATOR.cpp
-        Specificatie_1/Elementen/VOERTUIGGENERATOR.h)
+        Specificatie_1/Elementen/VOERTUIGGENERATOR.h
+        src/DesignByContract.h)
 # Create RELEASE target
 add_executable(release_target ${RELEASE_SOURCE_FILES})
 # Create DEBUG target
