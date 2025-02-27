@@ -1,0 +1,56 @@
+1.1. Verkeerssituatie inlezen
+
+Doel:
+Inlezen van het schema van de verkeerssituatie: de verschillende wegen en de ver-
+schillende voertuigen.
+
+Preconditie:
+Een ASCII bestand met daarop een beschrijving van de wegen en voertuigen. (Zie
+Appendix A voor meer informatie over het XML formaat)
+
+Succesvol einde:
+Het systeem bevat een schema met de verschillende wegen, en informatie over alle
+voertuigen.
+
+Stappen:
+1. Open invoerbestand
+2. WHILE Bestand niet ingelezen
+2.1. Herken het soort element (VOERTUIG, BAAN, VERKEERSLICHT)
+2.2. Lees verdere informatie voor het element
+2.3. IF Verifieer geldige informatie
+2.3.1. THEN Voeg element toe aan de simulatie
+2.3.1. ELSE Foutboodschap + positioneer op volgende element in het bestand
+3. Verifieer consistentie van de verkeerssituatie
+4. Sluit invoerbestand
+
+Uitzonderingen:
+2.1. [Onherkenbaar element] Foutboodschap + positioneer op volgende element in het be-
+stand ⇒ verdergaan vanaf stap 2
+2.2. [Ongeldige informatie] Foutboodschap + positioneer op volgende element in het be-
+stand ⇒ verdergaan vanaf stap 2
+3. [Inconsistente verkeerssituatie] Foutboodschap ⇒ verdergaan vanaf stap 4
+
+
+Voorbeeld:
+Een baan met twee auto’s en ´e´en verkeerslicht:
+
+<BAAN>
+<naam>Middelheimlaan</naam>
+<lengte>500</lengte>
+</BAAN>
+
+<VERKEERSLICHT>
+<baan>Middelheimlaan</baan>
+<positie>400</positie>
+<cyclus>20</cyclus>
+</VERKEERSLICHT>
+
+<VOERTUIG>
+<baan>Middelheimlaan</baan>
+<positie>20</positie>
+</VOERTUIG>
+
+<VOERTUIG>
+<baan>Middelheimlaan</baan>
+<positie>0</positie>
+</VOERTUIG>
