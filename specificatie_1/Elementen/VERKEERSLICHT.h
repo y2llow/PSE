@@ -8,6 +8,7 @@
 
 
 class VERKEERSLICHT {
+public:
     std::string baan;
     int positie;
     int cyclus;
