@@ -8,6 +8,7 @@
 
 
 class BAAN {
+public:
     std::string naam;
     int lengte;
 };

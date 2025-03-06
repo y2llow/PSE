@@ -8,6 +8,7 @@
 
 
 class VOERTUIG {
+public:
     std::string baan;
     int positie;
 };

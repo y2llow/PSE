@@ -8,6 +8,7 @@
 
 
 class VOERTUIGGENERATOR {
+public:
     std::string baan;
     int frequentie;
 };
