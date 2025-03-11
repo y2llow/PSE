@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Verkeerssituatie_inlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
 #include "../../src/Elementen/BAAN.h"
 #include "../../src/Elementen/VOERTUIG.h"
