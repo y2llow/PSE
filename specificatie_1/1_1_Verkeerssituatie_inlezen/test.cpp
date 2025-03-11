@@ -2,10 +2,10 @@
 #include <string>
 #include <vector>
 #include "../../src/TinyXML/tinyxml.h"
-#include "../Elementen/BAAN.h"
-#include "../Elementen/VOERTUIG.h"
-#include "../Elementen/VERKEERSLICHT.h"
-#include "../Elementen/VOERTUIGGENERATOR.h"
+#include "../../src/Elementen/BAAN.h"
+#include "../../src/Elementen/VOERTUIG.h"
+#include "../../src/Elementen/VERKEERSLICHT.h"
+#include "../../src/Elementen/VOERTUIGGENERATOR.h"
 
 // Vectors to store objects created from XML
 std::vector<BAAN> banen;
