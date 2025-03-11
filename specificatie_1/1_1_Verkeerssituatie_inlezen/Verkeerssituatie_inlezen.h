@@ -1,4 +1,8 @@
+#ifndef VERKEERSS_INLEZEN_H
+#define VERKEERSS_INLEZEN_H
 #include <string>
 
-void printXMLElements(const std::string& filename);
+void parseXMLAndCreateObjects(const std::string& filename);
+
+#endif
 
