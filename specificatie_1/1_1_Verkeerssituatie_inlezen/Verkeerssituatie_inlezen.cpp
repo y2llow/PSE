@@ -3,10 +3,10 @@
 #include <vector>
 
 #include "../../src/TinyXML/tinyxml.h"
-#include "../Elementen/BAAN.h"
-#include "../Elementen/VOERTUIG.h"
-#include "../Elementen/VERKEERSLICHT.h"
-#include "../Elementen/VOERTUIGGENERATOR.h"
+#include "../../src/Elementen/BAAN.h"
+#include "../../src/Elementen/VOERTUIG.h"
+#include "../../src/Elementen/VERKEERSLICHT.h"
+#include "../../src/Elementen/VOERTUIGGENERATOR.h"
 
 std::vector<BAAN> banen;
 std::vector<VOERTUIG> voertuigen;
