@@ -7,7 +7,7 @@
 #include <string>
 
 
-class BAAN {
+class Baan {
 public:
     std::string naam;
     int lengte;

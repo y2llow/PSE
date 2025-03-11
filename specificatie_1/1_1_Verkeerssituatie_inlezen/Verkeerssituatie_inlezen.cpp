@@ -1,17 +1,18 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Verkeerssituatie_inlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
 #include "../../src/Elementen/BAAN.h"
-#include "../../src/Elementen/VOERTUIG.h"
-#include "../../src/Elementen/VERKEERSLICHT.h"
-#include "../../src/Elementen/VOERTUIGGENERATOR.h"
+#include "../../src/Elementen/Voertuig.h"
+#include "../../src/Elementen/Verkeerslicht.h"
+#include "../../src/Elementen/Voertuiggenerator.h"
 
 // Vectors to store objects created from XML
-std::vector<BAAN> banen;
-std::vector<VOERTUIG> voertuigen;
-std::vector<VERKEERSLICHT> verkeerslichten;
-std::vector<VOERTUIGGENERATOR> voertuiggeneratoren;
+std::vector<Baan> banen;
+std::vector<Voertuig> voertuigen;
+std::vector<Verkeerslicht> verkeerslichten;
+std::vector<Voertuiggenerator> voertuiggeneratoren;
 
 // Function to parse XML and create appropriate objects
 void parseXMLAndCreateObjects(const std::string& filename) {
@@ -32,7 +33,7 @@ void parseXMLAndCreateObjects(const std::string& filename) {
         std::string elementType = elem->Value();
 
         if (elementType == "BAAN") {
-            BAAN baan;
+            Baan baan;
 
             // Loop through sub-elements to get properties
             for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
@@ -49,7 +50,7 @@ void parseXMLAndCreateObjects(const std::string& filename) {
             banen.push_back(baan);
         }
         else if (elementType == "VOERTUIG") {
-            VOERTUIG voertuig;
+            Voertuig voertuig;
 
             for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
@@ -64,7 +65,7 @@ void parseXMLAndCreateObjects(const std::string& filename) {
             voertuigen.push_back(voertuig);
         }
         else if (elementType == "VERKEERSLICHT") {
-            VERKEERSLICHT verkeerslicht;
+            Verkeerslicht verkeerslicht;
 
             for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
@@ -81,7 +82,7 @@ void parseXMLAndCreateObjects(const std::string& filename) {
             verkeerslichten.push_back(verkeerslicht);
         }
         else if (elementType == "VOERTUIGGENERATOR") {
-            VOERTUIGGENERATOR generator;
+            Voertuiggenerator generator;
 
             for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();

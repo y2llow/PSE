@@ -7,7 +7,7 @@
 #include <string>
 
 
-class VERKEERSLICHT {
+class Verkeerslicht {
 public:
     std::string baan;
     int positie;

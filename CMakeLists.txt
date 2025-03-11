@@ -21,10 +21,10 @@ link_directories(./gtest/lib)
 set(RELEASE_SOURCE_FILES
         specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
-        src/Elementen/VERKEERSLICHT.cpp
-        src/Elementen/BAAN.cpp
-        src/Elementen/VOERTUIG.cpp
-        src/Elementen/VOERTUIGGENERATOR.cpp
+        src/Elementen/Verkeerslicht.cpp
+        src/Elementen/Baan.cpp
+        src/Elementen/Voertuig.cpp
+        src/Elementen/Voertuiggenerator.cpp
         main.cpp
 )
 
@@ -34,10 +34,10 @@ set(RELEASE_SOURCE_FILES
 set(DEBUG_SOURCE_FILES
         specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.cpp
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
-        src/Elementen/VERKEERSLICHT.cpp
-        src/Elementen/BAAN.cpp
-        src/Elementen/VOERTUIG.cpp
-        src/Elementen/VOERTUIGGENERATOR.cpp
+        src/Elementen/Verkeerslicht.cpp
+        src/Elementen/Baan.cpp
+        src/Elementen/Voertuig.cpp
+        src/Elementen/Voertuiggenerator.cpp
         main.cpp
 )
 
