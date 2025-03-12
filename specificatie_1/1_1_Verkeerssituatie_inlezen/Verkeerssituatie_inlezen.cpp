@@ -3,9 +3,9 @@
 #include <vector>
 #include "Verkeerssituatie_inlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
-#include "../../src/Elementen/BAAN.h"
-#include "../../src/Elementen/Voertuig.h"
+#include "../../src/Elementen/Baan.h"
 #include "../../src/Elementen/Verkeerslicht.h"
+#include "../../src/Elementen/Voertuig.h"
 #include "../../src/Elementen/Voertuiggenerator.h"
 
 // Vectors to store objects created from XML

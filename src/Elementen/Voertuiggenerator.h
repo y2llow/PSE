@@ -7,7 +7,7 @@
 #include <string>
 
 
-class VOERTUIGGENERATOR {
+class Voertuiggenerator {
 public:
     std::string baan;
     int frequentie;

@@ -7,7 +7,7 @@
 #include <string>
 
 
-class VOERTUIG {
+class Voertuig {
 public:
     std::string baan;
     int positie;
