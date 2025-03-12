@@ -4,8 +4,8 @@
 #include "Verkeerssituatie_inlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
 #include "../../src/Elementen/Baan.h"
-#include "../../src/Elementen/Verkeerslicht.h"
 #include "../../src/Elementen/Voertuig.h"
+#include "../../src/Elementen/Verkeerslicht.h"
 #include "../../src/Elementen/Voertuiggenerator.h"
 
 // Vectors to store objects created from XML
@@ -28,8 +28,7 @@ void parseXMLAndCreateObjects(const std::string& filename) {
         return;
     }
 
-    // Loop through all elements
-    for (TiXmlElement* elem = root; elem != nullptr; elem = elem->NextSiblingElement()) {
+    for (TiXmlElement* elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         std::string elementType = elem->Value();
 
         if (elementType == "BAAN") {
