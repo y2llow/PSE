@@ -23,23 +23,39 @@ void Verkeerssituatie_inlezen::parseXMLAndCreateObjects(const std::string &filen
 
         if (elementType == "BAAN") {
             Baan baan;
-
+            bool geldig = true;
             // Loop through sub-elements to get properties
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
 
-                if (propertyName == "naam" && subElem->GetText()) {
+                if (propertyName == "naam") {
+                    if (!subElem->GetText()) {
+                        cout << "Er is een baan zonder naam!" << endl;
+                        geldig = false;
+                        break;
+                    }
                     baan.naam = subElem->GetText();
-                } else if (propertyName == "lengte" && subElem->GetText()) {
-                    baan.lengte = std::stoi(subElem->GetText());
+                } else if (propertyName == "lengte") {
+                    if (!subElem->GetText()) {
+                        cout << "Er is een baan zonder lengte!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    try {
+                        baan.lengte = std::stoi(subElem->GetText());
+                    } catch (exception &) {
+                        cout << "De lengte van een baan is geen integer!" << endl;
+                        geldig = false;
+                        break;
+                    }
                 }
             }
-
             // Add to vector
-            banen.push_back(baan);
+            if (geldig) banen.push_back(baan);
         } else if (elementType == "VOERTUIG") {
             Voertuig voertuig;
+            bool geldig = true;
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
@@ -47,20 +63,28 @@ void Verkeerssituatie_inlezen::parseXMLAndCreateObjects(const std::string &filen
 
                 if (propertyName == "baan") {
                     if (!subElem->GetText()) {
-                        cerr << "Deze voertuig heeft geen baan, dus het is ongeldig!";
-                        continue;
+                        cout << "Er is een voertuig zonder baan!" << endl;
+                        geldig = false;
+                        break;
                     }
                     voertuig.baan = subElem->GetText();
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
-                        cerr << "Deze voertuig heeft geen positie, dus het is ongeldig!";
-                        continue;
+                        cout << "Er is een voertuig zonder positie!" << endl;
+                        geldig = false;
+                        break;
                     }
-                    voertuig.positie = std::stoi(subElem->GetText());
+                    try {
+                        voertuig.positie = std::stoi(subElem->GetText());
+                    } catch (exception &) {
+                        cout << "Er is een voertuig waarvan de positie geen integer is!" << endl;
+                        geldig = false;
+                        break;
+                    }
                 }
             }
 
-            voertuigen.push_back(voertuig);
+            if (geldig) voertuigen.push_back(voertuig);
         } else if (elementType == "VERKEERSLICHT") {
             Verkeerslicht verkeerslicht;
 
