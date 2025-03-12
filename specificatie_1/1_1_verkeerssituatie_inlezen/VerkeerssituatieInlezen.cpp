@@ -212,14 +212,14 @@ bool VerkeerssituatieInlezen::isConsistent() const {
 
     // De positie van elk voertuig is kleiner dan de lengte van de baan.
     for (auto &v: voertuigen) {
-        if (v->getPositie() > getBaan(v->getBaan())->getLengte()) {
+        if (getBaan(v->getBaan()) == nullptr || v->getPositie() > getBaan(v->getBaan())->getLengte()) {
             return false;
         }
     }
 
     // De positie van elk verkeerslicht is kleiner dan de lengte van de baan.
     for (auto &v: verkeerslichten) {
-        if (v->getPositie() > getBaan(v->getBaan())->getLengte()) {
+        if (getBaan(v->getBaan()) == nullptr || v->getPositie() > getBaan(v->getBaan())->getLengte()) {
             return false;
         }
     }
