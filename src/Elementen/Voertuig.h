@@ -8,9 +8,15 @@
 
 
 class Voertuig {
-public:
     std::string baan;
-    int positie;
+    int positie = 0;
+
+public:
+    void setBaan(const std::string &baan);
+    [[nodiscard]] std::string getBaan() const;
+
+    void setPositie(int p);
+    [[nodiscard]] int getPositie() const;
 };
 
 
