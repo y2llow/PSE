@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class VerkeersSituatieInlezen {
+class VerkeerssituatieInlezen {
     // Vectors to store objects created from XML
     vector<Baan> banen;
     vector<Voertuig> voertuigen;
@@ -19,10 +19,10 @@ class VerkeersSituatieInlezen {
 public:
     void parseXMLAndCreateObjects(const std::string &filename);
 
-    [[nodiscard]] vector<Baan> get_banen() const;
-    [[nodiscard]] vector<Voertuig> get_voertuigen() const;
-    [[nodiscard]] vector<Verkeerslicht> get_verkeerslichten() const;
-    [[nodiscard]] vector<Voertuiggenerator> get_voertuiggeneratoren() const;
+    [[nodiscard]] vector<Baan> getBanen() const;
+    [[nodiscard]] vector<Voertuig> getVoertuigen() const;
+    [[nodiscard]] vector<Verkeerslicht> getVerkeerslichten() const;
+    [[nodiscard]] vector<Voertuiggenerator> getVoertuiggeneratoren() const;
 
 };
 #endif

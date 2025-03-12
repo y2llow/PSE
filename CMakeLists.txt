@@ -19,7 +19,7 @@ link_directories(./gtest/lib)
 # Only add files with functionality here, no test files!
 # Make sure the "main" function is in "main_release"!
 set(RELEASE_SOURCE_FILES
-        specificatie_1/1_1_Verkeerssituatie_inlezen/VerkeersSituatieInlezen.cpp
+        specificatie_1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezen.cpp
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
         src/Elementen/Verkeerslicht.cpp
         src/Elementen/Baan.cpp
@@ -32,13 +32,13 @@ set(RELEASE_SOURCE_FILES
 # Only add cpp files, no h files!
 # Make sure the "main" function is in "main_debug"!
 set(DEBUG_SOURCE_FILES
-        specificatie_1/1_1_Verkeerssituatie_inlezen/VerkeersSituatieInlezen.cpp
+        specificatie_1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezen.cpp
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
         src/Elementen/Verkeerslicht.cpp
         src/Elementen/Baan.cpp
         src/Elementen/Voertuig.cpp
         src/Elementen/Voertuiggenerator.cpp
-        test/specificatie1/1_1_verkeerssituatie_inlezen/VerkeersSituatieInlezenTest.cpp
+        test/specificatie1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezenTest.cpp
 )
 
 # Create RELEASE target

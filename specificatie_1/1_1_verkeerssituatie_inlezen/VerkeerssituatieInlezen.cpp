@@ -5,7 +5,7 @@
 
 
 // Function to parse XML and create appropriate objects
-void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
+void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
     TiXmlDocument doc;
     if (!doc.LoadFile(filename.c_str())) {
         cerr << "Error loading file: " << doc.ErrorDesc() << endl;
@@ -154,19 +154,19 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
 }
 
 
-vector<Baan> VerkeersSituatieInlezen::get_banen() const {
+vector<Baan> VerkeerssituatieInlezen::getBanen() const {
     return banen;
 }
 
-vector<Voertuig> VerkeersSituatieInlezen::get_voertuigen() const {
+vector<Voertuig> VerkeerssituatieInlezen::getVoertuigen() const {
     return voertuigen;
 }
 
-vector<Verkeerslicht> VerkeersSituatieInlezen::get_verkeerslichten() const {
+vector<Verkeerslicht> VerkeerssituatieInlezen::getVerkeerslichten() const {
     return verkeerslichten;
 }
 
 
-vector<Voertuiggenerator> VerkeersSituatieInlezen::get_voertuiggeneratoren() const {
+vector<Voertuiggenerator> VerkeerssituatieInlezen::getVoertuiggeneratoren() const {
     return voertuiggeneratoren;
 }

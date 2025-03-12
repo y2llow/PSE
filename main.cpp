@@ -5,22 +5,22 @@
 using namespace std;
 
 int main() {
-    VerkeersSituatieInlezen vi;
+    VerkeerssituatieInlezen vi;
     vi.parseXMLAndCreateObjects("../src/voorbeeld.xml");
 
 
     cout << "\n=========== Banen ===========\n";
-    for (auto &baan: vi.get_banen()) {
+    for (auto &baan: vi.getBanen()) {
         cout << "Baan: " << baan.getNaam() << ", Lengte: " << baan.getLengte() << endl;
     }
 
     cout << "\n=========== Verkeerslichten ===========\n";
-    for (auto &licht: vi.get_verkeerslichten()) {
+    for (auto &licht: vi.getVerkeerslichten()) {
         cout << "Baan: " << licht.getBaan() << ", Cyclus: " << licht.getCyclus() << ", Positie: " << licht.getPositie() << endl;
     }
 
     cout << "\n=========== Voertuigen ===========\n";
-    for (auto &v: vi.get_voertuigen()) {
+    for (auto &v: vi.getVoertuigen()) {
         cout << "Baan: " << v.getBaan() << ", Positie: " << v.getPositie() << endl;
     }
 

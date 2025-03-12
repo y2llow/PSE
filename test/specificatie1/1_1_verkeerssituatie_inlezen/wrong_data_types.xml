@@ -1,0 +1,32 @@
+<!--In this XML file the syntax is totally correct, but the used datatypes are wrong-->
+<!--E.g. lengte must be an integer, but I set it to a string here-->
+<!--None of these elements should be implemented, so the size of our member variables should be 0-->
+
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>1</lengte>
+    </BAAN>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>400</positie>
+        <cyclus>SHOULDBEINT</cyclus>
+    </VERKEERSLICHT>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>5</positie>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+    </VOERTUIG>
+
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>SHOULDBEINT</frequentie>
+    </VOERTUIGGENERATOR>
+
+</VERKEERSSITUATIE>
