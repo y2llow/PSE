@@ -25,7 +25,7 @@ public:
 
     [[nodiscard]] int getFrequentie() const;
 
-    void setFrequentie(const int frequentie);
+    void setFrequentie(int frequentie);
 };
 
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <string>
 #include "VerkeersSituatieInlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
@@ -22,7 +23,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
         string elementType = elem->Value();
 
         if (elementType == "BAAN") {
-            Baan baan;
+            Baan* baan = new Baan();
             bool geldig = true;
             // Loop through sub-elements to get properties
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
@@ -35,7 +36,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         geldig = false;
                         break;
                     }
-                    baan.setNaam(subElem->GetText());
+                    baan->setNaam(subElem->GetText());
                 } else if (propertyName == "lengte") {
                     if (!subElem->GetText()) {
                         cout << "Er is een baan zonder lengte!" << endl;
@@ -43,7 +44,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        baan.setLengte(stoi(subElem->GetText()));
+                        baan->setLengte(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "De lengte van een baan is geen integer!" << endl;
                         geldig = false;
@@ -54,7 +55,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
             // Add to vector
             if (geldig) banen.push_back(baan);
         } else if (elementType == "VOERTUIG") {
-            Voertuig voertuig;
+            Voertuig* voertuig = new Voertuig();
             bool geldig = true;
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
@@ -67,7 +68,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         geldig = false;
                         break;
                     }
-                    voertuig.setBaan(subElem->GetText());
+                    voertuig->setBaan(subElem->GetText());
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
                         cout << "Er is een voertuig zonder positie!" << endl;
@@ -75,8 +76,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        auto weird = subElem->GetText();
-                        voertuig.setPositie(stoi(weird));
+                        voertuig->setPositie(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "Er is een voertuig waarvan de positie geen integer is!" << endl;
                         geldig = false;
@@ -87,7 +87,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
 
             if (geldig) voertuigen.push_back(voertuig);
         } else if (elementType == "VERKEERSLICHT") {
-            Verkeerslicht verkeerslicht;
+            auto* verkeerslicht = new Verkeerslicht();
             bool geldig = true;
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
@@ -100,7 +100,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         geldig = false;
                         break;
                     }
-                    verkeerslicht.setBaan(subElem->GetText());
+                    verkeerslicht->setBaan(subElem->GetText());
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
                         cout << "Er is een verkeerslicht zonder positie!" << endl;
@@ -108,7 +108,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        verkeerslicht.setPositie(stoi(subElem->GetText()));
+                        verkeerslicht->setPositie(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
                         geldig = false;
@@ -121,7 +121,7 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        verkeerslicht.setCyclus(stoi(subElem->GetText()));
+                        verkeerslicht->setCyclus(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
                         geldig = false;
@@ -133,16 +133,16 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
             if (geldig)
                 verkeerslichten.push_back(verkeerslicht);
         } else if (elementType == "VOERTUIGGENERATOR") {
-            Voertuiggenerator generator;
+            Voertuiggenerator *generator = new Voertuiggenerator();
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
                 string propertyName = subElem->Value();
 
                 if (propertyName == "baan" && subElem->GetText()) {
-                    generator.setBaan(subElem->GetText());
+                    generator->setBaan(subElem->GetText());
                 } else if (propertyName == "frequentie" && subElem->GetText()) {
-                    generator.setFrequentie(stoi(subElem->GetText()));
+                    generator->setFrequentie(stoi(subElem->GetText()));
                 }
             }
 
@@ -154,19 +154,100 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
 }
 
 
-vector<Baan> VerkeerssituatieInlezen::getBanen() const {
+vector<Baan *> VerkeerssituatieInlezen::getBanen() const {
     return banen;
 }
 
-vector<Voertuig> VerkeerssituatieInlezen::getVoertuigen() const {
+vector<Voertuig *> VerkeerssituatieInlezen::getVoertuigen() const {
     return voertuigen;
 }
 
-vector<Verkeerslicht> VerkeerssituatieInlezen::getVerkeerslichten() const {
+vector<Verkeerslicht *> VerkeerssituatieInlezen::getVerkeerslichten() const {
     return verkeerslichten;
 }
 
 
-vector<Voertuiggenerator> VerkeerssituatieInlezen::getVoertuiggeneratoren() const {
+vector<Voertuiggenerator *> VerkeerssituatieInlezen::getVoertuiggeneratoren() const {
     return voertuiggeneratoren;
+}
+
+bool VerkeerssituatieInlezen::isConsistent() const {
+    bool consistent = true;
+
+    // Elk voertuig staat op een bestaande baan
+    for (auto &v: voertuigen) {
+        consistent = false;
+        for (auto &b: banen) {
+            if (v->getBaan() == b->getNaam()) {
+                consistent = true;
+                break;
+            }
+        }
+    }
+    if (!consistent) return consistent;
+
+    // Elk verkeerslicht staat op een bestaande baan.
+    for (auto &v: verkeerslichten) {
+        consistent = false;
+        for (auto &b: banen) {
+            if (v->getBaan() == b->getNaam()) {
+                consistent = true;
+                break;
+            }
+        }
+    }
+    if (!consistent) return consistent;
+
+    // Elke voertuiggenerator staat op een bestaande baan.
+    for (auto &v: voertuiggeneratoren) {
+        consistent = false;
+        for (auto &b: banen) {
+            if (v->getBaan() == b->getNaam()) {
+                consistent = true;
+                break;
+            }
+        }
+    }
+    if (!consistent) return consistent;
+
+    // De positie van elk voertuig is kleiner dan de lengte van de baan.
+    for (auto &v: voertuigen) {
+        if (v->getPositie() > getBaan(v->getBaan())->getLengte()) {
+            return false;
+        }
+    }
+
+    // De positie van elk verkeerslicht is kleiner dan de lengte van de baan.
+    for (auto &v: verkeerslichten) {
+        if (v->getPositie() > getBaan(v->getBaan())->getLengte()) {
+            return false;
+        }
+    }
+
+    // Er is maximaal ´e´en voertuiggenerator op elke baan.
+    map<string, int> vg_op_banen;
+    for (auto &b : banen) {
+        vg_op_banen[b->getNaam()] = 0;
+    }
+
+    for (auto &v: voertuiggeneratoren) {
+        vg_op_banen[v->getBaan()] += 1;
+    }
+
+    for (const auto& k : vg_op_banen) {
+        if (k.second > 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+Baan *VerkeerssituatieInlezen::getBaan(const string &name) const {
+    for (auto &b: banen) {
+        if (b->getNaam() == name) {
+            return b;
+        }
+    }
+    return nullptr;
 }

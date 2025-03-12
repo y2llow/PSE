@@ -1,11 +1,11 @@
 <!--In this XML file the syntax is totally correct, but the used datatypes are wrong-->
 <!--E.g. lengte must be an integer, but I set it to a string here-->
-<!--None of these elements should be implemented, so the size of our member variables should be 0-->
+<!--None of these elements should be implemented, and an exception will be thrown because of the stoi function-->
 
 <VERKEERSSITUATIE>
     <BAAN>
         <naam>Middelheimlaan</naam>
-        <lengte>1</lengte>
+        <lengte>TTT</lengte>
     </BAAN>
 
     <VERKEERSLICHT>
