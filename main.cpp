@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "specificatie_1/1_1_Verkeerssituatie_inlezen/Verkeerssituatie_inlezen.h"
+#include "specificatie_1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezen.h"
 
 using namespace std;
 
 int main() {
-    Verkeerssituatie_inlezen vi;
+    VerkeersSituatieInlezen vi;
     vi.parseXMLAndCreateObjects("../src/voorbeeld.xml");
 
 

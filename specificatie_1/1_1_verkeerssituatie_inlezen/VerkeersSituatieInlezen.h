@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Verkeerssituatie_inlezen {
+class VerkeersSituatieInlezen {
     // Vectors to store objects created from XML
     vector<Baan> banen;
     vector<Voertuig> voertuigen;

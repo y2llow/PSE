@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
-#include "Verkeerssituatie_inlezen.h"
+#include "VerkeersSituatieInlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
 
 
 // Function to parse XML and create appropriate objects
-void Verkeerssituatie_inlezen::parseXMLAndCreateObjects(const string &filename) {
+void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
     TiXmlDocument doc;
     if (!doc.LoadFile(filename.c_str())) {
         cerr << "Error loading file: " << doc.ErrorDesc() << endl;
@@ -154,19 +154,19 @@ void Verkeerssituatie_inlezen::parseXMLAndCreateObjects(const string &filename) 
 }
 
 
-vector<Baan> Verkeerssituatie_inlezen::get_banen() const {
+vector<Baan> VerkeersSituatieInlezen::get_banen() const {
     return banen;
 }
 
-vector<Voertuig> Verkeerssituatie_inlezen::get_voertuigen() const {
+vector<Voertuig> VerkeersSituatieInlezen::get_voertuigen() const {
     return voertuigen;
 }
 
-vector<Verkeerslicht> Verkeerssituatie_inlezen::get_verkeerslichten() const {
+vector<Verkeerslicht> VerkeersSituatieInlezen::get_verkeerslichten() const {
     return verkeerslichten;
 }
 
 
-vector<Voertuiggenerator> Verkeerssituatie_inlezen::get_voertuiggeneratoren() const {
+vector<Voertuiggenerator> VerkeersSituatieInlezen::get_voertuiggeneratoren() const {
     return voertuiggeneratoren;
 }
