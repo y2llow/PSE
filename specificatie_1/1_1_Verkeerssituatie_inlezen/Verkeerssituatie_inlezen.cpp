@@ -1,41 +1,32 @@
 #include <iostream>
 #include <string>
-#include <vector>
 #include "Verkeerssituatie_inlezen.h"
 #include "../../src/TinyXML/tinyxml.h"
-#include "../../src/Elementen/Baan.h"
-#include "../../src/Elementen/Voertuig.h"
-#include "../../src/Elementen/Verkeerslicht.h"
-#include "../../src/Elementen/Voertuiggenerator.h"
 
-// Vectors to store objects created from XML
-std::vector<Baan> banen;
-std::vector<Voertuig> voertuigen;
-std::vector<Verkeerslicht> verkeerslichten;
-std::vector<Voertuiggenerator> voertuiggeneratoren;
 
 // Function to parse XML and create appropriate objects
-void parseXMLAndCreateObjects(const std::string& filename) {
+void Verkeerssituatie_inlezen::parseXMLAndCreateObjects(const std::string &filename) {
     TiXmlDocument doc;
     if (!doc.LoadFile(filename.c_str())) {
         std::cerr << "Error loading file: " << doc.ErrorDesc() << std::endl;
         return;
     }
 
-    TiXmlElement* root = doc.FirstChildElement();
+    TiXmlElement *root = doc.FirstChildElement();
     if (!root) {
         std::cerr << "Failed to load file: No root element." << std::endl;
         return;
     }
 
-    for (TiXmlElement* elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         std::string elementType = elem->Value();
 
         if (elementType == "BAAN") {
             Baan baan;
 
             // Loop through sub-elements to get properties
-            for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
 
                 if (propertyName == "naam" && subElem->GetText()) {
@@ -47,26 +38,34 @@ void parseXMLAndCreateObjects(const std::string& filename) {
 
             // Add to vector
             banen.push_back(baan);
-        }
-        else if (elementType == "VOERTUIG") {
+        } else if (elementType == "VOERTUIG") {
             Voertuig voertuig;
 
-            for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
 
-                if (propertyName == "baan" && subElem->GetText()) {
+                if (propertyName == "baan") {
+                    if (!subElem->GetText()) {
+                        cerr << "Deze voertuig heeft geen baan, dus het is ongeldig!";
+                        continue;
+                    }
                     voertuig.baan = subElem->GetText();
-                } else if (propertyName == "positie" && subElem->GetText()) {
+                } else if (propertyName == "positie") {
+                    if (!subElem->GetText()) {
+                        cerr << "Deze voertuig heeft geen positie, dus het is ongeldig!";
+                        continue;
+                    }
                     voertuig.positie = std::stoi(subElem->GetText());
                 }
             }
 
             voertuigen.push_back(voertuig);
-        }
-        else if (elementType == "VERKEERSLICHT") {
+        } else if (elementType == "VERKEERSLICHT") {
             Verkeerslicht verkeerslicht;
 
-            for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
 
                 if (propertyName == "baan" && subElem->GetText()) {
@@ -79,11 +78,11 @@ void parseXMLAndCreateObjects(const std::string& filename) {
             }
 
             verkeerslichten.push_back(verkeerslicht);
-        }
-        else if (elementType == "VOERTUIGGENERATOR") {
+        } else if (elementType == "VOERTUIGGENERATOR") {
             Voertuiggenerator generator;
 
-            for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr; subElem = subElem->NextSiblingElement()) {
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
                 std::string propertyName = subElem->Value();
 
                 if (propertyName == "baan" && subElem->GetText()) {
@@ -94,9 +93,26 @@ void parseXMLAndCreateObjects(const std::string& filename) {
             }
 
             voertuiggeneratoren.push_back(generator);
+        } else {
+            cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
         }
     }
 }
 
 
+std::vector<Baan> Verkeerssituatie_inlezen::get_banen() const {
+    return banen;
+}
 
+std::vector<Voertuig> Verkeerssituatie_inlezen::get_voertuigen() const {
+    return voertuigen;
+}
+
+std::vector<Verkeerslicht> Verkeerssituatie_inlezen::get_verkeerslichten() const {
+    return verkeerslichten;
+}
+
+
+std::vector<Voertuiggenerator> Verkeerssituatie_inlezen::get_voertuiggeneratoren() const {
+    return voertuiggeneratoren;
+}
