@@ -8,11 +8,25 @@
 
 
 class Voertuiggenerator {
-public:
     std::string baan;
-    int frequentie;
-};
+    int frequentie = 0;
 
+public:
+    Voertuiggenerator() = default;
+
+    Voertuiggenerator(const std::string &baan, const int frequentie)
+        : baan(baan),
+          frequentie(frequentie) {
+    }
+
+    [[nodiscard]] std::string getBaan() const;
+
+    void setBaan(const std::string &baan);
+
+    [[nodiscard]] int getFrequentie() const;
+
+    void setFrequentie(const int frequentie);
+};
 
 
 #endif //VOERTUIGGENERATOR_H

@@ -10,13 +10,13 @@ int main() {
 
 
     cout << "\n=========== Banen ===========\n";
-    for (auto &[naam, lengte]: vi.get_banen()) {
-        cout << "Baan: " << naam << ", Lengte: " << lengte << endl;
+    for (auto &baan: vi.get_banen()) {
+        cout << "Baan: " << baan.getNaam() << ", Lengte: " << baan.getLengte() << endl;
     }
 
     cout << "\n=========== Verkeerslichten ===========\n";
-    for (auto &[baan, positie, cyclus]: vi.get_verkeerslichten()) {
-        cout << "Baan: " << baan << ", Cyclus: " << cyclus << ", Positie: " << positie << endl;
+    for (auto &licht: vi.get_verkeerslichten()) {
+        cout << "Baan: " << licht.getBaan() << ", Cyclus: " << licht.getCyclus() << ", Positie: " << licht.getPositie() << endl;
     }
 
     cout << "\n=========== Voertuigen ===========\n";

@@ -3,3 +3,19 @@
 //
 
 #include "Voertuiggenerator.h"
+
+std::string Voertuiggenerator::getBaan() const {
+    return baan;
+}
+
+void Voertuiggenerator::setBaan(const std::string &baan) {
+    this->baan = baan;
+}
+
+int Voertuiggenerator::getFrequentie() const {
+    return frequentie;
+}
+
+void Voertuiggenerator::setFrequentie(const int frequentie) {
+    this->frequentie = frequentie;
+}

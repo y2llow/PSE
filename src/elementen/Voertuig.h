@@ -12,6 +12,13 @@ class Voertuig {
     int positie = 0;
 
 public:
+    Voertuig() = default;
+
+    Voertuig(const std::string &baan, const int positie)
+        : baan(baan),
+          positie(positie) {
+    }
+
     void setBaan(const std::string &baan);
     [[nodiscard]] std::string getBaan() const;
 

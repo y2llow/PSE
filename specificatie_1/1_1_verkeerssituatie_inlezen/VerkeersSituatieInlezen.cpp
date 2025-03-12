@@ -35,7 +35,7 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         geldig = false;
                         break;
                     }
-                    baan.naam = subElem->GetText();
+                    baan.setNaam(subElem->GetText());
                 } else if (propertyName == "lengte") {
                     if (!subElem->GetText()) {
                         cout << "Er is een baan zonder lengte!" << endl;
@@ -43,7 +43,7 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        baan.lengte = stoi(subElem->GetText());
+                        baan.setLengte(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "De lengte van een baan is geen integer!" << endl;
                         geldig = false;
@@ -100,7 +100,7 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         geldig = false;
                         break;
                     }
-                    verkeerslicht.baan = subElem->GetText();
+                    verkeerslicht.setBaan(subElem->GetText());
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
                         cout << "Er is een verkeerslicht zonder positie!" << endl;
@@ -108,7 +108,7 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        verkeerslicht.positie = stoi(subElem->GetText());
+                        verkeerslicht.setPositie(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
                         geldig = false;
@@ -121,7 +121,7 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     try {
-                        verkeerslicht.cyclus = stoi(subElem->GetText());
+                        verkeerslicht.setCyclus(stoi(subElem->GetText()));
                     } catch (exception &) {
                         cout << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
                         geldig = false;
@@ -140,9 +140,9 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                 string propertyName = subElem->Value();
 
                 if (propertyName == "baan" && subElem->GetText()) {
-                    generator.baan = subElem->GetText();
+                    generator.setBaan(subElem->GetText());
                 } else if (propertyName == "frequentie" && subElem->GetText()) {
-                    generator.frequentie = stoi(subElem->GetText());
+                    generator.setFrequentie(stoi(subElem->GetText()));
                 }
             }
 
