@@ -25,7 +25,7 @@
 
         void parseXMLAndCreateObjects(const std::string &filename);
 
-        [[nodiscard]] vector<Baan *> getBanen() const;
+        [[nodiscard]] vector<Baan*> getBanen() const;
         [[nodiscard]] vector<Voertuig*> getVoertuigen() const;
         [[nodiscard]] vector<Verkeerslicht*> getVerkeerslichten() const;
         [[nodiscard]] vector<Voertuiggenerator*> getVoertuiggeneratoren() const;
@@ -33,6 +33,8 @@
         [[nodiscard]] bool isConsistent() const;
 
         [[nodiscard]] Baan* getBaan(const string &name) const;
+
+        void ToString() const;
 
         // Removing the created pointers
         ~simulation() {

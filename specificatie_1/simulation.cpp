@@ -249,10 +249,22 @@ bool simulation::isConsistent() const {
 }
 
 Baan *simulation::getBaan(const string &name) const {
-    for (auto &b: banen) {
+    for (auto &b: banen) { //TODO geen auto
         if (b->getNaam() == name) {
             return b;
         }
     }
     return nullptr;
 }
+
+void simulation::ToString() const {
+    cout << "Tijd: 0"  << endl; //TODO tijd functie aanpassen
+
+    for (const Voertuig* voertuig : voertuigen) {
+        cout << "Voertuig " << voertuig->getId() << endl;
+        cout << "-> baan: " << voertuig->getBaan() << endl;
+        cout << "-> positie: " << voertuig->getPositie() << endl;
+        cout << "-> snelheid: " << voertuig->getSnelheid() << endl;
+    }
+}
+
