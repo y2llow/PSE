@@ -38,16 +38,16 @@
 
         // Removing the created pointers
         ~simulation() {
-            for (const auto b : banen)
+            for (const Baan* b : banen)
                 delete b;
 
-            for (const auto v : voertuigen)
+            for (const Voertuig* v : voertuigen)
                 delete v;
 
-            for (const auto v : voertuiggeneratoren)
+            for (const Voertuiggenerator * v : voertuiggeneratoren)
                 delete v;
 
-            for (const auto v : verkeerslichten)
+            for (const Verkeerslicht* v : verkeerslichten)
                 delete v;
 
 

@@ -95,7 +95,7 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
 
             if (geldig) voertuigen.push_back(voertuig);
         } else if (elementType == "VERKEERSLICHT") {
-            auto* verkeerslicht = new Verkeerslicht();
+            Verkeerslicht* verkeerslicht = new Verkeerslicht();
             bool geldig = true;
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
@@ -141,7 +141,7 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
             if (geldig)
                 verkeerslichten.push_back(verkeerslicht);
         } else if (elementType == "VOERTUIGGENERATOR") {
-            auto *generator = new Voertuiggenerator();
+            Voertuiggenerator *generator = new Voertuiggenerator();
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
@@ -242,12 +242,11 @@ bool simulation::isConsistent() const {
         vg_op_banen[v->getBaan()] += 1;
     }
 
-    for (const auto& k : vg_op_banen) {
+    for (const pair <const string, int>& k : vg_op_banen) {
         if (k.second > 1) {
             return false;
         }
     }
-
     return true;
 }
 
