@@ -24,6 +24,7 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
         return;
     }
 
+    int voertuigLastId = 0; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
 
@@ -60,8 +61,10 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
             // Add to vector
             if (geldig) banen.push_back(baan);
         } else if (elementType == "VOERTUIG") {
+            voertuigLastId ++;
             Voertuig* voertuig = new Voertuig();
             bool geldig = true;
+            voertuig->setId(voertuigLastId);
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
@@ -180,9 +183,9 @@ bool simulation::isConsistent() const {
     bool consistent = true;
 
     // Elk voertuig staat op een bestaande baan
-    for (auto &v: voertuigen) {
+    for (Voertuig* const& v: voertuigen) {
         consistent = false;
-        for (auto &b: banen) {
+        for (Baan* const& b: banen) {
             if (v->getBaan() == b->getNaam()) {
                 consistent = true;
                 break;
@@ -192,9 +195,9 @@ bool simulation::isConsistent() const {
     if (!consistent) return consistent;
 
     // Elk verkeerslicht staat op een bestaande baan.
-    for (auto &v: verkeerslichten) {
+    for (Verkeerslicht* const& v: verkeerslichten) {
         consistent = false;
-        for (auto &b: banen) {
+        for (Baan* const& b: banen) {
             if (v->getBaan() == b->getNaam()) {
                 consistent = true;
                 break;
@@ -204,9 +207,9 @@ bool simulation::isConsistent() const {
     if (!consistent) return consistent;
 
     // Elke voertuiggenerator staat op een bestaande baan.
-    for (auto &v: voertuiggeneratoren) {
+    for (Voertuiggenerator* const& v: voertuiggeneratoren) {
         consistent = false;
-        for (auto &b: banen) {
+        for (Baan* const& b: banen) {
             if (v->getBaan() == b->getNaam()) {
                 consistent = true;
                 break;
@@ -216,14 +219,14 @@ bool simulation::isConsistent() const {
     if (!consistent) return consistent;
 
     // De positie van elk voertuig is kleiner dan de lengte van de baan.
-    for (auto &v: voertuigen) {
+    for (Voertuig* const& v: voertuigen) {
         if (getBaan(v->getBaan()) == nullptr || v->getPositie() > getBaan(v->getBaan())->getLengte()) {
             return false;
         }
     }
 
     // De positie van elk verkeerslicht is kleiner dan de lengte van de baan.
-    for (auto &v: verkeerslichten) {
+    for (Verkeerslicht* const& v: verkeerslichten) {
         if (getBaan(v->getBaan()) == nullptr || v->getPositie() > getBaan(v->getBaan())->getLengte()) {
             return false;
         }
@@ -231,11 +234,11 @@ bool simulation::isConsistent() const {
 
     // Er is maximaal ´e´en voertuiggenerator op elke baan.
     map<string, int> vg_op_banen;
-    for (auto &b : banen) {
+    for (Baan* const& b : banen) {
         vg_op_banen[b->getNaam()] = 0;
     }
 
-    for (auto &v: voertuiggeneratoren) {
+    for (Voertuiggenerator* const& v: voertuiggeneratoren) {
         vg_op_banen[v->getBaan()] += 1;
     }
 
@@ -249,7 +252,7 @@ bool simulation::isConsistent() const {
 }
 
 Baan *simulation::getBaan(const string &name) const {
-    for (auto &b: banen) { //TODO geen auto
+    for (Baan* b: banen) {
         if (b->getNaam() == name) {
             return b;
         }
@@ -260,7 +263,7 @@ Baan *simulation::getBaan(const string &name) const {
 void simulation::ToString() const {
     cout << "Tijd: 0"  << endl; //TODO tijd functie aanpassen
 
-    for (const Voertuig* voertuig : voertuigen) {
+    for (Voertuig* voertuig : voertuigen) {
         cout << "Voertuig " << voertuig->getId() << endl;
         cout << "-> baan: " << voertuig->getBaan() << endl;
         cout << "-> positie: " << voertuig->getPositie() << endl;
