@@ -14,7 +14,19 @@ class Voertuig {
     int id;
 
 public:
+
     const std::string &getBaan() const;
+
+    Voertuig() = default;
+
+    Voertuig(const std::string &baan, const int positie)
+        : baan(baan),
+          positie(positie) {
+    }
+
+    void setBaan(const std::string &baan);
+    [[nodiscard]] std::string getBaan() const;
+
 
     void setBaan(const std::string &baan);
 
