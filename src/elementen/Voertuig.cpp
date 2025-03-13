@@ -5,7 +5,7 @@
 #include "Voertuig.h"
 
 
-const std::string &Voertuig::getBaan() const {
+std::string Voertuig::getBaan() const {
     return baan;
 }
 
