@@ -8,16 +8,16 @@ std::string Verkeerslicht::getBaan() const {
     return baan;
 }
 
-void Verkeerslicht::setBaan(const std::string &baan) {
-    this->baan = baan;
+void Verkeerslicht::setBaan(const std::string &b) {
+    this->baan = b;
 }
 
 int Verkeerslicht::getPositie() const {
     return positie;
 }
 
-void Verkeerslicht::setPositie(const int positie) {
-    this->positie = positie;
+void Verkeerslicht::setPositie(const int p) {
+    this->positie = p;
 }
 
 int Verkeerslicht::getCyclus() const {

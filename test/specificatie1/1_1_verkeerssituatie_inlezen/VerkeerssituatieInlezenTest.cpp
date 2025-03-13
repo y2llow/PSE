@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../../../specificatie_1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezen.h"
+#include "../../../specificatie_1/1_1_verkeerssituatie_inlezen/VerkeersSituatieInlezen.h"
 
 class EmptyState : public testing::Test {
     void SetUp() override {
@@ -15,7 +15,7 @@ class EmptyState : public testing::Test {
         vtg_size = vi.getVoertuiggeneratoren().size();
     }
 protected:
-    VerkeerssituatieInlezen vi;
+    VerkeersSituatieInlezen vi;
     int b_size = 0, v_size = 0, ver_size = 0, vtg_size = 0;
 };
 
@@ -28,7 +28,7 @@ TEST_F(EmptyState, EmptyXMLFileTest) {
 
 class WrongDataType : public testing::Test {
 protected:
-    VerkeerssituatieInlezen vi;
+    VerkeersSituatieInlezen vi;
 };
 
 TEST_F(WrongDataType, GoodSyntaxWrongDataType) {

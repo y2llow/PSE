@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class VerkeerssituatieInlezen {
+class VerkeersSituatieInlezen {
     // Vectors to store objects created from XML
     vector<Baan*> banen;
     vector<Voertuig*> voertuigen;
@@ -17,7 +17,7 @@ class VerkeerssituatieInlezen {
     vector<Voertuiggenerator*> voertuiggeneratoren;
 
 public:
-    VerkeerssituatieInlezen() = default;
+    VerkeersSituatieInlezen() = default;
 
     void parseXMLAndCreateObjects(const std::string &filename);
 
@@ -31,7 +31,7 @@ public:
     Baan* getBaan(const string &name) const;
 
     // Removing the created pointers
-    ~VerkeerssituatieInlezen() {
+    ~VerkeersSituatieInlezen() {
         for (const auto b : banen)
             delete b;
 
