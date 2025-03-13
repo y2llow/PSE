@@ -10,8 +10,8 @@
 class Verkeerslicht {
 public:
     std::string baan;
-    int positie;
-    int cyclus;
+    double positie;
+    double cyclus;
 };
 
 

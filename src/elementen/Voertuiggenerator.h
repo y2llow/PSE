@@ -10,7 +10,7 @@
 class Voertuiggenerator {
 public:
     std::string baan;
-    int frequentie;
+    double frequentie;
 };
 
 
