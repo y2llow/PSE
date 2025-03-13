@@ -12,6 +12,8 @@ class Voertuig {
     double positie;
     double snelheid;
     int id;
+    double length = 4;
+    double versnelling = 0;
 
 public:
     Voertuig() = default;
@@ -37,6 +39,12 @@ public:
     int getId() const;
 
     void setId(int id);
+
+    double getVersnelling() const;
+
+    void setVersnelling(double versnelling);
+
+    double getLength() const;
 };
 
 

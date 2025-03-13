@@ -37,3 +37,16 @@ void Voertuig::setId(int car_id) {
     Voertuig::id = car_id;
 }
 
+double Voertuig::getVersnelling() const {
+    return versnelling;
+}
+
+void Voertuig::setVersnelling(double acceleration) {
+    Voertuig::versnelling = acceleration;
+}
+
+double Voertuig::getLength() const {
+    return length;
+}
+
+

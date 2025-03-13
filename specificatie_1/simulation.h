@@ -19,6 +19,15 @@
         vector<Voertuig*> voertuigen;
         vector<Verkeerslicht*> verkeerslichten;
         vector<Voertuiggenerator*> voertuiggeneratoren;
+        double simulationTime = 0.0166;
+        double Vmax = 16.6;
+        double amax = 1.44;
+        double bmax = 4.61;
+        double fmin = 4;
+        double vertraagAfstand = 50;
+        double stopAfstand = 15;
+        double vertraagFactor = 0.4;
+
 
     public:
         simulation() = default;
@@ -35,6 +44,12 @@
         [[nodiscard]] Baan* getBaan(const string &name) const;
 
         void ToString() const;
+
+        double getSimulationTime() const;
+
+        void simulationRun(double simTime);
+
+        void sortVoertuigenByPosition();
 
         // Removing the created pointers
         ~simulation() {
