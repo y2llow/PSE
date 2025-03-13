@@ -1,12 +1,17 @@
+//
+// Created by eraya on 13/03/2025.
+//
+
+#include "simulation.h"
 #include <iostream>
 #include <map>
 #include <string>
-#include "VerkeersSituatieInlezen.h"
+#include "simulation.h"
 #include "../../src/TinyXML/tinyxml.h"
 
 
 // Function to parse XML and create appropriate objects
-void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
+void simulation::parseXMLAndCreateObjects(const string &filename) {
     TiXmlDocument doc;
     if (!doc.LoadFile(filename.c_str())) {
         cerr << "Error loading file: " << doc.ErrorDesc() << endl;
@@ -154,24 +159,24 @@ void VerkeerssituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
 }
 
 
-vector<Baan *> VerkeerssituatieInlezen::getBanen() const {
+vector<Baan *> simulation::getBanen() const {
     return banen;
 }
 
-vector<Voertuig *> VerkeerssituatieInlezen::getVoertuigen() const {
+vector<Voertuig *> simulation::getVoertuigen() const {
     return voertuigen;
 }
 
-vector<Verkeerslicht *> VerkeerssituatieInlezen::getVerkeerslichten() const {
+vector<Verkeerslicht *> simulation::getVerkeerslichten() const {
     return verkeerslichten;
 }
 
 
-vector<Voertuiggenerator *> VerkeerssituatieInlezen::getVoertuiggeneratoren() const {
+vector<Voertuiggenerator *> simulation::getVoertuiggeneratoren() const {
     return voertuiggeneratoren;
 }
 
-bool VerkeerssituatieInlezen::isConsistent() const {
+bool simulation::isConsistent() const {
     bool consistent = true;
 
     // Elk voertuig staat op een bestaande baan
@@ -243,7 +248,7 @@ bool VerkeerssituatieInlezen::isConsistent() const {
     return true;
 }
 
-Baan *VerkeerssituatieInlezen::getBaan(const string &name) const {
+Baan *simulation::getBaan(const string &name) const {
     for (auto &b: banen) {
         if (b->getNaam() == name) {
             return b;
