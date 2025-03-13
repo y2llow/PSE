@@ -44,18 +44,8 @@ protected:
     simulation sim;
 
     void SetUp() override {
-        // Voeg een paar voertuigen toe aan de simulatie voor testdoeleinden
-        Voertuig* voertuig1 = new Voertuig("Middelheimlaan", 20);
-        voertuig1->setId(1);
-        voertuig1->setSnelheid(16.6);
-
-        Voertuig* voertuig2 = new Voertuig("Middelheimlaan", 0);
-        voertuig2->setId(2);
-        voertuig2->setSnelheid(16.6);
-
-        sim.getVoertuigen().push_back(voertuig1);
-        sim.getVoertuigen().push_back(voertuig2);
-    }
+            sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml");
+        }
 
     void TearDown() override {
         // Opruimen van dynamisch toegewezen geheugen

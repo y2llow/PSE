@@ -39,21 +39,21 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
 
                 if (propertyName == "naam") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een baan zonder naam!" << endl;
+                        cerr << "Er is een baan zonder naam!" << endl;
                         geldig = false;
                         break;
                     }
                     baan->setNaam(subElem->GetText());
                 } else if (propertyName == "lengte") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een baan zonder lengte!" << endl;
+                        cerr << "Er is een baan zonder lengte!" << endl;
                         geldig = false;
                         break;
                     }
                     try {
                         baan->setLengte(stoi(subElem->GetText()));
                     } catch (exception &) {
-                        cout << "De lengte van een baan is geen integer!" << endl;
+                        cerr << "De lengte van een baan is geen integer!" << endl;
                         geldig = false;
                         break;
                     }
@@ -73,21 +73,30 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
 
                 if (propertyName == "baan") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een voertuig zonder baan!" << endl;
+                        cerr << "Er is een voertuig zonder baan!" << endl;
                         geldig = false;
                         break;
                     }
                     voertuig->setBaan(subElem->GetText());
+                } else if (propertyName == "snelheid") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is geen snelheid!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    string snelheidstring = subElem->GetText();
+                    double snelheid = std::stod(snelheidstring);
+                    voertuig->setSnelheid(snelheid);
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een voertuig zonder positie!" << endl;
+                        cerr << "Er is een voertuig zonder positie!" << endl;
                         geldig = false;
                         break;
                     }
                     try {
                         voertuig->setPositie(stoi(subElem->GetText()));
                     } catch (exception &) {
-                        cout << "Er is een voertuig waarvan de positie geen integer is!" << endl;
+                        cerr << "Er is een voertuig waarvan de positie geen integer is!" << endl;
                         geldig = false;
                         break;
                     }
@@ -105,34 +114,34 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
 
                 if (propertyName == "baan") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een verkeerslicht zonder baan!" << endl;
+                        cerr << "Er is een verkeerslicht zonder baan!" << endl;
                         geldig = false;
                         break;
                     }
                     verkeerslicht->setBaan(subElem->GetText());
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een verkeerslicht zonder positie!" << endl;
+                        cerr << "Er is een verkeerslicht zonder positie!" << endl;
                         geldig = false;
                         break;
                     }
                     try {
                         verkeerslicht->setPositie(stoi(subElem->GetText()));
                     } catch (exception &) {
-                        cout << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
+                        cerr << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
                         geldig = false;
                         break;
                     }
                 } else if (propertyName == "cyclus") {
                     if (!subElem->GetText()) {
-                        cout << "Er is een verkeerslicht zonder cyclus!" << endl;
+                        cerr << "Er is een verkeerslicht zonder cyclus!" << endl;
                         geldig = false;
                         break;
                     }
                     try {
                         verkeerslicht->setCyclus(stoi(subElem->GetText()));
                     } catch (exception &) {
-                        cout << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
+                        cerr << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
                         geldig = false;
                         break;
                     }
@@ -277,50 +286,5 @@ double simulation::getSimulationTime() const {
 }
 
 void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b) {return a->getPositie() < b->getPositie();});
-}
-
-void simulation::simulationRun(double simTime) {
-
-    //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
-    this->sortVoertuigenByPosition();
-
-    int counter = 0;
-    for (Voertuig* v: voertuigen){
-
-        //berekenen van nieuwe positie
-        if ((v->getSnelheid() + v->getVersnelling()*simulationTime)<0){
-            double newPosition = v->getPositie() - ((v->getSnelheid()*v->getSnelheid())/(v->getVersnelling()*2));
-            v->setPositie(newPosition);
-            v->setSnelheid(0);
-        }
-        else {
-            v->setSnelheid((v->getSnelheid()+v->getVersnelling()*simulationTime));
-            double newPosition = v->getPositie() + (v->getSnelheid()*simulationTime) + ((v->getVersnelling()* (simulationTime*simulationTime)/2));
-            v->setPositie(newPosition);
-        }
-
-        double xvoor = 0;
-        double vvoor = 0;
-        double delta = 0;
-        if (counter<voertuigen.size()){
-            xvoor = voertuigen.at(counter+1)->getPositie();
-            vvoor = voertuigen.at(counter+1)->getSnelheid();
-        }
-        double volgafstand =xvoor - v->getPositie() - v->getLength();
-        double snelheidVerschil = v->getSnelheid() - vvoor;
-
-        if (counter==voertuigen.size()){
-            delta = 0;
-        }
-        else{
-            double getalInMax = v->getSnelheid() + ((v->getSnelheid()*snelheidVerschil)/(2*sqrt(amax*bmax)));
-            double maxNummer = max(0.0, getalInMax);
-            delta = (fmin + maxNummer)/volgafstand;
-        }
-
-        double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
-
-        counter++;
-    }
 }
 
