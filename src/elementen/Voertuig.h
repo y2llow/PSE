@@ -9,14 +9,26 @@
 
 class Voertuig {
     std::string baan;
-    int positie = 0;
+    double positie;
+    double snelheid;
+    int id;
 
 public:
-    void setBaan(const std::string &baan);
-    [[nodiscard]] std::string getBaan() const;
+    const std::string &getBaan() const;
 
-    void setPositie(int p);
-    [[nodiscard]] int getPositie() const;
+    void setBaan(const std::string &baan);
+
+    double getPositie() const;
+
+    void setPositie(double positie);
+
+    double getSnelheid() const;
+
+    void setSnelheid(double snelheid);
+
+    int getId() const;
+
+    void setId(int id);
 };
 
 

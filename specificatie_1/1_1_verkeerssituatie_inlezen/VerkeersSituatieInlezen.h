@@ -15,6 +15,7 @@ class VerkeersSituatieInlezen {
     vector<Voertuig> voertuigen;
     vector<Verkeerslicht> verkeerslichten;
     vector<Voertuiggenerator> voertuiggeneratoren;
+    int te_geven_car_id = 1;
 
 public:
     void parseXMLAndCreateObjects(const std::string &filename);
@@ -23,6 +24,7 @@ public:
     [[nodiscard]] vector<Voertuig> get_voertuigen() const;
     [[nodiscard]] vector<Verkeerslicht> get_verkeerslichten() const;
     [[nodiscard]] vector<Voertuiggenerator> get_voertuiggeneratoren() const;
+
 
 };
 #endif

@@ -4,19 +4,36 @@
 
 #include "Voertuig.h"
 
-void Voertuig::setBaan(const std::string &baan) {
-    this->baan = baan;
-}
 
-int Voertuig::getPositie() const {
-    return positie;
-}
-
-std::string Voertuig::getBaan() const {
+const std::string &Voertuig::getBaan() const {
     return baan;
 }
 
-void Voertuig::setPositie(const int p) {
-    positie = p;
+void Voertuig::setBaan(const std::string &weg) {
+    Voertuig::baan = weg;
+}
+
+double Voertuig::getPositie() const {
+    return positie;
+}
+
+void Voertuig::setPositie(double position) {
+    Voertuig::positie = position;
+}
+
+double Voertuig::getSnelheid() const {
+    return snelheid;
+}
+
+void Voertuig::setSnelheid(double speed) {
+    Voertuig::snelheid = speed;
+}
+
+int Voertuig::getId() const {
+    return id;
+}
+
+void Voertuig::setId(int car_id) {
+    Voertuig::id = car_id;
 }
 

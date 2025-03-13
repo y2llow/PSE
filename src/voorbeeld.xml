@@ -13,11 +13,13 @@
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>20</positie>
+        <snelheid>16.6</snelheid>
     </VOERTUIG>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>0</positie>
+        <snelheid>16.6</snelheid>
     </VOERTUIG>
 
     <VOERTUIGGENERATOR>

@@ -36,7 +36,9 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     baan.naam = subElem->GetText();
-                } else if (propertyName == "lengte") {
+                }
+                else if (propertyName == "lengte") {
+
                     if (!subElem->GetText()) {
                         cout << "Er is een baan zonder lengte!" << endl;
                         geldig = false;
@@ -44,7 +46,8 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                     }
                     try {
                         baan.lengte = stoi(subElem->GetText());
-                    } catch (exception &) {
+                    }
+                    catch (exception &) {
                         cout << "De lengte van een baan is geen integer!" << endl;
                         geldig = false;
                         break;
@@ -53,7 +56,8 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
             }
             // Add to vector
             if (geldig) banen.push_back(baan);
-        } else if (elementType == "VOERTUIG") {
+        }
+        else if (elementType == "VOERTUIG") {
             Voertuig voertuig;
             bool geldig = true;
 
@@ -68,7 +72,9 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
                     voertuig.setBaan(subElem->GetText());
-                } else if (propertyName == "positie") {
+
+                }
+                else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
                         cout << "Er is een voertuig zonder positie!" << endl;
                         geldig = false;
@@ -77,15 +83,25 @@ void VerkeersSituatieInlezen::parseXMLAndCreateObjects(const string &filename) {
                     try {
                         auto weird = subElem->GetText();
                         voertuig.setPositie(stoi(weird));
-                    } catch (exception &) {
+                    }
+                    catch (exception &) {
                         cout << "Er is een voertuig waarvan de positie geen integer is!" << endl;
                         geldig = false;
                         break;
                     }
                 }
+
+                else if (propertyName =="snelheid"){
+                    voertuig.setSnelheid(stoi(subElem->GetText()));
+                }
             }
 
-            if (geldig) voertuigen.push_back(voertuig);
+            if (geldig){
+                voertuig.setId(te_geven_car_id);
+                te_geven_car_id +=1;
+                voertuigen.push_back(voertuig);
+            }
+
         } else if (elementType == "VERKEERSLICHT") {
             Verkeerslicht verkeerslicht;
             bool geldig = true;
