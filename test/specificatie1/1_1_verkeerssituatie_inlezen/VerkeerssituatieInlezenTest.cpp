@@ -35,6 +35,90 @@ TEST_F(WrongDataType, GoodSyntaxWrongDataType) {
     EXPECT_THROW(vi.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types.xml"), invalid_argument);
 }
 
+#include "../../../specificatie_1/simulation.h"
+#include "../../../src/elementen/Voertuig.h"
+
+// Test fixture voor de ToString functie
+class ToStringTest : public testing::Test {
+protected:
+    simulation sim;
+
+    void SetUp() override {
+        // Voeg een paar voertuigen toe aan de simulatie voor testdoeleinden
+        Voertuig* voertuig1 = new Voertuig("Middelheimlaan", 20);
+        voertuig1->setId(1);
+        voertuig1->setSnelheid(16.6);
+
+        Voertuig* voertuig2 = new Voertuig("Middelheimlaan", 0);
+        voertuig2->setId(2);
+        voertuig2->setSnelheid(16.6);
+
+        sim.getVoertuigen().push_back(voertuig1);
+        sim.getVoertuigen().push_back(voertuig2);
+    }
+
+    void TearDown() override {
+        // Opruimen van dynamisch toegewezen geheugen
+        for (auto voertuig : sim.getVoertuigen()) {
+            delete voertuig;
+        }
+        sim.getVoertuigen().clear();
+    }
+};
+
+// Test of de ToString functie de juiste uitvoer produceert
+TEST_F(ToStringTest, OutputFormatTest) {
+    // Redirect cout naar een stringstream om de uitvoer te kunnen testen
+    std::stringstream buffer;
+    std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
+
+    // Roep de ToString functie aan
+    sim.ToString();
+
+    // Herstel cout
+    std::cout.rdbuf(oldCout);
+
+    // Verwachte uitvoer
+    std::string expectedOutput =
+        "Tijd: 0\n"
+        "Voertuig 1\n"
+        "-> baan: Middelheimlaan\n"
+        "-> positie: 20\n"
+        "-> snelheid: 16.6\n"
+        "Voertuig 2\n"
+        "-> baan: Middelheimlaan\n"
+        "-> positie: 0\n"
+        "-> snelheid: 16.6\n";
+
+    // Vergelijk de verwachte uitvoer met de werkelijke uitvoer
+    ASSERT_EQ(buffer.str(), expectedOutput);
+}
+
+// Test of de ToString functie correct omgaat met een lege lijst van voertuigen
+TEST_F(ToStringTest, EmptyVoertuigenListTest) {
+    // Verwijder alle voertuigen uit de simulatie
+    for (auto voertuig : sim.getVoertuigen()) {
+        delete voertuig;
+    }
+    sim.getVoertuigen().clear();
+
+    // Redirect cout naar een stringstream om de uitvoer te kunnen testen
+    std::stringstream buffer;
+    std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
+
+    // Roep de ToString functie aan
+    sim.ToString();
+
+    // Herstel cout
+    std::cout.rdbuf(oldCout);
+
+    // Verwachte uitvoer (alleen de tijd, geen voertuigen)
+    std::string expectedOutput = "Tijd: 0\n";
+
+    // Vergelijk de verwachte uitvoer met de werkelijke uitvoer
+    ASSERT_EQ(buffer.str(), expectedOutput);
+}
+
 
 
 int main(int argc, char **argv) {
