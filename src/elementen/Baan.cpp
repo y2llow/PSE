@@ -12,10 +12,10 @@ int Baan::getLengte() const {
     return lengte;
 }
 
-void Baan::setNaam(const std::string &n) {
-    this->naam = n;
+void Baan::setNaam(const std::string &naam) {
+    this->naam = naam;
 }
 
-void Baan::setLengte(const int l) {
-    this->lengte = l;
+void Baan::setLengte(const int lengte) {
+    this->lengte = lengte;
 }

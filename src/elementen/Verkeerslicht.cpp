@@ -8,22 +8,24 @@ std::string Verkeerslicht::getBaan() const {
     return baan;
 }
 
-void Verkeerslicht::setBaan(const std::string &b) {
-    this->baan = b;
+
+void Verkeerslicht::setPositie(const double positie) {
+    this->positie = positie;
 }
 
-int Verkeerslicht::getPositie() const {
-    return positie;
-}
-
-void Verkeerslicht::setPositie(const int p) {
-    this->positie = p;
-}
-
-int Verkeerslicht::getCyclus() const {
+double Verkeerslicht::getCyclus() const {
     return cyclus;
 }
 
-void Verkeerslicht::setCyclus(const int cyclus) {
+void Verkeerslicht::setCyclus(const double cyclus) {
     this->cyclus = cyclus;
 }
+
+void Verkeerslicht::setBaan(const std::string &baan) {
+    this->baan = baan;
+}
+
+double Verkeerslicht::getPositie() const {
+    return positie;
+}
+
