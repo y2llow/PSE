@@ -12,6 +12,8 @@ public:
     std::string baan;
     double positie;
     double cyclus;
+    bool rood = false;
+    bool groen = true;
 
 
     [[nodiscard]] std::string getBaan() const;
@@ -25,6 +27,14 @@ public:
     [[nodiscard]] double getCyclus() const;
 
     void setCyclus(double cyclus);
+
+    bool isRood() const;
+
+    void setRood(bool rood);
+
+    bool isGroen() const;
+
+    void setGroen(bool groen);
 };
 
 

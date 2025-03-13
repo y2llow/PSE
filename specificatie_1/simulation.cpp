@@ -288,3 +288,49 @@ double simulation::getSimulationTime() const {
 void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b) {return a->getPositie() < b->getPositie();});
 }
 
+
+void simulation::simulationRun(double simTime) {
+
+    //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
+    this->sortVoertuigenByPosition();
+
+    int counter = 0;
+    for (Voertuig* v: voertuigen){
+
+        //berekenen van nieuwe positie
+        if ((v->getSnelheid() + v->getVersnelling()*simulationTime)<0){
+            double newPosition = v->getPositie() - ((v->getSnelheid()*v->getSnelheid())/(v->getVersnelling()*2));
+            v->setPositie(newPosition);
+            v->setSnelheid(0);
+        }
+        else {
+            v->setSnelheid((v->getSnelheid()+v->getVersnelling()*simulationTime));
+            double newPosition = v->getPositie() + (v->getSnelheid()*simulationTime) + ((v->getVersnelling()* (simulationTime*simulationTime)/2));
+            v->setPositie(newPosition);
+        }
+
+        //versnelling
+        double xvoor = 0;
+        double vvoor = 0;
+        double delta = 0;
+        if (counter<voertuigen.size()){
+            xvoor = voertuigen.at(counter+1)->getPositie();
+            vvoor = voertuigen.at(counter+1)->getSnelheid();
+        }
+        double volgafstand =xvoor - v->getPositie() - v->getLength();
+        double snelheidVerschil = v->getSnelheid() - vvoor;
+
+        if (counter==voertuigen.size()){
+            delta = 0;
+        }
+        else{
+            double getalInMax = v->getSnelheid() + ((v->getSnelheid()*snelheidVerschil)/(2*sqrt(amax*bmax)));
+            double maxNummer = max(0.0, getalInMax);
+            delta = (fmin + maxNummer)/volgafstand;
+        }
+
+        double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
+
+        counter++;
+    }
+}
