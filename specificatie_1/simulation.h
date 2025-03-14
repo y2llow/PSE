@@ -20,6 +20,7 @@
         vector<Verkeerslicht*> verkeerslichten;
         vector<Voertuiggenerator*> voertuiggeneratoren;
         double simulationTime = 0;
+        double simulationincreasedTime = 0;
         double simulationTimeinc = 0.0166;
         double Vmax = 16.6;
         double amax = 1.44;
@@ -45,6 +46,8 @@
         void ToString() const;
 
         double getSimulationTime() const;
+
+        double getSimulationTimeinc() const ;
 
         double UpdateSimulationTime() const;
 

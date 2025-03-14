@@ -284,19 +284,24 @@ bool simulation::isConsistent() const {
 }
 
 void simulation::ToString() const {
-    cout << "Tijd: " << getSimulationTime()  << endl; //TODO tijd functie aanpassen
+    cout << "------------- SIMULATIE " << getSimulationTime()<< " ------------- "  << endl;
+    cout << "Tijd: " << getSimulationTimeinc()  << endl; //TODO tijd functie aanpassen
 
     for (Voertuig* voertuig : voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
         << "-> baan: " << voertuig->getBaan().getNaam() << "\n"
         << "-> positie: " << voertuig->getPositie() << "\n"
-        << "-> snelheid: " << voertuig->getSnelheid() << endl;
+        << "-> snelheid: " << voertuig->getSnelheid() << "\n" << endl;
     }
 
 }
 
 double simulation::getSimulationTime() const {
     return simulationTime;
+}
+
+double simulation::getSimulationTimeinc() const {
+    return simulationincreasedTime + simulationTimeinc;
 }
 
 double simulation::UpdateSimulationTime() const {

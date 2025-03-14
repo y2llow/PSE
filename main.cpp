@@ -15,6 +15,37 @@ int main() {
     sim.ToString();
     sim.simulationRun(); // implemnted 3.1
     sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    for (int i = 0 ; i < 2000 ; i++) {
+        sim.simulationRun(); // implemnted 3.1
+    }
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
 
     return 0;
 }
