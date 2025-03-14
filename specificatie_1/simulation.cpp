@@ -285,7 +285,7 @@ bool simulation::isConsistent() const {
 
 void simulation::ToString() const {
     cout << "------------- SIMULATIE " << getSimulationTime()<< " ------------- "  << endl;
-    cout << "Tijd: " << getSimulationTimeinc()  << endl; //TODO tijd functie aanpassen
+    cout << "Tijd: " << getSimulationTimeinc()  << endl;
 
     for (Voertuig* voertuig : voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
