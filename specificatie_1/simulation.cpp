@@ -364,11 +364,16 @@ void simulation::simulationRun() {
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
     sortVoertuigenByPosition();
 
-    std::size_t counter = 0; // Counter type is zo om te kunne vergelijken met Voertuigen.size()
     for (Voertuig* v: voertuigen){
         UpdateVoertuig(v);
-
-
+        if (!IsVoertuigOpBaan(v)) {
+            // Vehicle is no longer on the road, so remove it from the vector and delete it
+            __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *>> it = std::find(voertuigen.begin(), voertuigen.end(), v); // Find the iterator for v
+            if (it != voertuigen.end()) { // Ensure the element was found
+                voertuigen.erase(it); // Remove the element from the vector
+                delete v; // Free the memory
+            }
+        }
 
         //berekenen van nieuwe positie
         ///BerekenPositie(v);
