@@ -18,6 +18,11 @@ class Voertuig {
     double simulationTimeinc = 0.0166;
     double length = 4;
     double versnelling = 0;
+    double gVmax = 16.6;
+    double kvmax = 0;
+    double amax = 1.44;
+    double bmax = 4.61;
+    double vertraagFactor = 0.4;
 
 public:
     Voertuig() = default;
@@ -48,6 +53,30 @@ public:
     void setVersnelling(double versnelling);
 
     double getLength() const;
+
+    double getGVmax() const;
+
+    void setGVmax(double gVmax);
+
+    double getKvmax() const;
+
+    void setKvmax(double kvmax);
+
+    double getAmax() const;
+
+    void setAmax(double amax);
+
+    double getBmax() const;
+
+    void setBmax(double bmax);
+
+    double getVertraagFactor() const;
+
+    void setVertraagFactor(double vertraagFactor);
+
+
+
+
 
 /*
     void BerekenPositieVoertuig() ;

@@ -69,6 +69,9 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
             voertuigLastId ++;
             voertuig->setId(voertuigLastId);
 
+            //we geven vMax de waarde van Vmax
+            voertuig->setKvmax(voertuig->getGVmax());
+
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
                 string propertyName = subElem->Value();
@@ -311,14 +314,13 @@ double simulation::incSimulationTime() {
 }
 
 double simulation::UpdateSimulationTime() const {
-    return simulationTime + simulationTimeinc; //TODO fix updatesimulationtime so that it updates somwhere in the program
+    return simulationTime + simulationTimeinc; //TODO fix updatesimulationtime so that it updates somewhere in the program
 }
 
 
 
 void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b) {return a->getPositie() < b->getPositie();});
 }
-
 
 void simulation::BerekenPositie(Voertuig* v) const {
 
@@ -348,23 +350,25 @@ void simulation::BerekenVersnelling(Voertuig* v, int counter) const {
         double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
         double newsnelheid = v->getSnelheid() - snelheidVerschil;
-        double newversnelling = 2 * sqrt(amax * bmax) ;
+        double newversnelling = 2 * sqrt(v->getAmax() * v->getBmax()) ;
 
         double calculate  = v->getSnelheid() + (newsnelheid / newversnelling);
 
         double maxNummer = max(0.0, calculate);
         delta = (fmin + maxNummer) / volgafstand;
 
-        double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
+        double newVersnelling = v->getAmax() * (1 - std::pow((v->getSnelheid() / v->getKvmax()), 4) - std::pow(delta, 2));
         v->setVersnelling(newVersnelling);
     } else {
-        double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
+        double newVersnelling = v->getAmax() * (1 - std::pow((v->getSnelheid() / v->getKvmax()), 4) - std::pow(delta, 2));
         v->setVersnelling(newVersnelling);
     }
 }
 
 void simulation::UpdateVoertuig(Voertuig* v, int counter) const {
     BerekenPositie(v);
+    //TODO: als de voertuig in stop/vertraagzone zit dan moet die vertragen in plaats van versnellen.
+    //TODO: vind een manier om de IsVoertuigInStopZone en IsVoertuigInVertraagZone hier te laten werken.
     BerekenVersnelling(v, counter);
 }
 
@@ -399,4 +403,30 @@ void simulation::simulationRun() {
     simulationTime ++;
     incSimulationTime();
 }
+
+bool simulation::IsVoertuigInVertraagZone(Voertuig *v) {
+    for (Verkeerslicht* verk: verkeerslichten){
+        if(abs(v->getPositie()-verk->getPositie())<=vertraagAfstand){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool simulation::IsVoertuigInStopZone(Voertuig *v) {
+    for (Verkeerslicht* verk: verkeerslichten){
+        if(abs(v->getPositie()-verk->getPositie())<=stopAfstand){
+            return true;
+        }
+    }
+    return false;
+}
+
+void simulation::BerekenSnelheidNaVertraging(Voertuig *v)  {
+    v->setKvmax(v->getGVmax()*v->getVertraagFactor());
+}
+
+
+
+
 

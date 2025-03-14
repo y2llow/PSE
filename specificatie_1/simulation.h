@@ -22,9 +22,6 @@
         double simulationTime = 0;
         double simulationincreasedTime = 0;
         double simulationTimeinc = 0.0166;
-        double Vmax = 16.6;
-        double amax = 1.44;
-        double bmax = 4.61;
         double fmin = 4;
         double vertraagAfstand = 50;
         double stopAfstand = 15;
@@ -60,9 +57,15 @@
 
         void BerekenVersnelling(Voertuig* v, int counter) const ;
 
+        void BerekenSnelheidNaVertraging(Voertuig* v);
+
         void UpdateVoertuig(Voertuig* V, int counter) const;
 
         bool IsVoertuigOpBaan(Voertuig* v) ;
+
+        bool IsVoertuigInVertraagZone(Voertuig* v);
+
+        bool IsVoertuigInStopZone(Voertuig* v);
 
         // Removing the created pointers
         ~simulation() {

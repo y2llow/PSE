@@ -54,6 +54,48 @@ double Voertuig::getLength() const {
     return length;
 }
 
+double Voertuig::getGVmax() const {
+    return gVmax;
+}
+
+void Voertuig::setGVmax(double gVm) {
+    Voertuig::gVmax = gVm;
+}
+
+double Voertuig::getKvmax() const {
+    return kvmax;
+}
+
+void Voertuig::setKvmax(double kvm) {
+    Voertuig::kvmax = kvm;
+}
+
+double Voertuig::getAmax() const {
+    return amax;
+}
+
+void Voertuig::setAmax(double am) {
+    Voertuig::amax = am;
+}
+
+double Voertuig::getBmax() const {
+    return bmax;
+}
+
+void Voertuig::setBmax(double bm) {
+    Voertuig::bmax = bm;
+}
+
+double Voertuig::getVertraagFactor() const {
+    return vertraagFactor;
+}
+
+void Voertuig::setVertraagFactor(double VF) {
+    Voertuig::vertraagFactor = VF;
+}
+
+
+
 /*
 void Voertuig::BerekenPositieVoertuig() {
 
