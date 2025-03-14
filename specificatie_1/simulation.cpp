@@ -378,66 +378,24 @@ bool simulation::IsVoertuigOpBaan(Voertuig* v) {
 
 
 void simulation::simulationRun() {
-
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
     sortVoertuigenByPosition();
-int counter = 0;
+
+    int counter = 0;
     for (Voertuig* v: voertuigen){
         UpdateVoertuig(v,counter);
 
         if (!IsVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
             __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *>> it = std::find(voertuigen.begin(), voertuigen.end(), v); // Find the iterator for v
+
             if (it != voertuigen.end()) { // Ensure the element was found
                 voertuigen.erase(it); // Remove the element from the vector
                 delete v; // Free the memory
             }
         }
+
         counter ++;
-
-
-        //berekenen van nieuwe positie
-        ///BerekenPositie(v);
-        //v->BerekenPositieVoertuig();
-
-        // if ((v->getSnelheid() + v->getVersnelling()*simulationTime)<0){
-        //     double newPosition = v->getPositie() - ((v->getSnelheid()*v->getSnelheid())/(v->getVersnelling()*2));
-        //     v->setPositie(newPosition);
-        //     v->setSnelheid(0);
-        // }
-        // else {
-        //     v->setSnelheid((v->getSnelheid()+v->getVersnelling()*simulationTime));
-        //     double newPosition = v->getPositie() + (v->getSnelheid()*simulationTime) + ((v->getVersnelling()* (simulationTime*simulationTime)/2));
-        //     v->setPositie(newPosition);
-        // }
-
-
-        // bereken versnelling
-        //v->BerekenVersnellingVoertuig(counter, voertuigen);
-
-        ///BerekenVersnelling(v);
-
-        // double xvoor = 0;
-        // double vvoor = 0;
-        // double delta = 0;
-        // if (counter<voertuigen.size()){
-        //     xvoor = voertuigen.at(counter+1)->getPositie();
-        //     vvoor = voertuigen.at(counter+1)->getSnelheid();
-        // }
-        // double volgafstand =xvoor - v->getPositie() - v->getLength();
-        // double snelheidVerschil = v->getSnelheid() - vvoor;
-        //
-        // if (counter==voertuigen.size()){
-        //     delta = 0;
-        // }
-        // else{
-        //     double getalInMax = v->getSnelheid() + ((v->getSnelheid()*snelheidVerschil)/(2*sqrt(amax*bmax)));
-        //     double maxNummer = max(0.0, getalInMax);
-        //     delta = (fmin + maxNummer)/volgafstand;
-        // }
-        //
-        // double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
-
     }
     simulationTime ++;
     incSimulationTime();
