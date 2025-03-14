@@ -33,7 +33,7 @@
     public:
         simulation() = default;
 
-        void parseXMLAndCreateObjects(const std::string &filename);
+        bool parseXMLAndCreateObjects(const std::string &filename);
 
         [[nodiscard]] vector<Baan*> getBanen() const;
         [[nodiscard]] vector<Voertuig*> getVoertuigen() const;

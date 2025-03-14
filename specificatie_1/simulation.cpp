@@ -12,17 +12,17 @@
 #include <cmath>
 
 // Function to parse XML and create appropriate objects
-void simulation::parseXMLAndCreateObjects(const string &filename) {
+bool simulation::parseXMLAndCreateObjects(const string &filename) {
     TiXmlDocument doc;
     if (!doc.LoadFile(filename.c_str())) {
         cerr << "Error loading file: " << doc.ErrorDesc() << endl;
-        return;
+        return false;
     }
 
     TiXmlElement *root = doc.FirstChildElement();
     if (!root) {
         cerr << "Failed to load file: No root element." << endl;
-        return;
+        return true;
     }
 
     int voertuigLastId = 0; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
@@ -166,7 +166,7 @@ void simulation::parseXMLAndCreateObjects(const string &filename) {
             cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
         }
     }
-}
+return true;}
 
 vector<Baan *> simulation::getBanen() const {
     return banen;
