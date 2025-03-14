@@ -37,7 +37,7 @@ set(DEBUG_SOURCE_FILES
         src/Elementen/Baan.cpp
         src/Elementen/Voertuig.cpp
         src/Elementen/Voertuiggenerator.cpp
-        test/specificatie1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezenTest.cpp
+        test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         specificatie_1/simulation.cpp
 )
 
