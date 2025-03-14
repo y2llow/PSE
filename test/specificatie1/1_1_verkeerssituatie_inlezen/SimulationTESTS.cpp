@@ -55,7 +55,6 @@ TEST_F(SimulationTESTS, OutputFormatTest) {
     ASSERT_EQ(buffer.str(), expectedOutput);
 }
 
-
 TEST_F(SimulationTESTS, EmptyVoertuigenListTest) {
     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml"));
 
