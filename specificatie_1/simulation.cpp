@@ -288,7 +288,7 @@ double simulation::getSimulationTime() const {
 void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b) {return a->getPositie() < b->getPositie();});
 }
 
-
+/*
 void simulation::simulationRun(double simTime) {
 
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
@@ -334,3 +334,5 @@ void simulation::simulationRun(double simTime) {
         counter++;
     }
 }
+
+*/
