@@ -2,6 +2,7 @@
 // Created by AbEms on 3/12/2025.
 //
 
+#include <fstream>
 #include <gtest/gtest.h>
 
 #include "../../../specificatie_1/simulation.h"
@@ -202,6 +203,17 @@ TEST_F(SimulationRunTest, SimulationTimeIsUpdated) {
 */
 
 int main(int argc, char **argv) {
+    // Redirect cerr to NUL (Windows)
+    std::ofstream null_stream("NUL");
+    std::streambuf *old_cerr = std::cerr.rdbuf(null_stream.rdbuf());
+
+    // Initialize Google Test
     ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+
+    int result = RUN_ALL_TESTS();
+
+    // Restore cerr after tests
+    std::cerr.rdbuf(old_cerr);
+
+    return result;
 }
