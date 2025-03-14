@@ -18,7 +18,7 @@ public:
     bool groen = true;
 
 
-    Baan Verkeerslicht::getBaan() const ;
+    Baan getBaan() const ;
 
     void setBaan(const Baan &baan);
 

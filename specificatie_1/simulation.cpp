@@ -366,6 +366,7 @@ void simulation::simulationRun() {
 
     for (Voertuig* v: voertuigen){
         UpdateVoertuig(v);
+
         if (!IsVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
             __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *>> it = std::find(voertuigen.begin(), voertuigen.end(), v); // Find the iterator for v

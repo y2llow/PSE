@@ -36,9 +36,9 @@ public:
           positie(positie) {
     }
 
-    Baan Voertuig::getBaan() const ;
+    Baan getBaan() const ;
 
-    void Voertuig::setBaan(const Baan &weg);
+    void setBaan(const Baan &weg);
 
     double getPositie() const;
 

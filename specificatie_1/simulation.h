@@ -54,7 +54,7 @@
 
         void BerekenPositie(Voertuig* v) const;
 
-        void simulation::BerekenVersnelling(Voertuig* v) const ;
+        void BerekenVersnelling(Voertuig* v) const ;
 
         void UpdateVoertuig(Voertuig* V) const;
 
