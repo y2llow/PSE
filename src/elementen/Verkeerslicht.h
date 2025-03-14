@@ -6,19 +6,21 @@
 #define VERKEERSLICHT_H
 #include <string>
 
+#include "Baan.h"
+
 
 class Verkeerslicht {
 public:
-    std::string baan;
+    Baan baan;
     double positie;
     double cyclus;
     bool rood = false;
     bool groen = true;
 
 
-    [[nodiscard]] std::string getBaan() const;
+    Baan getBaan() const ;
 
-    void setBaan(const std::string &baan);
+    void setBaan(const Baan &baan);
 
     [[nodiscard]] double getPositie() const;
 

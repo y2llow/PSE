@@ -2,62 +2,33 @@
 // Created by AbEms on 3/12/2025.
 //
 
+#include <fstream>
 #include <gtest/gtest.h>
 
 #include "../../../specificatie_1/simulation.h"
-
-class EmptyState : public testing::Test {
-    void SetUp() override {
-        vi.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml");
-        b_size = vi.getBanen().size();
-        v_size = vi.getVoertuigen().size();
-        ver_size = vi.getVerkeerslichten().size();
-        vtg_size = vi.getVoertuiggeneratoren().size();
-    }
-protected:
-    simulation vi;
-    int b_size = 0, v_size = 0, ver_size = 0, vtg_size = 0;
-};
-
-TEST_F(EmptyState, EmptyXMLFileTest) {
-    ASSERT_EQ(b_size, 0);
-    ASSERT_EQ(v_size, 0);
-    ASSERT_EQ(ver_size, 0);
-    ASSERT_EQ(vtg_size, 0);
-}
-
-class WrongDataType : public testing::Test {
-protected:
-    simulation vi;
-};
-
-TEST_F(WrongDataType, GoodSyntaxWrongDataType) {
-    EXPECT_THROW(vi.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types.xml"), invalid_argument);
-}
-
-#include "../../../specificatie_1/simulation.h"
-#include "../../../src/elementen/Voertuig.h"
-
-// Test fixture voor de ToString functie
-class ToStringTest : public testing::Test {
+/*
+class SimulationTESTS : public testing::Test {
+    void SetUp() override {};
 protected:
     simulation sim;
-
-    void SetUp() override {
-            sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml");
-        }
-
-    void TearDown() override {
-        // Opruimen van dynamisch toegewezen geheugen
-        for (auto voertuig : sim.getVoertuigen()) {
-            delete voertuig;
-        }
-        sim.getVoertuigen().clear();
-    }
 };
 
-// Test of de ToString functie de juiste uitvoer produceert
-TEST_F(ToStringTest, OutputFormatTest) {
+TEST_F(SimulationTESTS, EmptyXMLFileTest) {
+    EXPECT_FALSE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml"));
+
+    EXPECT_TRUE(sim.getBanen().size() == 0);
+    EXPECT_TRUE(sim.getVoertuigen().size() == 0);
+    EXPECT_TRUE(sim.getVerkeerslichten().size() == 0);
+    EXPECT_TRUE(sim.getVoertuiggeneratoren().size() == 0);
+}
+
+TEST_F(SimulationTESTS, GoodSyntaxWrongDataType) {
+    EXPECT_THROW(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types.xml"), invalid_argument);
+}
+
+TEST_F(SimulationTESTS, OutputFormatTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml"));
+
     // Redirect cout naar een stringstream om de uitvoer te kunnen testen
     std::stringstream buffer;
     std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
@@ -84,8 +55,9 @@ TEST_F(ToStringTest, OutputFormatTest) {
     ASSERT_EQ(buffer.str(), expectedOutput);
 }
 
-// Test of de ToString functie correct omgaat met een lege lijst van voertuigen
-TEST_F(ToStringTest, EmptyVoertuigenListTest) {
+TEST_F(SimulationTESTS, EmptyVoertuigenListTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml"));
+
     // Verwijder alle voertuigen uit de simulatie
     for (auto voertuig : sim.getVoertuigen()) {
         delete voertuig;
@@ -109,7 +81,7 @@ TEST_F(ToStringTest, EmptyVoertuigenListTest) {
     ASSERT_EQ(buffer.str(), expectedOutput);
 }
 
-/*
+*/
 // Test fixture voor de simulationRun functie
 class SimulationRunTest : public testing::Test {
 protected:
@@ -199,9 +171,19 @@ TEST_F(SimulationRunTest, SimulationTimeIsUpdated) {
         << "De simulatie tijd is niet bijgewerkt na het uitvoeren van simulationRun.";
 }
 
-*/
 
 int main(int argc, char **argv) {
+    // Redirect cerr to NUL (Windows)
+    std::ofstream null_stream("NUL");
+    std::streambuf *old_cerr = std::cerr.rdbuf(null_stream.rdbuf());
+
+    // Initialize Google Test
     ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+
+    int result = RUN_ALL_TESTS();
+
+    // Restore cerr after tests
+    std::cerr.rdbuf(old_cerr);
+
+    return result;
 }

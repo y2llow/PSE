@@ -4,13 +4,17 @@
 
 #include "Voertuig.h"
 
+#include <cmath>
+#include <vector>
 
-std::string Voertuig::getBaan() const {
+
+
+Baan Voertuig::getBaan() const {
     return baan;
 }
 
-void Voertuig::setBaan(const std::string &weg) {
-    Voertuig::baan = weg;
+void Voertuig::setBaan(const Baan &weg) {
+    baan = weg;
 }
 
 double Voertuig::getPositie() const {
@@ -48,5 +52,41 @@ void Voertuig::setVersnelling(double acceleration) {
 double Voertuig::getLength() const {
     return length;
 }
+
+void Voertuig::BerekenPositieVoertuig() {
+
+    //berekenen van nieuwe positie
+    if ((snelheid + versnelling * simulationTimeinc)<0){
+        double newPosition = positie - ((snelheid * snelheid) / (versnelling * 2) );
+        setPositie(newPosition);
+        setSnelheid(0);
+    }
+    else {
+        setSnelheid((snelheid + (versnelling * simulationTimeinc)));
+        setPositie(positie + (snelheid * simulationTimeinc) + versnelling * ((simulationTimeinc * simulationTimeinc) / 2));
+    }
+
+}
+
+void Voertuig::BerekenVersnellingVoertuig(std::size_t counter , std::vector<Voertuig*> voertuigen) {
+
+    double delta = 0;
+
+    double volgafstand = voertuigen[counter + 1]->getPositie() - positie - length;
+    double snelheidVerschil = snelheid - voertuigen[counter + 1]->getSnelheid();
+
+    double newsnelheid = snelheid - snelheidVerschil;
+    double newversnelling = 2 * std::sqrt(amax * bmax) ;
+
+    double calculate  = snelheid + (newsnelheid / newversnelling);
+
+    double maxNummer = std::max(0.0, calculate);
+    delta = (fmin + maxNummer) / volgafstand;
+
+    double newVersnelling = amax * (1 - std::pow((snelheid / Vmax), 4) - std::pow(delta, 2));
+    setVersnelling(newVersnelling);
+}
+
+
 
 

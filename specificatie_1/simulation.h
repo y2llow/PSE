@@ -33,7 +33,7 @@
     public:
         simulation() = default;
 
-        void parseXMLAndCreateObjects(const std::string &filename);
+        bool parseXMLAndCreateObjects(const std::string &filename);
 
         [[nodiscard]] vector<Baan*> getBanen() const;
         [[nodiscard]] vector<Voertuig*> getVoertuigen() const;
@@ -41,8 +41,6 @@
         [[nodiscard]] vector<Voertuiggenerator*> getVoertuiggeneratoren() const;
 
         [[nodiscard]] bool isConsistent() const;
-
-        [[nodiscard]] Baan* getBaan(const string &name) const;
 
         void ToString() const;
 
@@ -56,10 +54,11 @@
 
         void BerekenPositie(Voertuig* v) const;
 
-        void BerekenSnelheid(Voertuig* v) const;
+        void BerekenVersnelling(Voertuig* v, int counter) const ;
 
-        void BerekenVersnelling(Voertuig* v, std::size_t counter) const;
+        void UpdateVoertuig(Voertuig* V, int counter) const;
 
+        bool IsVoertuigOpBaan(Voertuig* v) ;
 
         // Removing the created pointers
         ~simulation() {

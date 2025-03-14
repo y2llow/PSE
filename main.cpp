@@ -6,12 +6,15 @@ using namespace std;
 
 
 int main() {
-    simulation vi;
-    vi.parseXMLAndCreateObjects("../src/voorbeeld.xml"); // implemented 1.1 & 1.2
+    simulation sim;
+    sim.parseXMLAndCreateObjects("../src/voorbeeld.xml"); // implemented 1.1 & 1.2
 
-    vi.ToString(); // implmented 2.1
+    sim.ToString(); // implmented 2.1
 
-    vi.simulationRun(); // implemnted 3.1
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
 
     return 0;
 }

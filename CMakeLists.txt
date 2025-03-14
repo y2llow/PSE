@@ -37,7 +37,7 @@ set(DEBUG_SOURCE_FILES
         src/Elementen/Baan.cpp
         src/Elementen/Voertuig.cpp
         src/Elementen/Voertuiggenerator.cpp
-        test/specificatie1/1_1_verkeerssituatie_inlezen/VerkeerssituatieInlezenTest.cpp
+        test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         specificatie_1/simulation.cpp
 )
 
@@ -47,3 +47,9 @@ add_executable(release_target ${RELEASE_SOURCE_FILES})
 add_executable(debug_target ${DEBUG_SOURCE_FILES})
 # Link library
 target_link_libraries(debug_target gtest)
+
+# Add the test command
+add_test(
+        NAME MyTest
+        COMMAND debug_target
+)
