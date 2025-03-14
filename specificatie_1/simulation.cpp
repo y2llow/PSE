@@ -351,13 +351,13 @@ void simulation::UpdateVoertuig(Voertuig* v) const {
     BerekenVersnelling(v);
 }
 
-bool IsVoertuigOpBaan(Voertuig* v) {
-    string baan = v->getBaan(); //TODO maak een fucntie dat zoekt door alle banen en degen met dezlfde naam een nieuwe baan maakt
-    if (v->getPositie() > v->getBaan()) {
-
+bool simulation::IsVoertuigOpBaan(Voertuig* v) {
+    if (v->getPositie() > v->getBaan().getLengte()) {
+        return false;
     }
-
+    return true;
 }
+
 
 void simulation::simulationRun() {
 

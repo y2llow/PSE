@@ -58,7 +58,7 @@
 
         void UpdateVoertuig(Voertuig* V) const;
 
-        bool IsVoertuigOpBaan(Voertuig* v);
+        bool IsVoertuigOpBaan(Voertuig* v) ;
 
         // Removing the created pointers
         ~simulation() {
