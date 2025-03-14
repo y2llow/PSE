@@ -290,7 +290,7 @@ void simulation::ToString() const {
         cout << "Voertuig " << voertuig->getId() << "\n"
         << "-> baan: " << voertuig->getBaan().getNaam() << "\n"
         << "-> positie: " << voertuig->getPositie() << "\n"
-        << "-> snelheid: " << voertuig->getSnelheid() << endl;
+        << "-> snelheid: " << voertuig->getSnelheid() << "\n"<<endl;
     }
 
 }
@@ -370,7 +370,7 @@ void simulation::simulationRun() {
 
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
     sortVoertuigenByPosition();
-int counter = 0;
+    int counter = 0;
     for (Voertuig* v: voertuigen){
         UpdateVoertuig(v,counter);
 
