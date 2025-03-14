@@ -319,7 +319,8 @@ void simulation::BerekenPositie(Voertuig* v) const {
         v->setSnelheid(0);
     }
     else {
-        v->setSnelheid((v->getSnelheid()+(v->getVersnelling()*simulationTimeinc)));
+        double calcsnelheid = (v->getSnelheid()+(v->getVersnelling()*simulationTimeinc));
+        v->setSnelheid(calcsnelheid);
         v->setPositie(v->getPositie() + (v->getSnelheid()*simulationTimeinc) + v->getVersnelling()* (pow(simulationTimeinc,2)/2));
     }
 
@@ -346,6 +347,10 @@ void simulation::BerekenVersnelling(Voertuig* v, int counter) const {
 
         double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
         v->setVersnelling(newVersnelling);
+    } else {
+        delta = 0;
+        double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
+        v->setVersnelling(newVersnelling);
     }
 }
 
@@ -366,12 +371,8 @@ void simulation::simulationRun() {
 
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
     sortVoertuigenByPosition();
-
+int counter = 0;
     for (Voertuig* v: voertuigen){
-        int counter = 0;
-        size_t vsize = voertuigen.size();
-        int grootte = vsize;
-        counter = grootte + counter;
         UpdateVoertuig(v,counter);
 
         if (!IsVoertuigOpBaan(v)) {
@@ -382,6 +383,8 @@ void simulation::simulationRun() {
                 delete v; // Free the memory
             }
         }
+        counter ++;
+
 
         //berekenen van nieuwe positie
         ///BerekenPositie(v);
