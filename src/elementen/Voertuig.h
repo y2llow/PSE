@@ -16,15 +16,6 @@ class Voertuig {
     double snelheid;
     int id;
     double simulationTimeinc = 0.0166;
-
-
-    double Vmax = 16.6;
-    double amax = 1.44;
-    double bmax = 4.61;
-    double fmin = 4;
-    double vertraagAfstand = 50;
-    double stopAfstand = 15;
-    double vertraagFactor = 0.4;
     double length = 4;
     double versnelling = 0;
 
@@ -58,10 +49,11 @@ public:
 
     double getLength() const;
 
+/*
     void BerekenPositieVoertuig() ;
 
     void BerekenVersnellingVoertuig(std::size_t counter , std::vector<Voertuig*> voertuigen) ;
-};
+*/};
 
 
 

@@ -320,7 +320,6 @@ void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuige
 }
 
 
-
 void simulation::BerekenPositie(Voertuig* v) const {
 
     //berekenen van nieuwe positie
