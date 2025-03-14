@@ -54,9 +54,9 @@
 
         void BerekenPositie(Voertuig* v) const;
 
-        void BerekenVersnelling(Voertuig* v) const ;
+        void BerekenVersnelling(Voertuig* v, int counter) const ;
 
-        void UpdateVoertuig(Voertuig* V) const;
+        void UpdateVoertuig(Voertuig* V, int counter) const;
 
         bool IsVoertuigOpBaan(Voertuig* v) ;
 

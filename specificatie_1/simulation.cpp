@@ -325,30 +325,33 @@ void simulation::BerekenPositie(Voertuig* v) const {
 
 }
 
-void simulation::BerekenVersnelling(Voertuig* v) const {
+void simulation::BerekenVersnelling(Voertuig* v, int counter) const {
 
     double delta = 0;
 
-    int VoertuigId = v->getId();
+    size_t vsize = voertuigen.size();
+    int sizeVoertuigen = vsize;
 
-    double volgafstand = voertuigen[VoertuigId + 1]->getPositie() - v->getPositie() - v->getLength();
-    double snelheidVerschil = v->getSnelheid() - voertuigen[VoertuigId + 1]->getSnelheid();
+    if(sizeVoertuigen > counter) {
+        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
+        double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
-    double newsnelheid = v->getSnelheid() - snelheidVerschil;
-    double newversnelling = 2 * sqrt(amax * bmax) ;
+        double newsnelheid = v->getSnelheid() - snelheidVerschil;
+        double newversnelling = 2 * sqrt(amax * bmax) ;
 
-    double calculate  = v->getSnelheid() + (newsnelheid / newversnelling);
+        double calculate  = v->getSnelheid() + (newsnelheid / newversnelling);
 
-    double maxNummer = max(0.0, calculate);
-    delta = (fmin + maxNummer) / volgafstand;
+        double maxNummer = max(0.0, calculate);
+        delta = (fmin + maxNummer) / volgafstand;
 
-    double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
-    v->setVersnelling(newVersnelling);
+        double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
+        v->setVersnelling(newVersnelling);
+    }
 }
 
-void simulation::UpdateVoertuig(Voertuig* v) const {
+void simulation::UpdateVoertuig(Voertuig* v, int counter) const {
     BerekenPositie(v);
-    BerekenVersnelling(v);
+    BerekenVersnelling(v, counter);
 }
 
 bool simulation::IsVoertuigOpBaan(Voertuig* v) {
@@ -365,7 +368,11 @@ void simulation::simulationRun() {
     sortVoertuigenByPosition();
 
     for (Voertuig* v: voertuigen){
-        UpdateVoertuig(v);
+        int counter = 0;
+        size_t vsize = voertuigen.size();
+        int grootte = vsize;
+        counter = grootte + counter;
+        UpdateVoertuig(v,counter);
 
         if (!IsVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
@@ -419,6 +426,6 @@ void simulation::simulationRun() {
         // double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
 
     }
-    simulationTime++;
+simulationTime ++;
 }
 
