@@ -310,32 +310,30 @@ void simulation::BerekenPositie(Voertuig* v) const {
 }
 
 void simulation::BerekenVersnelling(Voertuig* v, std::size_t counter) const {
-
-    // bereken versnelling
     double xvoor = 0;
     double vvoor = 0;
     double delta = 0;
-    if (counter<voertuigen.size()){
-        xvoor = voertuigen.at(counter+1)->getPositie();
-        vvoor = voertuigen.at(counter+1)->getSnelheid();
+
+    // Controleer of counter + 1 binnen de grenzen van de lijst valt
+    if (counter + 1 < voertuigen.size()) {
+        xvoor = voertuigen[counter + 1]->getPositie();
+        vvoor = voertuigen[counter + 1]->getSnelheid();
     }
-    double volgafstand =xvoor - v->getPositie() - v->getLength();
+
+    double volgafstand = xvoor - v->getPositie() - v->getLength();
     double snelheidVerschil = v->getSnelheid() - vvoor;
 
-    if (counter==voertuigen.size()){
-        delta = 0;
+    if (counter + 1 < voertuigen.size()) {
+        double getalInMax = v->getSnelheid() + ((v->getSnelheid() * snelheidVerschil) / (2 * sqrt(amax * bmax)));
+        double maxNummer = std::max(0.0, getalInMax);
+        delta = (fmin + maxNummer) / volgafstand;
     }
-    else{
-        double getalInMax = v->getSnelheid() + ((v->getSnelheid()*snelheidVerschil)/(2*sqrt(amax*bmax)));
-        double maxNummer = max(0.0, getalInMax);
-        delta = (fmin + maxNummer)/volgafstand;
-    }
-    double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
 
+    double newVersnelling = amax * (1 - std::pow((v->getSnelheid() / Vmax), 4) - std::pow(delta, 2));
     v->setVersnelling(newVersnelling);
 }
 
-void simulation::simulationRun(double simTime) {
+void simulation::simulationRun() {
 
     //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
     this->sortVoertuigenByPosition();
@@ -382,7 +380,7 @@ void simulation::simulationRun(double simTime) {
         //
         // double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
 
-        counter++;
+        counter = counter + 1;
     }
 }
 

@@ -11,6 +11,7 @@ int main() {
 
     vi.ToString();
 
+    vi.simulationRun();
 
     return 0;
 }

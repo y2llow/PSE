@@ -50,7 +50,7 @@
 
         double UpdateSimulationTime() const;
 
-        void simulationRun(double simTime);
+        void simulationRun();
 
         void sortVoertuigenByPosition();
 
