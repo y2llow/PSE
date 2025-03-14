@@ -43,11 +43,12 @@
 
         [[nodiscard]] bool isConsistent() const;
 
-        void ToString() const;
+        void ToString() ;
 
         double getSimulationTime() const;
+        double getincSimulationTime() const;
 
-        double getSimulationTimeinc() const ;
+        double incSimulationTime();
 
         double UpdateSimulationTime() const;
 

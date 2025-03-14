@@ -283,9 +283,10 @@ bool simulation::isConsistent() const {
     return true;
 }
 
-void simulation::ToString() const {
+void simulation::ToString() {
     cout << "------------- SIMULATIE " << getSimulationTime()<< " ------------- "  << endl;
-    cout << "Tijd: " << getSimulationTimeinc()  << endl;
+
+    cout << "Tijd: " << getincSimulationTime()  << endl;
 
     for (Voertuig* voertuig : voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
@@ -300,8 +301,13 @@ double simulation::getSimulationTime() const {
     return simulationTime;
 }
 
-double simulation::getSimulationTimeinc() const {
-    return simulationincreasedTime + simulationTimeinc;
+double simulation::getincSimulationTime() const {
+    return simulationincreasedTime ;
+}
+
+double simulation::incSimulationTime() {
+    simulationincreasedTime = simulationincreasedTime + simulationTimeinc;
+    return simulationincreasedTime ;
 }
 
 double simulation::UpdateSimulationTime() const {
@@ -433,6 +439,7 @@ int counter = 0;
         // double newVersnelling = amax*(1- pow((v->getSnelheid()/Vmax),4)- pow(delta,2));
 
     }
-simulationTime ++;
+    simulationTime ++;
+    incSimulationTime();
 }
 
