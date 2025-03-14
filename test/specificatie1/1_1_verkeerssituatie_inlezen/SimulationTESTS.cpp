@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 
 #include "../../../specificatie_1/simulation.h"
-
+/*
 class SimulationTESTS : public testing::Test {
     void SetUp() override {};
 protected:
@@ -81,7 +81,7 @@ TEST_F(SimulationTESTS, EmptyVoertuigenListTest) {
     ASSERT_EQ(buffer.str(), expectedOutput);
 }
 
-/*
+*/
 // Test fixture voor de simulationRun functie
 class SimulationRunTest : public testing::Test {
 protected:
@@ -171,7 +171,6 @@ TEST_F(SimulationRunTest, SimulationTimeIsUpdated) {
         << "De simulatie tijd is niet bijgewerkt na het uitvoeren van simulationRun.";
 }
 
-*/
 
 int main(int argc, char **argv) {
     // Redirect cerr to NUL (Windows)

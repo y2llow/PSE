@@ -42,8 +42,6 @@
 
         [[nodiscard]] bool isConsistent() const;
 
-        [[nodiscard]] Baan* getBaan(const string &name) const;
-
         void ToString() const;
 
         double getSimulationTime() const;
@@ -56,10 +54,11 @@
 
         void BerekenPositie(Voertuig* v) const;
 
-        void BerekenSnelheid(Voertuig* v) const;
+        void simulation::BerekenVersnelling(Voertuig* v) const ;
 
-        void BerekenVersnelling(Voertuig* v, std::size_t counter) const;
+        void UpdateVoertuig(Voertuig* V) const;
 
+        bool IsVoertuigOpBaan(Voertuig* v);
 
         // Removing the created pointers
         ~simulation() {
