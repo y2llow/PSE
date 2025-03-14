@@ -19,7 +19,8 @@
         vector<Voertuig*> voertuigen;
         vector<Verkeerslicht*> verkeerslichten;
         vector<Voertuiggenerator*> voertuiggeneratoren;
-        double simulationTime = 0.0166;
+        double simulationTime = 0;
+        double simulationTimeinc = 0.0166;
         double Vmax = 16.6;
         double amax = 1.44;
         double bmax = 4.61;
@@ -47,9 +48,18 @@
 
         double getSimulationTime() const;
 
+        double UpdateSimulationTime() const;
+
         void simulationRun(double simTime);
 
         void sortVoertuigenByPosition();
+
+        void BerekenPositie(Voertuig* v) const;
+
+        void BerekenSnelheid(Voertuig* v) const;
+
+        void BerekenVersnelling(Voertuig* v, std::size_t counter) const;
+
 
         // Removing the created pointers
         ~simulation() {
