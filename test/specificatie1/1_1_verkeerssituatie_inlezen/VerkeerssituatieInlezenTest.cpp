@@ -109,7 +109,97 @@ TEST_F(ToStringTest, EmptyVoertuigenListTest) {
     ASSERT_EQ(buffer.str(), expectedOutput);
 }
 
+/*
+// Test fixture voor de simulationRun functie
+class SimulationRunTest : public testing::Test {
+protected:
+    simulation sim;
 
+    void SetUp() override {
+        sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/outputTESTfile.xml");
+    }
+
+    void TearDown() override {
+        // Opruimen van dynamisch toegewezen geheugen
+        for (auto voertuig : sim.getVoertuigen()) {
+            delete voertuig;
+        }
+        sim.getVoertuigen().clear();
+
+        for (auto baan : sim.getBanen()) {
+            delete baan;
+        }
+        sim.getBanen().clear();
+    }
+};
+
+// Test of de simulationRun functie de positie, snelheid en versnelling van voertuigen correct bijwerkt
+TEST_F(SimulationRunTest, SimulationRunUpdatesVehicleState) {
+    // Voer de simulatie uit
+    sim.simulationRun();
+
+    // Controleer de staat van de voertuigen na de simulatie
+    for (Voertuig* voertuig : sim.getVoertuigen()) {
+        // Controleer of de positie is bijgewerkt
+        EXPECT_GT(voertuig->getPositie(), 0) << "Positie van voertuig " << voertuig->getId() << " is niet bijgewerkt.";
+
+        // Controleer of de snelheid is bijgewerkt
+        EXPECT_NEAR(voertuig->getSnelheid(), 16.6 + 1.44 * sim.getSimulationTime(), 0.01)
+            << "Snelheid van voertuig " << voertuig->getId() << " is niet correct bijgewerkt.";
+
+        // Controleer of de versnelling is bijgewerkt
+        EXPECT_NEAR(voertuig->getVersnelling(), 1.44, 0.01)
+            << "Versnelling van voertuig " << voertuig->getId() << " is niet correct bijgewerkt.";
+    }
+}
+// Test of de simulationRun functie correct omgaat met een lege lijst van voertuigen
+TEST_F(SimulationRunTest, SimulationRunWithEmptyVehicleList) {
+    // Verwijder alle voertuigen uit de simulatie
+    for (auto voertuig : sim.getVoertuigen()) {
+        delete voertuig;
+    }
+    sim.getVoertuigen().clear();
+
+    // Voer de simulatie uit
+    EXPECT_NO_THROW(sim.simulationRun()) << "simulationRun gooit een uitzondering bij een lege lijst van voertuigen.";
+}
+
+// Test of de simulatie consistent blijft na het uitvoeren van simulationRun
+TEST_F(SimulationRunTest, SimulationRunMaintainsConsistency) {
+    // Voer de simulatie uit
+    sim.simulationRun();
+
+    // Controleer of de simulatie consistent blijft
+    EXPECT_TRUE(sim.isConsistent()) << "De simulatie is niet consistent na het uitvoeren van simulationRun.";
+}
+
+// Test of de voertuigen correct worden gesorteerd op positie
+TEST_F(SimulationRunTest, VehiclesAreSortedByPosition) {
+    // Sorteer de voertuigen op positie
+    sim.sortVoertuigenByPosition();
+
+    // Controleer of de voertuigen correct zijn gesorteerd
+    double previousPosition = -1;
+    for (Voertuig* voertuig : sim.getVoertuigen()) {
+        EXPECT_GE(voertuig->getPositie(), previousPosition)
+            << "Voertuigen zijn niet correct gesorteerd op positie.";
+        previousPosition = voertuig->getPositie();
+    }
+}
+
+// Test of de simulatie tijd correct wordt bijgewerkt
+TEST_F(SimulationRunTest, SimulationTimeIsUpdated) {
+    double initialTime = sim.getSimulationTime();
+
+    // Voer de simulatie uit
+    sim.simulationRun();
+
+    // Controleer of de simulatie tijd is bijgewerkt
+    EXPECT_GT(sim.getSimulationTime(), initialTime)
+        << "De simulatie tijd is niet bijgewerkt na het uitvoeren van simulationRun.";
+}
+
+*/
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
