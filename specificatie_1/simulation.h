@@ -20,6 +20,7 @@
         vector<Verkeerslicht*> verkeerslichten;
         vector<Voertuiggenerator*> voertuiggeneratoren;
         double simulationTime = 0;
+        double simulationincreasedTime = 0;
         double simulationTimeinc = 0.0166;
         double Vmax = 16.6;
         double amax = 1.44;
@@ -42,9 +43,12 @@
 
         [[nodiscard]] bool isConsistent() const;
 
-        void ToString() const;
+        void ToString() ;
 
         double getSimulationTime() const;
+        double getincSimulationTime() const;
+
+        double incSimulationTime();
 
         double UpdateSimulationTime() const;
 

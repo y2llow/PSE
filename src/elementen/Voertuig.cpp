@@ -22,7 +22,7 @@ double Voertuig::getPositie() const {
 }
 
 void Voertuig::setPositie(double position) {
-    Voertuig::positie = position;
+    positie = position;
 }
 
 double Voertuig::getSnelheid() const {
@@ -30,7 +30,7 @@ double Voertuig::getSnelheid() const {
 }
 
 void Voertuig::setSnelheid(double speed) {
-    Voertuig::snelheid = speed;
+    snelheid = speed;
 }
 
 int Voertuig::getId() const {
@@ -38,21 +38,23 @@ int Voertuig::getId() const {
 }
 
 void Voertuig::setId(int car_id) {
-    Voertuig::id = car_id;
+    id = car_id;
 }
+
 
 double Voertuig::getVersnelling() const {
     return versnelling;
 }
 
 void Voertuig::setVersnelling(double acceleration) {
-    Voertuig::versnelling = acceleration;
+    versnelling = acceleration;
 }
 
 double Voertuig::getLength() const {
     return length;
 }
 
+/*
 void Voertuig::BerekenPositieVoertuig() {
 
     //berekenen van nieuwe positie
@@ -87,6 +89,6 @@ void Voertuig::BerekenVersnellingVoertuig(std::size_t counter , std::vector<Voer
     setVersnelling(newVersnelling);
 }
 
-
+*/
 
 
