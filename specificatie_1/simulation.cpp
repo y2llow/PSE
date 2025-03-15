@@ -471,45 +471,21 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
             // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
             vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten_baan[VerkeerslichtCounter+1]);
 
-            Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0); // pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
+            Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);             // pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
 
-                if (licht->isGroen()) {                            // 2. IF verkeerslicht is groen
-                        BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);           // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
+            if (licht->isGroen()) {                                                     // 2. IF verkeerslicht is groen
+                BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);                   // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
+            }
+
+            else if(licht->isRood()){                                                   // 3.1 ELSE IF verkeerslicht is rood
+                if ( IsVoertuigInVertraagZone(eerstVoertuigVoorLicht) ){                   // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
+                    BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);                // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
                 }
-
-                else if(licht->isRood()){                          // 3.1 ELSE IF verkeerslicht is rood
-                    Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);
-                    int voertuigCounter = -1;
-
-                    //  3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
-                    for (Voertuig* v: voertuigen){
-                        if (eerstVoertuigVoorLicht->getPositie()<licht->getPositie()){
-                            eerstVoertuigVoorLicht = v;
-                            voertuigCounter++;
-                        }
-                        else{
-                            break;
-                        }
-                    }
-
-                    //  3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
-                    if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
-                        BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
-                    }
-                    // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
-                    else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
-                        //  3.1.1.1 THEN laat het voertuig stoppen
-                        eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
-                        eerstVoertuigVoorLicht->setSnelheid(0);
-
-                        for (int i = voertuigCounter-1; i!=-1; i--){
-                            voertuigen.at(i)->UpdateVersnellingVoorStoppen();
-                            voertuigen.at(i)->setSnelheid(0);
-                        }
-                    }
+                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
+                    eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();             // 3.1.1.1 THEN laat het voertuig stoppen
                 }
-
-        }  else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
+            }
+        } else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
 
         }
         VerkeerslichtCounter ++;
