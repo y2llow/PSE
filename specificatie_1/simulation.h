@@ -70,6 +70,7 @@
 
         bool IsVoertuigInVertraagZone(Voertuig* v);
 
+        vector<Voertuig*> VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter);
 
         bool IsVoertuigInStopZone(Voertuig* v);
 
