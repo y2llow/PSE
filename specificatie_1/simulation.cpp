@@ -391,6 +391,7 @@ void simulation::simulationRun() {
     int counter = 0;
     for (Voertuig* v: voertuigen){
         UpdateVoertuig(v,counter);
+        UpdateVoertuigenAanVerkeerslichtSituatie();
 
         if (!IsVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
@@ -481,7 +482,10 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
 
         // Check of er nog een licht is op dezelfde straat
         Verkeerslicht* volgendeLicht = nullptr;
-        if (VerkeerslichtCounter + 1 < verkeerslichten_baan.size()) {
+
+
+
+        if (static_cast<size_t>(VerkeerslichtCounter) + 1 < verkeerslichten_baan.size()) {
             volgendeLicht = verkeerslichten_baan[VerkeerslichtCounter + 1];
         }
 
