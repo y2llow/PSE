@@ -408,20 +408,17 @@ void simulation::simulationRun() {
     incSimulationTime();
 }
 
-bool simulation::IsVoertuigInVertraagZone(Voertuig *v) {
-    for (Verkeerslicht* verk: verkeerslichten){
-        if(abs(v->getPositie()-verk->getPositie())<=vertraagAfstand){
-            return true;
-        }
+bool simulation::IsVoertuigInVertraagZone(Voertuig *v, Verkeerslicht* l) {
+    if(v->getPositie() - l->getPositie() <= vertraagAfstand){
+        return true;
     }
+
     return false;
 }
 
-bool simulation::IsVoertuigInStopZone(Voertuig *v) {
-    for (Verkeerslicht* verk: verkeerslichten){
-        if(v->getPositie()<(verk->getPositie()-(stopAfstand/2))){
-            return true;
-        }
+bool simulation::IsVoertuigInStopZone(Voertuig *v, Verkeerslicht* l) {
+    if(v->getPositie()<(l->getPositie()-(stopAfstand/2))){
+        return true;
     }
     return false;
 }
@@ -465,6 +462,7 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
             licht->UpdateVerkeersLicht();// 1.1 THEN verander de kleur van het licht (groen ↔ rood)
             licht->UpdateTijdSindsLaatsteVerandering(simulationTimeinc);
         }
+
         vector <Verkeerslicht*> verkeerslichten_baan = VerkeerslichtenOpBaan(licht);
 
         if (verkeerslichten_baan[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten_baan[VerkeerslichtCounter+1]->getBaan().getNaam()) {
@@ -478,7 +476,7 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
             }
 
             else if(licht->isRood()){                                                   // 3.1 ELSE IF verkeerslicht is rood
-                if ( IsVoertuigInVertraagZone(eerstVoertuigVoorLicht) ){                   // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
+                if ( IsVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht) ){                   // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
                     BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);                // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
                 }
                 else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand

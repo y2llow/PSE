@@ -68,13 +68,13 @@
 
         void UpdateVoertuigenAanVerkeerslichtSituatie();
 
-        bool IsVoertuigInVertraagZone(Voertuig* v);
+        bool IsVoertuigInVertraagZone(Voertuig* v, Verkeerslicht* l);
+        bool IsVoertuigInStopZone(Voertuig* v, Verkeerslicht* l);
 
         vector<Voertuig*> VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter);
+        vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
 
-    vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
 
-        bool IsVoertuigInStopZone(Voertuig* v);
 
         // Removing the created pointers
         ~simulation() {
