@@ -94,6 +94,18 @@ void Voertuig::setVertraagFactor(double VF) {
     Voertuig::vertraagFactor = VF;
 }
 
+void Voertuig::UpdateVersnellingVoorStoppen() {
+    a = (-(bmax*snelheid)/kvmax);
+}
+
+double Voertuig::getA() const {
+    return a;
+}
+
+void Voertuig::setA(double aa) {
+    Voertuig::a = aa;
+}
+
 
 
 /*

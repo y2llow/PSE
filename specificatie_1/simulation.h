@@ -52,6 +52,7 @@
         void simulationRun();
 
         void sortVoertuigenByPosition();
+        void sortVerkeersLichtByPosition();
 
         void BerekenPositie(Voertuig* v) const;
 
@@ -59,11 +60,16 @@
 
         void BerekenSnelheidNaVertraging(Voertuig* v);
 
+        void BerekenSnelheidNaVersnelling(Voertuig* v);
+
         void UpdateVoertuig(Voertuig* V, int counter) const;
 
         bool IsVoertuigOpBaan(Voertuig* v) ;
 
+        void UpdateVoertuigenAchterVerkeerslichtSituatie();
+
         bool IsVoertuigInVertraagZone(Voertuig* v);
+
 
         bool IsVoertuigInStopZone(Voertuig* v);
 

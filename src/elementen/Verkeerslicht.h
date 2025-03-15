@@ -16,6 +16,7 @@ public:
     double cyclus;
     bool rood = false;
     bool groen = true;
+    double tijdSindsLaatsteVerandering = 0;
 
 
     Baan getBaan() const ;
@@ -37,6 +38,14 @@ public:
     bool isGroen() const;
 
     void setGroen(bool groen);
+
+    void UpdateVerkeersLicht();
+
+    void UpdateTijdSindsLaatsteVerandering(double tijd);
+
+    void herstartCyclus();
+
+    double getTijdSindsLaatsteVerandering() const;
 };
 
 

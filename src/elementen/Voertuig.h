@@ -22,6 +22,7 @@ class Voertuig {
     double kvmax = 0;
     double amax = 1.44;
     double bmax = 4.61;
+    double a = 0;
     double vertraagFactor = 0.4;
 
 public:
@@ -73,6 +74,12 @@ public:
     double getVertraagFactor() const;
 
     void setVertraagFactor(double vertraagFactor);
+
+    double getA() const;
+
+    void setA(double a);
+
+    void UpdateVersnellingVoorStoppen();
 
 
 

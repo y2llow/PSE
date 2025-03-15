@@ -185,8 +185,12 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
         } else {
             cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
         }
+
     }
-return true;}
+    sortVoertuigenByPosition();
+    sortVerkeersLichtByPosition();
+    return true;
+}
 
 vector<Baan *> simulation::getBanen() const {
     return banen;
@@ -322,6 +326,9 @@ double simulation::UpdateSimulationTime() const {
 void simulation::sortVoertuigenByPosition() { sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b) {return a->getPositie() < b->getPositie();});
 }
 
+void simulation::sortVerkeersLichtByPosition() { sort(verkeerslichten.begin(), verkeerslichten.end(), [](const Verkeerslicht* a, const Verkeerslicht* b) {return a->getPositie() < b->getPositie();});
+}
+
 void simulation::BerekenPositie(Voertuig* v) const {
 
     //berekenen van nieuwe positie
@@ -381,8 +388,6 @@ bool simulation::IsVoertuigOpBaan(Voertuig* v) {
 
 
 void simulation::simulationRun() {
-    //de voertuigenlijst sorteren zodat we de eerste auto vooraan eerst laten gaan dan de volgende enzo.
-    sortVoertuigenByPosition();
 
     int counter = 0;
     for (Voertuig* v: voertuigen){
@@ -415,7 +420,7 @@ bool simulation::IsVoertuigInVertraagZone(Voertuig *v) {
 
 bool simulation::IsVoertuigInStopZone(Voertuig *v) {
     for (Verkeerslicht* verk: verkeerslichten){
-        if(abs(v->getPositie()-verk->getPositie())<=stopAfstand){
+        if(v->getPositie()<(verk->getPositie()-(stopAfstand/2))){
             return true;
         }
     }
@@ -424,6 +429,62 @@ bool simulation::IsVoertuigInStopZone(Voertuig *v) {
 
 void simulation::BerekenSnelheidNaVertraging(Voertuig *v)  {
     v->setKvmax(v->getGVmax()*v->getVertraagFactor());
+}
+
+void simulation::BerekenSnelheidNaVersnelling(Voertuig *v) {
+    v->setKvmax(v->getGVmax());
+}
+
+void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
+    int VerkeerslichtCounter = 0;
+    for (Verkeerslicht* licht: verkeerslichten){
+        if(licht->getTijdSindsLaatsteVerandering()>licht->getCyclus()){
+            licht->herstartCyclus();}
+        if (licht->isGroen()){
+            for (Voertuig* v: voertuigen){
+                if(v->getPositie()>licht->getPositie()){
+                    BerekenSnelheidNaVersnelling(v);
+                }
+
+                if (VerkeerslichtCounter == 0){
+                    if (v->getPositie()<licht->getPositie()) {
+                        v->setKvmax(v->getGVmax());
+                    }
+                }
+
+                if (VerkeerslichtCounter > 0){
+                    if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
+                        v->setKvmax(v->getGVmax());
+                    }
+                }
+            }
+        }
+        else if(licht->isRood()){
+            Voertuig* eerstVoertuigVoorLicht = voertuigen.at(0);
+            int voertuigCounter = -1;
+            for (Voertuig* v: voertuigen){
+                if (eerstVoertuigVoorLicht->getPositie()<v->getPositie()){
+                    eerstVoertuigVoorLicht = v;
+                }
+                else{
+                    break;
+                }
+            }
+
+                if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
+                    BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
+                }
+
+                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
+                    eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
+                    eerstVoertuigVoorLicht->setSnelheid(0);
+                    for (int i = voertuigCounter-1; i!=-1; i--){
+                        voertuigen.at(i)->UpdateVersnellingVoorStoppen();
+                        voertuigen.at(i)->setSnelheid(0);
+                    }
+                }
+            }
+    }
 }
 
 

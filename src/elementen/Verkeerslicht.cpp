@@ -45,3 +45,28 @@ void Verkeerslicht::setGroen(bool green) {
     Verkeerslicht::groen = green;
 }
 
+void Verkeerslicht::UpdateVerkeersLicht() {
+    if (rood){
+        groen = true;
+        rood = false;
+        herstartCyclus();
+    }
+    else{
+        rood = true;
+        groen = false;
+        herstartCyclus();
+    }
+}
+
+void Verkeerslicht::UpdateTijdSindsLaatsteVerandering(double tijd) {
+    tijdSindsLaatsteVerandering +=tijd;
+}
+
+void Verkeerslicht::herstartCyclus() {
+    tijdSindsLaatsteVerandering -= cyclus;
+}
+
+double Verkeerslicht::getTijdSindsLaatsteVerandering() const {
+    return tijdSindsLaatsteVerandering;
+}
+
