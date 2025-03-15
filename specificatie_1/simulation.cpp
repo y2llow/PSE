@@ -433,12 +433,26 @@ void simulation::BerekenSnelheidNaVersnelling(Voertuig *v) {
 
 vector<Voertuig*> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter) {
     vector<Voertuig*> VoertuigenVoorVerkeerslicht;
-    for (Voertuig* v: voertuigen) {
-        // licht en voertuig moeten op dezelfde baan
-        if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam() || lichtAchter->getPositie() < v->getPositie() < lichtVoor->getPositie()) {
-            VoertuigenVoorVerkeerslicht.push_back(v);
+
+    // Als lichtVoor het laatste licht is, voeg gewoon alle auto's erachter aan de vector toe
+    if (lichtAchter == nullptr) {
+        for (Voertuig* v : voertuigen) {
+            // Voeg alle voertuigen op dezelfde baan toe
+            if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam()) {
+                VoertuigenVoorVerkeerslicht.push_back(v);
+            }
         }
     }
+    else {  // Voeg voertuigen toe die op dezelfde baan zijn en tussen de twee lichten staan
+        for (Voertuig* v : voertuigen) {
+            if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam() &&
+                v->getPositie() > lichtAchter->getPositie() &&
+                v->getPositie() < lichtVoor->getPositie()) {
+                VoertuigenVoorVerkeerslicht.push_back(v);
+                }
+        }
+    }
+
     return VoertuigenVoorVerkeerslicht;
 }
 
@@ -465,11 +479,18 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
 
         vector <Verkeerslicht*> verkeerslichten_baan = VerkeerslichtenOpBaan(licht);
 
-        if (verkeerslichten_baan[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten_baan[VerkeerslichtCounter+1]->getBaan().getNaam()) {
-            // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
-            vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten_baan[VerkeerslichtCounter+1]);
+        // Check of er nog een licht is op dezelfde straat
+        Verkeerslicht* volgendeLicht = nullptr;
+        if (VerkeerslichtCounter + 1 < verkeerslichten_baan.size()) {
+            volgendeLicht = verkeerslichten_baan[VerkeerslichtCounter + 1];
+        }
 
-            Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);             // pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
+        // Pak alle voertuigen tussen de lichten
+        vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, volgendeLicht);
+
+        // Pas alleen elementen aan voor eerste auto voor licht, de rest volgt automatisch
+        if (!VoertuigenVoorLicht.empty()) {
+            Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);// pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
 
             if (licht->isGroen()) {                                                     // 2. IF verkeerslicht is groen
                 BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);                   // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
@@ -479,14 +500,12 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
                 if ( IsVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht) ){                   // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
                     BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);                // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
                 }
-                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
+                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht, licht)){          // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                     eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();             // 3.1.1.1 THEN laat het voertuig stoppen
                 }
             }
-        } else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
-
         }
-        VerkeerslichtCounter ++;
+       VerkeerslichtCounter ++;
     }
 }
 
