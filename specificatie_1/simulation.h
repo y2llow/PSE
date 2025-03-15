@@ -72,6 +72,8 @@
 
         vector<Voertuig*> VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter);
 
+        vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
+
         bool IsVoertuigInStopZone(Voertuig* v);
 
         // Removing the created pointers

@@ -439,91 +439,103 @@ vector<Voertuig*> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht* lic
     vector<Voertuig*> VoertuigenVoorVerkeerslicht;
     for (Voertuig* v: voertuigen) {
         // licht en voertuig moeten op dezelfde baan
-        if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam() ||
-                lichtAchter->getPositie() < v->getPositie() < lichtVoor->getPositie()) {
+        if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam() || lichtAchter->getPositie() < v->getPositie() < lichtVoor->getPositie()) {
             VoertuigenVoorVerkeerslicht.push_back(v);
         }
     }
-
     return VoertuigenVoorVerkeerslicht;
+}
 
+vector <Verkeerslicht*> simulation::VerkeerslichtenOpBaan(Verkeerslicht* licht){
+    vector<Verkeerslicht*> VerkeersLichtenOpDezelfdeBaan;
+    for (Verkeerslicht* v: verkeerslichten) {
+        if (licht->getBaan().getNaam() == v->getBaan().getNaam()) {
+            VerkeersLichtenOpDezelfdeBaan.push_back(v);
+        }
+    }
+    return VerkeersLichtenOpDezelfdeBaan;
 }
 
 
 void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
     int VerkeerslichtCounter = 0;
 
-    for (Verkeerslicht* licht: verkeerslichten){
-
+    for (Verkeerslicht* licht: verkeerslichten) {
         //  1. IF tijd sinds laatste verandering > cyclus
         if( licht->getTijdSindsLaatsteVerandering() > licht->getCyclus() ){
             licht->UpdateVerkeersLicht();// 1.1 THEN verander de kleur van het licht (groen ↔ rood)
             licht->UpdateTijdSindsLaatsteVerandering(simulationTimeinc);
         }
+        vector <Verkeerslicht*> verkeerslichten_baan = VerkeerslichtenOpBaan(licht);
 
-        if (verkeerslichten[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) { // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
-            vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten[VerkeerslichtCounter+1]);
-        }
+        if (verkeerslichten_baan[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten_baan[VerkeerslichtCounter+1]->getBaan().getNaam()){ // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
+            vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten_baan[VerkeerslichtCounter+1]);
 
-        for (Voertuig* v: voertuigen) {
-            // licht en voertuig moeten op dezelfde baan
-            if (v->getBaan().getNaam() == licht->getBaan().getNaam()) {
+            for (Voertuig* v: VoertuigenVoorLicht) {
+                // licht en voertuig moeten op dezelfde baan
+                if (v->getBaan().getNaam() == licht->getBaan().getNaam()) {
 
 
-                if (licht->isGroen()) {                         // 2. IF verkeerslicht is groen
-                    if(v->getPositie()>licht->getPositie()){    // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
-                        BerekenSnelheidNaVersnelling(v);
+                    if (licht->isGroen()) {                         // 2. IF verkeerslicht is groen
+                        if(v->getPositie()>licht->getPositie()){    // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
+                            BerekenSnelheidNaVersnelling(v);
+                        }
+
+                        if (VerkeerslichtCounter == 0){
+                            if (v->getPositie()<licht->getPositie()) {
+                                v->setKvmax(v->getGVmax());
+                            }
+                        }
+
+                        if (VerkeerslichtCounter > 0){
+                            if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
+                                v->setKvmax(v->getGVmax());
+                            }
+                        }
                     }
+                }
+                // 3.1 IF verkeerslicht is rood
+                else if(licht->isRood()){
+                    Voertuig* eerstVoertuigVoorLicht = voertuigen.at(0);
+                    int voertuigCounter = -1;
 
-                    if (VerkeerslichtCounter == 0){
-                        if (v->getPositie()<licht->getPositie()) {
-                            v->setKvmax(v->getGVmax());
+                    //  3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
+                    for (Voertuig* v: voertuigen){
+                        if (eerstVoertuigVoorLicht->getPositie()<licht->getPositie()){
+                            eerstVoertuigVoorLicht = v;
+                            voertuigCounter++;
+                        }
+                        else{
+                            break;
                         }
                     }
 
-                    if (VerkeerslichtCounter > 0){
-                        if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
-                            v->setKvmax(v->getGVmax());
+                    //  3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
+                    if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
+                        BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
+                    }
+                    // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
+                    else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
+                        //  3.1.1.1 THEN laat het voertuig stoppen
+                        eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
+                        eerstVoertuigVoorLicht->setSnelheid(0);
+
+                        for (int i = voertuigCounter-1; i!=-1; i--){
+                            voertuigen.at(i)->UpdateVersnellingVoorStoppen();
+                            voertuigen.at(i)->setSnelheid(0);
                         }
                     }
                 }
             }
-            // 3.1 IF verkeerslicht is rood
-            else if(licht->isRood()){
-                Voertuig* eerstVoertuigVoorLicht = voertuigen.at(0);
-                int voertuigCounter = -1;
+            VerkeerslichtCounter ++;
 
-                //  3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
-                for (Voertuig* v: voertuigen){
-                    if (eerstVoertuigVoorLicht->getPositie()<licht->getPositie()){
-                        eerstVoertuigVoorLicht = v;
-                        voertuigCounter++;
-                    }
-                    else{
-                        break;
-                    }
-                }
+        } else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
 
-                //  3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
-                if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
-                    BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
-                }
-                // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
-                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
-                    //  3.1.1.1 THEN laat het voertuig stoppen
-                    eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
-                    eerstVoertuigVoorLicht->setSnelheid(0);
-
-                    for (int i = voertuigCounter-1; i!=-1; i--){
-                        voertuigen.at(i)->UpdateVersnellingVoorStoppen();
-                        voertuigen.at(i)->setSnelheid(0);
-                    }
-                }
-            }
         }
-        VerkeerslichtCounter ++;
     }
 }
+
+
 
 
 
