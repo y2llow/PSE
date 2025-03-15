@@ -66,7 +66,7 @@
 
         bool IsVoertuigOpBaan(Voertuig* v) ;
 
-        void UpdateVoertuigenAanVerkeerslichtSituatie();
+        void simulation::UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht * l, int VerkeerslichtCounter);
 
         bool IsVoertuigInVertraagZone(Voertuig* v, Verkeerslicht* l);
         bool IsVoertuigInStopZone(Voertuig* v, Verkeerslicht* l);
