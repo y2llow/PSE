@@ -66,13 +66,13 @@
 
         bool IsVoertuigOpBaan(Voertuig* v) ;
 
-        void UpdateVoertuigenAchterVerkeerslichtSituatie();
+        void UpdateVoertuigenAanVerkeerslichtSituatie();
 
         bool IsVoertuigInVertraagZone(Voertuig* v);
 
         vector<Voertuig*> VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter);
 
-        vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
+    vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
 
         bool IsVoertuigInStopZone(Voertuig* v);
 

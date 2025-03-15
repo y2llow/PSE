@@ -386,7 +386,6 @@ bool simulation::IsVoertuigOpBaan(Voertuig* v) {
     return true;
 }
 
-
 void simulation::simulationRun() {
 
     int counter = 0;
@@ -457,7 +456,7 @@ vector <Verkeerslicht*> simulation::VerkeerslichtenOpBaan(Verkeerslicht* licht){
 }
 
 
-void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
+void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
     int VerkeerslichtCounter = 0;
 
     for (Verkeerslicht* licht: verkeerslichten) {
@@ -468,29 +467,25 @@ void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
         }
         vector <Verkeerslicht*> verkeerslichten_baan = VerkeerslichtenOpBaan(licht);
 
-        if (verkeerslichten_baan[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten_baan[VerkeerslichtCounter+1]->getBaan().getNaam()){ // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
+        if (verkeerslichten_baan[VerkeerslichtCounter+1] != nullptr || licht->getBaan().getNaam() == verkeerslichten_baan[VerkeerslichtCounter+1]->getBaan().getNaam()) {
+            // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
             vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten_baan[VerkeerslichtCounter+1]);
 
             for (Voertuig* v: VoertuigenVoorLicht) {
-                // licht en voertuig moeten op dezelfde baan
-                if (v->getBaan().getNaam() == licht->getBaan().getNaam()) {
+                if (licht->isGroen()) {                            // 2. IF verkeerslicht is groen
+                    if(v->getPositie() > licht->getPositie()) {    // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
+                        BerekenSnelheidNaVersnelling(v);
+                    }
 
-
-                    if (licht->isGroen()) {                         // 2. IF verkeerslicht is groen
-                        if(v->getPositie()>licht->getPositie()){    // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
-                            BerekenSnelheidNaVersnelling(v);
+                    if (VerkeerslichtCounter == 0){
+                        if (v->getPositie()<licht->getPositie()) {
+                            v->setKvmax(v->getGVmax());
                         }
+                    }
 
-                        if (VerkeerslichtCounter == 0){
-                            if (v->getPositie()<licht->getPositie()) {
-                                v->setKvmax(v->getGVmax());
-                            }
-                        }
-
-                        if (VerkeerslichtCounter > 0){
-                            if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
-                                v->setKvmax(v->getGVmax());
-                            }
+                    if (VerkeerslichtCounter > 0){
+                        if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
+                            v->setKvmax(v->getGVmax());
                         }
                     }
                 }
@@ -527,13 +522,13 @@ void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
                     }
                 }
             }
-            VerkeerslichtCounter ++;
-
-        } else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
+        }  else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
 
         }
+        VerkeerslichtCounter ++;
     }
 }
+
 
 
 
