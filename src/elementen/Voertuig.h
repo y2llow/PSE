@@ -10,8 +10,10 @@
 #include "Baan.h"
 
 
+using namespace std;
+
 class Voertuig {
-    Baan baan;
+    string baan;
     double positie;
     double snelheid;
     int id;
@@ -28,14 +30,14 @@ class Voertuig {
 public:
     Voertuig() = default;
 
-    Voertuig(const Baan &baan, const int positie)
+    Voertuig(const string &baan, const int positie)
         : baan(baan),
           positie(positie) {
     }
 
-    Baan getBaan() const ;
+    string getBaan() const ;
 
-    void setBaan(const Baan &weg);
+    void setBaan(const string &weg);
 
     double getPositie() const;
 

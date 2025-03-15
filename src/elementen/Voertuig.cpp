@@ -4,16 +4,14 @@
 
 #include "Voertuig.h"
 
-#include <cmath>
-#include <vector>
 
 
 
-Baan Voertuig::getBaan() const {
+string Voertuig::getBaan() const {
     return baan;
 }
 
-void Voertuig::setBaan(const Baan &weg) {
+void Voertuig::setBaan(const string &weg) {
     baan = weg;
 }
 

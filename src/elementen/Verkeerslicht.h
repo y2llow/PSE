@@ -9,9 +9,11 @@
 #include "Baan.h"
 
 
+using namespace std;
+
 class Verkeerslicht {
 public:
-    Baan baan;
+    string baan;
     double positie;
     double cyclus;
     bool rood = false;
@@ -19,9 +21,9 @@ public:
     double tijdSindsLaatsteVerandering = 0;
 
 
-    Baan getBaan() const ;
+    string getBaan() const ;
 
-    void setBaan(const Baan &baan);
+    void setBaan(const string &baan);
 
     [[nodiscard]] double getPositie() const;
 

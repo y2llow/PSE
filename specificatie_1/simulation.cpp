@@ -83,19 +83,33 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
 
-                    Baan voertuigbaan;
-                    for (Baan* baan : banen) {
-                        if (baan->getNaam() == subElem->GetText()) {
-                            voertuigbaan.setNaam(baan->getNaam());
-                            voertuigbaan.setLengte(baan->getLengte());
-                        }
-                    }
-                    voertuig->setBaan(voertuigbaan);
+                    // Dit kan tot problemen en errors lijden als de voertuigen zijn eerst gedefinierd in de xml bestand voor de Baan
+                    // Baan voertuigbaan;
+                    // for (Baan* baan : banen) {
+                    //     if (baan->getNaam() == subElem->GetText()) {
+                    //         voertuigbaan.setNaam(baan->getNaam());
+                    //         voertuigbaan.setLengte(baan->getLengte());
+                    //     }
+                    // }
+
+                    voertuig->setBaan(subElem->GetText());
 
                 } else if (propertyName == "snelheid") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een voertuig zonder snelheid!" << endl;
+                        geldig = false;
+                        break;
+                    }
                     string snelheidstring = subElem->GetText();
-                    double snelheid = std::stod(snelheidstring);
-                    voertuig->setSnelheid(snelheid);
+
+                    try {
+                        double snelheid = std::stod(snelheidstring);
+                        voertuig->setSnelheid(snelheid);
+                    } catch (exception &) {
+                        cerr << "De snelheid van een voertuig is geen double!" << endl;
+                        geldig = false;
+                        break;
+                    }
 
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
@@ -129,14 +143,15 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
                         break;
                     }
 
-                    Baan Verkeerslichtbaan;
-                    for (Baan * baan : banen) {
-                        if (baan->getNaam() == subElem->GetText()) {
-                            Verkeerslichtbaan.setNaam(baan->getNaam());
-                            Verkeerslichtbaan.setLengte(baan->getLengte());
-                        }
-                    }
-                    verkeerslicht->setBaan(Verkeerslichtbaan);
+                    // Dit leidt tot problemen als het verkeerslicht gedefinieerd is voor de Baan in de xml file
+                    // Baan Verkeerslichtbaan;
+                    // for (Baan * baan : banen) {
+                    //     if (baan->getNaam() == subElem->GetText()) {
+                    //         Verkeerslichtbaan.setNaam(baan->getNaam());
+                    //         Verkeerslichtbaan.setLengte(baan->getLengte());
+                    //     }
+                    // }
+                    verkeerslicht->setBaan(subElem->GetText());
 
                 } else if (propertyName == "positie") {
                     if (!subElem->GetText()) {
@@ -215,7 +230,7 @@ bool simulation::isConsistent() const {
     for (Voertuig* const& v : voertuigen) {
         consistent = false;
         for (Baan* const& b : banen) {
-            if (v->getBaan().getNaam() == b->getNaam()) {
+            if (v->getBaan() == b->getNaam()) {
                 consistent = true;
                 break;
             }
@@ -227,7 +242,7 @@ bool simulation::isConsistent() const {
     for (Verkeerslicht* const& v : verkeerslichten) {
         consistent = false;
         for (Baan* const& b : banen) {
-            if (v->getBaan().getNaam() == b->getNaam()) {
+            if (v->getBaan() == b->getNaam()) {
                 consistent = true;
                 break;
             }
@@ -250,7 +265,7 @@ bool simulation::isConsistent() const {
     // De positie van elk voertuig is kleiner dan de lengte van de baan
     for (Voertuig* const& v : voertuigen) {
         for (Baan* const& b : banen) {
-            if (v->getBaan().getNaam() == b->getNaam()) {
+            if (v->getBaan() == b->getNaam()) {
                 if (v->getPositie() > b->getLengte()) {
                     return false;
                 }
@@ -262,7 +277,7 @@ bool simulation::isConsistent() const {
     // De positie van elk verkeerslicht is kleiner dan de lengte van de baan
     for (Verkeerslicht* const& v : verkeerslichten) {
         for (Baan* const& b : banen) {
-            if (v->getBaan().getNaam() == b->getNaam()) {
+            if (v->getBaan() == b->getNaam()) {
                 if (v->getPositie() > b->getLengte()) {
                     return false;
                 }
@@ -297,7 +312,7 @@ void simulation::ToString() {
 
     for (Voertuig* voertuig : voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
-        << "-> baan: " << voertuig->getBaan().getNaam() << "\n"
+        << "-> baan: " << voertuig->getBaan() << "\n"
         << "-> positie: " << voertuig->getPositie() << "\n"
         << "-> snelheid: " << voertuig->getSnelheid() << "\n" << endl;
     }
@@ -379,8 +394,15 @@ void simulation::UpdateVoertuig(Voertuig* v, int counter) const {
     BerekenVersnelling(v, counter);
 }
 
-bool simulation::IsVoertuigOpBaan(Voertuig* v) {
-    if (v->getPositie() > v->getBaan().getLengte()) {
+bool simulation::IsVoertuigOpBaan(const Voertuig* v) {
+    Baan *baan = nullptr; // de baan van de voertuig
+    for (const auto b : banen) {
+        if (b->getNaam() == v->getBaan()) {
+            baan = b;
+            break;
+        }
+    }
+    if (v->getPositie() > baan->getLengte()) {
         return false;
     }
     return true;
@@ -446,14 +468,14 @@ vector<Voertuig*> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht* lic
     if (lichtAchter == nullptr) {
         for (Voertuig* v : voertuigen) {
             // Voeg alle voertuigen op dezelfde baan toe
-            if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam()) {
+            if (v->getBaan() == lichtVoor->getBaan()) {
                 VoertuigenVoorVerkeerslicht.push_back(v);
             }
         }
     }
     else {  // Voeg voertuigen toe die op dezelfde baan zijn en tussen de twee lichten staan
         for (Voertuig* v : voertuigen) {
-            if (v->getBaan().getNaam() == lichtVoor->getBaan().getNaam() &&
+            if (v->getBaan() == lichtVoor->getBaan() &&
                 v->getPositie() > lichtAchter->getPositie() &&
                 v->getPositie() < lichtVoor->getPositie()) {
                 VoertuigenVoorVerkeerslicht.push_back(v);
@@ -467,7 +489,7 @@ vector<Voertuig*> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht* lic
 vector <Verkeerslicht*> simulation::VerkeerslichtenOpBaan(Verkeerslicht* licht){
     vector<Verkeerslicht*> VerkeersLichtenOpDezelfdeBaan;
     for (Verkeerslicht* v: verkeerslichten) {
-        if (licht->getBaan().getNaam() == v->getBaan().getNaam()) {
+        if (licht->getBaan() == v->getBaan()) {
             VerkeersLichtenOpDezelfdeBaan.push_back(v);
         }
     }

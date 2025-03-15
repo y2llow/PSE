@@ -64,9 +64,9 @@
 
         void UpdateVoertuig(Voertuig* V, int counter) const;
 
-        bool IsVoertuigOpBaan(Voertuig* v) ;
+        bool IsVoertuigOpBaan(const Voertuig* v) ;
 
-        void simulation::UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht * l, int VerkeerslichtCounter);
+        void UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht * l, int VerkeerslichtCounter);
 
         bool IsVoertuigInVertraagZone(Voertuig* v, Verkeerslicht* l);
         bool IsVoertuigInStopZone(Voertuig* v, Verkeerslicht* l);

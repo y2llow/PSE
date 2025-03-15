@@ -4,7 +4,7 @@
 
 #include "Verkeerslicht.h"
 
-Baan Verkeerslicht::getBaan() const {
+string Verkeerslicht::getBaan() const {
     return baan;
 }
 
@@ -21,7 +21,7 @@ void Verkeerslicht::setCyclus(const double cyc) {
     this->cyclus = cyc;
 }
 
-void Verkeerslicht::setBaan(const Baan &b) {
+void Verkeerslicht::setBaan(const string &b) {
     this->baan = b;
 }
 
