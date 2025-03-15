@@ -11,90 +11,92 @@
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Voertuiggenerator.h"
 
-    using namespace std;
+using namespace std;
 
-    class simulation {
-        // Vectors to store objects created from XML
-        vector<Baan*> banen;
-        vector<Voertuig*> voertuigen;
-        vector<Verkeerslicht*> verkeerslichten;
-        vector<Voertuiggenerator*> voertuiggeneratoren;
-        double simulationTime = 0;
-        double simulationincreasedTime = 0;
-        double simulationTimeinc = 0.0166;
-        double fmin = 4;
-        double vertraagAfstand = 50;
-        double stopAfstand = 15;
-        double vertraagFactor = 0.4;
+class simulation {
+    // Vectors to store objects created from XML
+    vector<Baan *> banen;
+    vector<Voertuig *> voertuigen;
+    vector<Verkeerslicht *> verkeerslichten;
+    vector<Voertuiggenerator *> voertuiggeneratoren;
+    double simulationTime = 0;
+    double simulationincreasedTime = 0;
+    double lastGeneretedVoertuigTime = 0;
+    int voertuigLastId = 1; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
 
+public:
+    simulation() = default;
 
-    public:
-        simulation() = default;
+    bool parseXMLAndCreateObjects(const std::string &filename);
 
-        bool parseXMLAndCreateObjects(const std::string &filename);
+    [[nodiscard]] vector<Baan *> getBanen() const;
 
-        [[nodiscard]] vector<Baan*> getBanen() const;
-        [[nodiscard]] vector<Voertuig*> getVoertuigen() const;
-        [[nodiscard]] vector<Verkeerslicht*> getVerkeerslichten() const;
-        [[nodiscard]] vector<Voertuiggenerator*> getVoertuiggeneratoren() const;
+    [[nodiscard]] vector<Voertuig *> getVoertuigen() const;
 
-        [[nodiscard]] bool isConsistent() const;
+    [[nodiscard]] vector<Verkeerslicht *> getVerkeerslichten() const;
 
-        void ToString() ;
+    [[nodiscard]] vector<Voertuiggenerator *> getVoertuiggeneratoren() const;
 
-        double getSimulationTime() const;
-        double getincSimulationTime() const;
+    [[nodiscard]] bool isConsistent() const;
 
-        double incSimulationTime();
+    void ToString();
 
-        double UpdateSimulationTime() const;
+    double getSimulationTime() const;
 
-        void simulationRun();
+    double getincSimulationTime() const;
 
-        void sortVoertuigenByPosition();
-        void sortVerkeersLichtByPosition();
+    double incSimulationTime();
 
-        void BerekenPositie(Voertuig* v) const;
+    double UpdateSimulationTime() const;
 
-        void BerekenVersnelling(Voertuig* v, int counter) const ;
+    void simulationRun();
 
-        void BerekenSnelheidNaVertraging(Voertuig* v);
+    void sortVoertuigenByPosition();
 
-        void BerekenSnelheidNaVersnelling(Voertuig* v);
+    void sortVerkeersLichtByPosition();
 
-        void UpdateVoertuig(Voertuig* V, int counter) const;
+    void berekenPositie(Voertuig *v) const;
 
-        bool IsVoertuigOpBaan(const Voertuig* v) ;
+    void BerekenVersnelling(Voertuig *v, int counter) const;
 
-        void UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht * l, int VerkeerslichtCounter);
+    void BerekenSnelheidNaVertraging(Voertuig *v);
 
-        bool IsVoertuigInVertraagZone(Voertuig* v, Verkeerslicht* l);
-        bool IsVoertuigInStopZone(Voertuig* v, Verkeerslicht* l);
+    void BerekenSnelheidNaVersnelling(Voertuig *v);
 
-        vector<Voertuig*> VoertuigenTussenVerkeerslichten(Verkeerslicht* lichtVoor, Verkeerslicht* lichtAchter);
-        vector <Verkeerslicht*> VerkeerslichtenOpBaan(Verkeerslicht* licht);
+    void updateVoertuig(Voertuig *V, int counter) const;
 
+    bool isVoertuigOpBaan(const Voertuig *v);
 
+    void updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *l, int VerkeerslichtCounter);
 
-        // Removing the created pointers
-        ~simulation() {
-            for (const Baan* b : banen)
-                delete b;
+    bool isVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l);
 
-            for (const Voertuig* v : voertuigen)
-                delete v;
+    bool isVoertuigInStopZone(Voertuig *v, Verkeerslicht *l);
 
-            for (const Voertuiggenerator * v : voertuiggeneratoren)
-                delete v;
+    vector<Voertuig *> voertuigenTussenVerkeerslichten(Verkeerslicht *lichtVoor, Verkeerslicht *lichtAchter);
 
-            for (const Verkeerslicht* v : verkeerslichten)
-                delete v;
+    vector<Verkeerslicht *> verkeerslichtenOpBaan(Verkeerslicht *licht);
 
+    Baan* getBaanByName(const string &name) const;
 
-        }
-    };
+    void voertuigenGenereren();
 
+    // Removing the created pointers
+    ~simulation() {
+        for (const Baan *b: banen)
+            delete b;
 
+        for (const Voertuig *v: voertuigen)
+            delete v;
+
+        for (const Voertuiggenerator *v: voertuiggeneratoren)
+            delete v;
+
+        for (const Verkeerslicht *v: verkeerslichten)
+            delete v;
+    }
+
+};
 
 
 #endif //SIMULATION_H

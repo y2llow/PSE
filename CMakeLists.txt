@@ -26,6 +26,7 @@ set(RELEASE_SOURCE_FILES
         src/Elementen/Voertuiggenerator.cpp
         specificatie_1/simulation.cpp
         main.cpp
+        src/elementen/Constants.h
 )
 
 # Set source files for DEBUG target
@@ -39,6 +40,7 @@ set(DEBUG_SOURCE_FILES
         src/Elementen/Voertuiggenerator.cpp
         test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         specificatie_1/simulation.cpp
+        src/elementen/Constants.h
 )
 
 # Create RELEASE target
