@@ -471,27 +471,14 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
             // Als volgende licht bestaat pak alle voertuigen ertussen en als lichten op dezelfde baan staan
             vector<Voertuig*> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, verkeerslichten_baan[VerkeerslichtCounter+1]);
 
-            for (Voertuig* v: VoertuigenVoorLicht) {
+            Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0); // pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
+
                 if (licht->isGroen()) {                            // 2. IF verkeerslicht is groen
-                    if(v->getPositie() > licht->getPositie()) {    // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
-                        BerekenSnelheidNaVersnelling(v);
-                    }
-
-                    if (VerkeerslichtCounter == 0){
-                        if (v->getPositie()<licht->getPositie()) {
-                            v->setKvmax(v->getGVmax());
-                        }
-                    }
-
-                    if (VerkeerslichtCounter > 0){
-                        if (v->getPositie()<licht->getPositie() and v->getPositie() > verkeerslichten.at(VerkeerslichtCounter-1)->getPositie()){
-                            v->setKvmax(v->getGVmax());
-                        }
-                    }
+                        BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);           // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
                 }
-                // 3.1 IF verkeerslicht is rood
-                else if(licht->isRood()){
-                    Voertuig* eerstVoertuigVoorLicht = voertuigen.at(0);
+
+                else if(licht->isRood()){                          // 3.1 ELSE IF verkeerslicht is rood
+                    Voertuig* eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);
                     int voertuigCounter = -1;
 
                     //  3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
@@ -521,7 +508,7 @@ void simulation::UpdateVoertuigenAanVerkeerslichtSituatie() {
                         }
                     }
                 }
-            }
+
         }  else if (verkeerslichten[VerkeerslichtCounter+1] == nullptr || licht->getBaan().getNaam() == verkeerslichten[VerkeerslichtCounter+1]->getBaan().getNaam()) {
 
         }
