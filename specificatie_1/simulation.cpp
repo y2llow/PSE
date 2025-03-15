@@ -439,7 +439,8 @@ void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
     int VerkeerslichtCounter = 0;
     for (Verkeerslicht* licht: verkeerslichten){
         if(licht->getTijdSindsLaatsteVerandering()>licht->getCyclus()){
-            licht->herstartCyclus();}
+            licht->UpdateVerkeersLicht();
+        }
         if (licht->isGroen()){
             for (Voertuig* v: voertuigen){
                 if(v->getPositie()>licht->getPositie()){
@@ -463,27 +464,28 @@ void simulation::UpdateVoertuigenAchterVerkeerslichtSituatie() {
             Voertuig* eerstVoertuigVoorLicht = voertuigen.at(0);
             int voertuigCounter = -1;
             for (Voertuig* v: voertuigen){
-                if (eerstVoertuigVoorLicht->getPositie()<v->getPositie()){
+                if (eerstVoertuigVoorLicht->getPositie()<licht->getPositie()){
                     eerstVoertuigVoorLicht = v;
+                    voertuigCounter++;
                 }
                 else{
                     break;
                 }
             }
 
-                if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
+            if(IsVoertuigInVertraagZone(eerstVoertuigVoorLicht)){
                     BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
-                }
-
-                else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
-                    eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
-                    eerstVoertuigVoorLicht->setSnelheid(0);
-                    for (int i = voertuigCounter-1; i!=-1; i--){
-                        voertuigen.at(i)->UpdateVersnellingVoorStoppen();
-                        voertuigen.at(i)->setSnelheid(0);
-                    }
-                }
             }
+
+            else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht)){
+                   eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen();
+                   eerstVoertuigVoorLicht->setSnelheid(0);
+                   for (int i = voertuigCounter-1; i!=-1; i--){
+                       voertuigen.at(i)->UpdateVersnellingVoorStoppen();
+                       voertuigen.at(i)->setSnelheid(0);
+                   }
+            }
+        }
     }
 }
 
