@@ -503,18 +503,17 @@ void simulation::voertuigenGenereren() {
 
         // 3.1 IF tijd sinds laatste voertuig > frequentie
         if (simulationTime - lastGeneretedVoertuigTime > v->getFrequentie()) {
-            int banenTussen02 = 0;
-
+            bool addCar = true;
 
             for (const Voertuig* voertuig : voertuigen) {
                 if (baan == voertuig->getBaan() && voertuig->getPositie() >= 0 && voertuig->getPositie() <= 2) {
-                    banenTussen02++;
+                    addCar = false;
                     break;
                 }
             }
 
             // 3.1.1 IF geen voertuig op baan tussen posities 0 en 2l
-            if (banenTussen02 == 0) {
+            if (addCar) {
                 Voertuig* generated_v = new Voertuig();
 
                 // 3.1.1.1 THEN voeg voertuig toe aan baan op positie 0
@@ -530,7 +529,7 @@ void simulation::voertuigenGenereren() {
 
                 lastGeneretedVoertuigTime = simulationTime;
 
-                sortVoertuigenByPosition();
+                // sortVoertuigenByPosition();
             }
         }
 

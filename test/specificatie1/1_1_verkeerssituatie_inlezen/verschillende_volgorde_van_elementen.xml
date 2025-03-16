@@ -1,0 +1,29 @@
+<!--Hier heb de volgorde van de elementen veranderd, de xml file moet normaal geparsed worden-->
+
+<VERKEERSSITUATIE>
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>5</frequentie>
+    </VOERTUIGGENERATOR>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>20</positie>
+    </VOERTUIG>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>400</positie>
+        <cyclus>20</cyclus>
+    </VERKEERSLICHT>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+    </VOERTUIG>
+
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>1000</lengte>
+    </BAAN>
+</VERKEERSSITUATIE>
