@@ -24,6 +24,15 @@ TEST_F(SimulationTESTS, EmptyXMLFileTest) {
     EXPECT_EQ(int(sim.getVoertuiggeneratoren().size()), 0);
 }
 
+TEST_F(SimulationTESTS, DifferentOrderOfElements) {
+    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml");
+    EXPECT_EQ(int(sim.getVoertuigen().size()), 2);
+    EXPECT_EQ(int(sim.getBanen().size()), 1);
+    EXPECT_EQ(int(sim.getVoertuiggeneratoren().size()), 1);
+    EXPECT_EQ(int(sim.getVerkeerslichten().size()), 1);
+    EXPECT_TRUE(sim.isConsistent());
+}
+
 TEST_F(SimulationTESTS, GoodSyntaxWrongDataTypeVoertuig) {
     sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types_voertuig.xml");
     EXPECT_EQ(int(sim.getVoertuigen().size()), 0);
@@ -44,8 +53,13 @@ TEST_F(SimulationTESTS, ConsistencyWithoutBaan) {
     ASSERT_FALSE(sim.isConsistent());
 }
 
-TEST_F(SimulationTESTS, ConsistencyWithPositionGTLength) {
+TEST_F(SimulationTESTS, ConsistencyWithVehiclePositionGTLength) {
     sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/voertuig_positie_gt_baan_lengte.xml");
+    ASSERT_FALSE(sim.isConsistent());
+}
+
+TEST_F(SimulationTESTS, ConsistencyWithLightPositionGTLength) {
+    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verkeerslicht_positie_gt_baan_lengte.xml");
     ASSERT_FALSE(sim.isConsistent());
 }
 
