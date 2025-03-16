@@ -305,7 +305,8 @@ void simulation::ToString() {
         cout << "Voertuig " << voertuig->getId() << "\n"
                 << "-> baan: " << voertuig->getBaan() << "\n"
                 << "-> positie: " << voertuig->getPositie() << "\n"
-                << "-> snelheid: " << voertuig->getSnelheid() << "\n" << endl;
+                << "-> snelheid: " << voertuig->getSnelheid() << "\n"
+                << "-> versnelling: " << voertuig->getVersnelling() << "\n" << endl;
     }
 }
 
@@ -324,7 +325,6 @@ double simulation::incSimulationTime() {
 
 double simulation::UpdateSimulationTime() const {
     return simulationTime + SIMULATIE_TIJD;
-    //TODO fix updatesimulationtime so that it updates somewhere in the program
 }
 
 
@@ -389,8 +389,6 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
 
 void simulation::updateVoertuig(Voertuig *v, int counter) const {
     berekenPositie(v);
-    //TODO: als de voertuig in stop/vertraagzone zit dan moet die vertragen in plaats van versnellen.
-    //TODO: vind een manier om de IsVoertuigInStopZone en isVoertuigInVertraagZone hier te laten werken.
     BerekenVersnelling(v, counter);
 }
 
@@ -576,6 +574,9 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
             } else if (isVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                 eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
+            }
+            else {
+                eerstVoertuigVoorLicht->setSnelheid(0);
             }
         }
     }

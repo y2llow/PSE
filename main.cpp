@@ -16,31 +16,26 @@ int main() {
         cerr << "Het verkeerssituatie is inconsistent" << endl;
         return 1;
     }
+    for (int i =0; i < 1200 ;i++) {
+        sim.ToString(); // implmented 2.1
+        sim.simulationRun(); // implemnted 3.1}
+    };
 
-    sim.ToString(); // implmented 2.1
-
-    while (sim.getVoertuigen().size() < 10) {
-        sim.simulationRun(); // implemnted 3.1
-        sim.ToString();
-    }
-
-
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
-    // sim.simulationRun(); // implemnted 3.1
-    // sim.ToString();
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
+    sim.simulationRun(); // implemnted 3.1
+    sim.ToString();
 
 
     return 0;
