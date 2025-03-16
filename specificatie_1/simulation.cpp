@@ -498,13 +498,15 @@ Baan *simulation::getBaanByName(const string &name) const {
 void simulation::voertuigenGenereren() {
     // 3. FOR elke voertuiggenerator
     for (const Voertuiggenerator* v : voertuiggeneratoren) {
+        string baan = v->getBaan();
+
         // 3.1 IF tijd sinds laatste voertuig > frequentie
         if (simulationTime - lastGeneretedVoertuigTime > v->getFrequentie()) {
             int banenTussen02 = 0;
 
 
             for (const Voertuig* voertuig : voertuigen) {
-                if (voertuig->getPositie() >= 0 && voertuig->getPositie() <= 2) {
+                if (baan == voertuig->getBaan() && voertuig->getPositie() >= 0 && voertuig->getPositie() <= 2) {
                     banenTussen02++;
                     break;
                 }
@@ -516,7 +518,7 @@ void simulation::voertuigenGenereren() {
 
                 // 3.1.1.1 THEN voeg voertuig toe aan baan op positie 0
                 generated_v->setPositie(0);
-                generated_v->setBaan(banen[0]->getNaam());
+                generated_v->setBaan(baan);
                 generated_v->setId(voertuigLastId);
                 generated_v->setKvmax(MAX_SNELHEID);
 
