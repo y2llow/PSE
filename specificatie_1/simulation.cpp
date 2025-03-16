@@ -68,6 +68,7 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
             voertuig->setId(voertuigLastId);
             voertuigLastId++;
 
+            voertuig->setSnelheid(16.6); // TODO vw dit mischien
             //we geven vMax de waarde van Vmax
             voertuig->setKvmax(MAX_SNELHEID);
 
@@ -458,7 +459,7 @@ vector<Voertuig *> simulation::voertuigenTussenVerkeerslichten(Verkeerslicht *li
     if (lichtAchter == nullptr) {
         for (Voertuig *v: voertuigen) {
             // Voeg alle voertuigen op dezelfde baan toe
-            if (v->getBaan() == lichtVoor->getBaan()) {
+            if (v->getBaan() == lichtVoor->getBaan() && v->getPositie() < lichtVoor->getPositie()) {
                 VoertuigenVoorVerkeerslicht.push_back(v);
             }
         }
@@ -518,6 +519,7 @@ void simulation::voertuigenGenereren() {
 
                 // 3.1.1.1 THEN voeg voertuig toe aan baan op positie 0
                 generated_v->setPositie(0);
+                generated_v->setSnelheid(16.6);
                 generated_v->setBaan(baan);
                 generated_v->setId(voertuigLastId);
                 generated_v->setKvmax(MAX_SNELHEID);
@@ -559,7 +561,7 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
 
     // Pas alleen elementen aan voor eerste auto voor licht, de rest volgt automatisch
     if (!VoertuigenVoorLicht.empty()) {
-        Voertuig *eerstVoertuigVoorLicht = VoertuigenVoorLicht.at(0);
+        Voertuig *eerstVoertuigVoorLicht = VoertuigenVoorLicht.back();
         // pas alleen elementen aan voor eerste auto voor licht de rest volgt automtisch
 
         if (licht->isGroen()) {
