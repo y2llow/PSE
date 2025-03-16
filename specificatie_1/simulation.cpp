@@ -243,6 +243,10 @@ vector<Voertuiggenerator *> simulation::getVoertuiggeneratoren() const {
 }
 
 bool simulation::isConsistent() const {
+    // Empty file
+    if (voertuigen.empty() && verkeerslichten.empty() && voertuiggeneratoren.empty() && banen.empty())
+        return false;
+
     // Elk voertuig staat op een bestaande baan
     for (Voertuig *const&v: voertuigen) {
         if (getBaanByName(v->getBaan()) == nullptr) return false;

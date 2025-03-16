@@ -34,6 +34,11 @@ TEST_F(SimulationTESTS, GoodSyntaxWrongDataTypeVerkeerslicht) {
     EXPECT_EQ(int(sim.getVerkeerslichten().size()), 0);
 }
 
+TEST_F(SimulationTESTS, ConsistencyEmptyFile) {
+    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml");
+    ASSERT_FALSE(sim.isConsistent());
+}
+
 TEST_F(SimulationTESTS, ConsistencyWithoutBaan) {
     sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verkeerssituatie_zonder_baan.xml");
     ASSERT_FALSE(sim.isConsistent());
