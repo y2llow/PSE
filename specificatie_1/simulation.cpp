@@ -435,11 +435,21 @@ void simulation::simulationRun() {
 }
 
 bool simulation::isVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l) {
-    return v->getPositie() - l->getPositie() <= VERTRAAG_AFSTAND;
+    // Bepaal of het voertuig binnen de vertragingsafstand is
+    bool isInVertraagZone = v->getPositie() - l->getPositie() <= VERTRAAG_AFSTAND;
+
+    // Bepaal of het voertuig buiten de stopzone is
+    bool isOutsideStopZone = v->getPositie() < l->getPositie() - STOP_AFSTAND;
+
+    // Het voertuig is in de vertragingszone als het binnen de vertragingsafstand is en buiten de stopzone
+    return isInVertraagZone && isOutsideStopZone;
 }
 
 bool simulation::isVoertuigInStopZone(Voertuig *v, Verkeerslicht *l) {
-    return v->getPositie() < l->getPositie() - STOP_AFSTAND / 2;
+    bool isInStopZone1 = v->getPositie() < l->getPositie() - STOP_AFSTAND / 2;
+    bool isInStopZone2 = v->getPositie() >= l->getPositie() - STOP_AFSTAND;
+
+    return isInStopZone1 == true && true == isInStopZone2;
 }
 
 void simulation::BerekenSnelheidNaVertraging(Voertuig *v) {
@@ -575,9 +585,10 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                 eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
             }
-            else {
-                eerstVoertuigVoorLicht->setSnelheid(0);
-            }
+            // else {
+            //     eerstVoertuigVoorLicht->setSnelheid(0);
+            // }
+                    // Voor als auto zou moeten stoppen in 2de helft stopzone
         }
     }
 }
