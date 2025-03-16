@@ -4,7 +4,9 @@
 
 #include "Voertuig.h"
 
+#include <cmath>
 
+#include "Constants.h"
 
 
 string Voertuig::getBaan() const {
@@ -48,18 +50,6 @@ void Voertuig::setVersnelling(double acceleration) {
     versnelling = acceleration;
 }
 
-double Voertuig::getLength() const {
-    return length;
-}
-
-double Voertuig::getGVmax() const {
-    return gVmax;
-}
-
-void Voertuig::setGVmax(double gVm) {
-    Voertuig::gVmax = gVm;
-}
-
 double Voertuig::getKvmax() const {
     return kvmax;
 }
@@ -68,40 +58,9 @@ void Voertuig::setKvmax(double kvm) {
     Voertuig::kvmax = kvm;
 }
 
-double Voertuig::getAmax() const {
-    return amax;
-}
-
-void Voertuig::setAmax(double am) {
-    Voertuig::amax = am;
-}
-
-double Voertuig::getBmax() const {
-    return bmax;
-}
-
-void Voertuig::setBmax(double bm) {
-    Voertuig::bmax = bm;
-}
-
-double Voertuig::getVertraagFactor() const {
-    return vertraagFactor;
-}
-
-void Voertuig::setVertraagFactor(double VF) {
-    Voertuig::vertraagFactor = VF;
-}
 
 void Voertuig::UpdateVersnellingVoorStoppen() {
-    a = (-(bmax*snelheid)/kvmax);
-}
-
-double Voertuig::getA() const {
-    return a;
-}
-
-void Voertuig::setA(double aa) {
-    Voertuig::a = aa;
+    versnelling = (-(MAX_REMFACTOR * snelheid) / kvmax);
 }
 
 
@@ -110,14 +69,14 @@ void Voertuig::setA(double aa) {
 void Voertuig::BerekenPositieVoertuig() {
 
     //berekenen van nieuwe positie
-    if ((snelheid + versnelling * simulationTimeinc)<0){
+    if ((snelheid + versnelling * SIMULATIE_TIJDinc)<0){
         double newPosition = positie - ((snelheid * snelheid) / (versnelling * 2) );
         setPositie(newPosition);
         setSnelheid(0);
     }
     else {
-        setSnelheid((snelheid + (versnelling * simulationTimeinc)));
-        setPositie(positie + (snelheid * simulationTimeinc) + versnelling * ((simulationTimeinc * simulationTimeinc) / 2));
+        setSnelheid((snelheid + (versnelling * SIMULATIE_TIJDinc)));
+        setPositie(positie + (snelheid * SIMULATIE_TIJDinc) + versnelling * ((SIMULATIE_TIJDinc * SIMULATIE_TIJDinc) / 2));
     }
 
 }
@@ -142,5 +101,3 @@ void Voertuig::BerekenVersnellingVoertuig(std::size_t counter , std::vector<Voer
 }
 
 */
-
-

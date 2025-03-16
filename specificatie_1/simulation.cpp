@@ -3,6 +3,7 @@
 //
 
 #include "simulation.h"
+#include "../src/elementen/Constants.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -10,6 +11,7 @@
 #include "../../src/TinyXML/tinyxml.h"
 #include <algorithm>
 #include <cmath>
+
 
 // Function to parse XML and create appropriate objects
 bool simulation::parseXMLAndCreateObjects(const string &filename) {
@@ -25,7 +27,6 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
         return true;
     }
 
-    int voertuigLastId = 0; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
 
@@ -64,11 +65,11 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
             Voertuig *voertuig = new Voertuig();
             bool geldig = true;
 
-            voertuigLastId++;
             voertuig->setId(voertuigLastId);
+            voertuigLastId++;
 
             //we geven vMax de waarde van Vmax
-            voertuig->setKvmax(voertuig->getGVmax());
+            voertuig->setKvmax(MAX_SNELHEID);
 
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
@@ -219,6 +220,7 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
             cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
         }
     }
+
     sortVoertuigenByPosition();
     sortVerkeersLichtByPosition();
     return true;
@@ -241,65 +243,32 @@ vector<Voertuiggenerator *> simulation::getVoertuiggeneratoren() const {
 }
 
 bool simulation::isConsistent() const {
-    bool consistent = true;
-
     // Elk voertuig staat op een bestaande baan
     for (Voertuig *const&v: voertuigen) {
-        consistent = false;
-        for (Baan *const&b: banen) {
-            if (v->getBaan() == b->getNaam()) {
-                consistent = true;
-                break;
-            }
-        }
-        if (!consistent) return false;
+        if (getBaanByName(v->getBaan()) == nullptr) return false;
     }
 
     // Elk verkeerslicht staat op een bestaande baan
     for (Verkeerslicht *const&v: verkeerslichten) {
-        consistent = false;
-        for (Baan *const&b: banen) {
-            if (v->getBaan() == b->getNaam()) {
-                consistent = true;
-                break;
-            }
-        }
-        if (!consistent) return false;
+        if (getBaanByName(v->getBaan()) == nullptr) return false;
     }
 
     // Elke voertuiggenerator staat op een bestaande baan
     for (Voertuiggenerator *const&v: voertuiggeneratoren) {
-        consistent = false;
-        for (Baan *const&b: banen) {
-            if (v->getBaan() == b->getNaam()) {
-                consistent = true;
-                break;
-            }
-        }
-        if (!consistent) return false;
+        if (getBaanByName(v->getBaan()) == nullptr) return false;
     }
 
     // De positie van elk voertuig is kleiner dan de lengte van de baan
     for (Voertuig *const&v: voertuigen) {
-        for (Baan *const&b: banen) {
-            if (v->getBaan() == b->getNaam()) {
-                if (v->getPositie() > b->getLengte()) {
-                    return false;
-                }
-                break;
-            }
+        if (v->getPositie() > getBaanByName(v->getBaan())->getLengte()) {
+            return false;
         }
     }
 
     // De positie van elk verkeerslicht is kleiner dan de lengte van de baan
     for (Verkeerslicht *const&v: verkeerslichten) {
-        for (Baan *const&b: banen) {
-            if (v->getBaan() == b->getNaam()) {
-                if (v->getPositie() > b->getLengte()) {
-                    return false;
-                }
-                break;
-            }
+        if (v->getPositie() > getBaanByName(v->getBaan())->getLengte()) {
+            return false;
         }
     }
 
@@ -344,12 +313,12 @@ double simulation::getincSimulationTime() const {
 }
 
 double simulation::incSimulationTime() {
-    simulationincreasedTime = simulationincreasedTime + simulationTimeinc;
+    simulationincreasedTime = simulationincreasedTime + SIMULATIE_TIJD;
     return simulationincreasedTime;
 }
 
 double simulation::UpdateSimulationTime() const {
-    return simulationTime + simulationTimeinc;
+    return simulationTime + SIMULATIE_TIJD;
     //TODO fix updatesimulationtime so that it updates somewhere in the program
 }
 
@@ -366,19 +335,23 @@ void simulation::sortVerkeersLichtByPosition() {
     });
 }
 
-void simulation::BerekenPositie(Voertuig *v) const {
+
+void simulation::berekenPositie(Voertuig *v) const {
     //berekenen van nieuwe positie
-    if ((v->getSnelheid() + v->getVersnelling() * simulationTimeinc) < 0) {
-        double newPosition = v->getPositie() - ((v->getSnelheid() * v->getSnelheid()) / (v->getVersnelling() * 2));
-        v->setPositie(newPosition);
-        v->setSnelheid(0);
+    const double e = v->getSnelheid() + v->getVersnelling() * SIMULATIE_TIJD;
+    double new_speed;
+    double new_position;
+
+    if (e < 0) {
+        new_position = v->getPositie() - (v->getSnelheid() * v->getSnelheid()) / (2 * v->getVersnelling());
+        new_speed = 0;
     } else {
-        double calcsnelheid = (v->getSnelheid() + (v->getVersnelling() * simulationTimeinc));
-        v->setSnelheid(calcsnelheid);
-        v->setPositie(
-            v->getPositie() + (v->getSnelheid() * simulationTimeinc) + v->getVersnelling() * (
-                pow(simulationTimeinc, 2) / 2));
+        new_speed = v->getSnelheid() + v->getVersnelling() * SIMULATIE_TIJD;
+        new_position = v->getPositie() + new_speed * SIMULATIE_TIJD + v->getVersnelling() * pow(SIMULATIE_TIJD, 2) / 2;
     }
+
+    v->setSnelheid(new_speed);
+    v->setPositie(new_position);
 }
 
 void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
@@ -388,57 +361,50 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
     int sizeVoertuigen = vsize;
 
     if (sizeVoertuigen > counter + 1) {
-        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
+        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - LENGTE;
         double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
         double newsnelheid = v->getSnelheid() - snelheidVerschil;
-        double newversnelling = 2 * sqrt(v->getAmax() * v->getBmax());
+        double newversnelling = 2 * sqrt(MAX_VERSNELLING * MAX_REMFACTOR);
 
         double calculate = v->getSnelheid() + (newsnelheid / newversnelling);
 
         double maxNummer = max(0.0, calculate);
-        delta = (fmin + maxNummer) / volgafstand;
+        delta = (MIN_VOLGAFSTAND + maxNummer) / volgafstand;
 
-        double newVersnelling = v->getAmax() * (1 - std::pow((v->getSnelheid() / v->getKvmax()), 4) -
-                                                std::pow(delta, 2));
+        double newVersnelling = MAX_VERSNELLING * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+                                                   pow(delta, 2));
         v->setVersnelling(newVersnelling);
     } else {
-        double newVersnelling = v->getAmax() * (1 - std::pow((v->getSnelheid() / v->getKvmax()), 4) -
-                                                std::pow(delta, 2));
+        double newVersnelling = MAX_VERSNELLING * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+                                                   pow(delta, 2));
         v->setVersnelling(newVersnelling);
     }
 }
 
-void simulation::UpdateVoertuig(Voertuig *v, int counter) const {
-    BerekenPositie(v);
+void simulation::updateVoertuig(Voertuig *v, int counter) const {
+    berekenPositie(v);
     //TODO: als de voertuig in stop/vertraagzone zit dan moet die vertragen in plaats van versnellen.
-    //TODO: vind een manier om de IsVoertuigInStopZone en IsVoertuigInVertraagZone hier te laten werken.
+    //TODO: vind een manier om de IsVoertuigInStopZone en isVoertuigInVertraagZone hier te laten werken.
     BerekenVersnelling(v, counter);
 }
 
-bool simulation::IsVoertuigOpBaan(const Voertuig *v) {
-    Baan *baan = nullptr; // de baan van de voertuig
-    for (const auto b: banen) {
-        if (b->getNaam() == v->getBaan()) {
-            baan = b;
-            break;
-        }
-    }
-    if (v->getPositie() > baan->getLengte()) {
-        return false;
-    }
-    return true;
+bool simulation::isVoertuigOpBaan(const Voertuig *v) {
+    Baan *baan = getBaanByName(v->getBaan()); // de baan van de voertuig
+
+    return v->getPositie() <= baan->getLengte();
 }
 
 void simulation::simulationRun() {
     int counter = 0;
+
     for (Voertuig *v: voertuigen) {
         // 3.1 Updated voertuig positie en snelheid
-        UpdateVoertuig(v, counter);
+        updateVoertuig(v, counter);
 
-        if (!IsVoertuigOpBaan(v)) {
+        if (!isVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
-            __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *> > it = std::find(
+            __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *> > it = find(
                 voertuigen.begin(), voertuigen.end(), v); // Find the iterator for v
 
             if (it != voertuigen.end()) {
@@ -454,38 +420,34 @@ void simulation::simulationRun() {
     int verkeerslichtCounter = 0;
     for (Verkeerslicht *l: verkeerslichten) {
         // 3.2 Updated voertuig snelheid aan verkeerslicht situatie
-        UpdateVoertuigAanVerkeerslichtSituatie(l, verkeerslichtCounter);
+        updateVoertuigAanVerkeerslichtSituatie(l, verkeerslichtCounter);
         verkeerslichtCounter++;
     }
 
     simulationTime++;
     incSimulationTime();
+
+    // 3.4. Simulatie met voertuiggenerator
+    voertuigenGenereren();
 }
 
-bool simulation::IsVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l) {
-    if (v->getPositie() - l->getPositie() <= vertraagAfstand) {
-        return true;
-    }
-
-    return false;
+bool simulation::isVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l) {
+    return v->getPositie() - l->getPositie() <= VERTRAAG_AFSTAND;
 }
 
-bool simulation::IsVoertuigInStopZone(Voertuig *v, Verkeerslicht *l) {
-    if (v->getPositie() < (l->getPositie() - (stopAfstand / 2))) {
-        return true;
-    }
-    return false;
+bool simulation::isVoertuigInStopZone(Voertuig *v, Verkeerslicht *l) {
+    return v->getPositie() < l->getPositie() - STOP_AFSTAND / 2;
 }
 
 void simulation::BerekenSnelheidNaVertraging(Voertuig *v) {
-    v->setKvmax(v->getGVmax() * v->getVertraagFactor());
+    v->setKvmax(MAX_SNELHEID * VERTRAAG_FACTOR);
 }
 
 void simulation::BerekenSnelheidNaVersnelling(Voertuig *v) {
-    v->setKvmax(v->getGVmax());
+    v->setKvmax(MAX_SNELHEID);
 }
 
-vector<Voertuig *> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht *lichtVoor, Verkeerslicht *lichtAchter) {
+vector<Voertuig *> simulation::voertuigenTussenVerkeerslichten(Verkeerslicht *lichtVoor, Verkeerslicht *lichtAchter) {
     vector<Voertuig *> VoertuigenVoorVerkeerslicht;
 
     // Als lichtVoor het laatste licht is, voeg gewoon alle auto's erachter aan de vector toe
@@ -510,36 +472,83 @@ vector<Voertuig *> simulation::VoertuigenTussenVerkeerslichten(Verkeerslicht *li
     return VoertuigenVoorVerkeerslicht;
 }
 
-vector<Verkeerslicht *> simulation::VerkeerslichtenOpBaan(Verkeerslicht *licht) {
-    vector<Verkeerslicht *> VerkeersLichtenOpDezelfdeBaan;
+vector<Verkeerslicht *> simulation::verkeerslichtenOpBaan(Verkeerslicht *licht) {
+    vector<Verkeerslicht *> verkeersLichtenOpDezelfdeBaan;
     for (Verkeerslicht *v: verkeerslichten) {
         if (licht->getBaan() == v->getBaan()) {
-            VerkeersLichtenOpDezelfdeBaan.push_back(v);
+            verkeersLichtenOpDezelfdeBaan.push_back(v);
         }
     }
-    return VerkeersLichtenOpDezelfdeBaan;
+    return verkeersLichtenOpDezelfdeBaan;
+}
+
+Baan *simulation::getBaanByName(const string &name) const {
+    for (Baan *b: banen) {
+        if (b->getNaam() == name) {
+            return b;
+        }
+    }
+    return nullptr;
+}
+
+void simulation::voertuigenGenereren() {
+    // 3. FOR elke voertuiggenerator
+    for (const Voertuiggenerator* v : voertuiggeneratoren) {
+        // 3.1 IF tijd sinds laatste voertuig > frequentie
+        if (simulationTime - lastGeneretedVoertuigTime > v->getFrequentie()) {
+            int banenTussen02 = 0;
+
+
+            for (const Voertuig* voertuig : voertuigen) {
+                if (voertuig->getPositie() >= 0 && voertuig->getPositie() <= 2) {
+                    banenTussen02++;
+                    break;
+                }
+            }
+
+            // 3.1.1 IF geen voertuig op baan tussen posities 0 en 2l
+            if (banenTussen02 == 0) {
+                Voertuig* generated_v = new Voertuig();
+
+                // 3.1.1.1 THEN voeg voertuig toe aan baan op positie 0
+                generated_v->setPositie(0);
+                generated_v->setBaan(banen[0]->getNaam());
+                generated_v->setId(voertuigLastId);
+                generated_v->setKvmax(MAX_SNELHEID);
+
+                voertuigLastId++;
+
+                voertuigen.push_back(generated_v);
+
+                lastGeneretedVoertuigTime = simulationTime;
+
+                sortVoertuigenByPosition();
+            }
+        }
+
+    }
 }
 
 
-void simulation::UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, int VerkeerslichtCounter) {
+void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, int verkeerslichtCounter) {
     //  1. IF tijd sinds laatste verandering > cyclus
     if (licht->getTijdSindsLaatsteVerandering() > licht->getCyclus()) {
-        licht->UpdateVerkeersLicht(); // 1.1 THEN verander de kleur van het licht (groen ↔ rood)
-        licht->UpdateTijdSindsLaatsteVerandering(simulationTimeinc);
+        licht->updateVerkeersLicht(); // 1.1 THEN verander de kleur van het licht (groen ↔ rood)
+        licht->updateTijdSindsLaatsteVerandering(SIMULATIE_TIJD);
     }
 
-    vector<Verkeerslicht *> verkeerslichten_baan = VerkeerslichtenOpBaan(licht);
+    vector<Verkeerslicht *> verkeerslichten_baan = verkeerslichtenOpBaan(licht);
 
     // Check of er nog een licht is op dezelfde straat
     Verkeerslicht *volgendeLicht = nullptr;
 
 
-    if (static_cast<size_t>(VerkeerslichtCounter) + 1 < verkeerslichten_baan.size()) {
-        volgendeLicht = verkeerslichten_baan[VerkeerslichtCounter + 1];
+    if (static_cast<size_t>(verkeerslichtCounter) + 1 < verkeerslichten_baan.size()) {
+        volgendeLicht = verkeerslichten_baan[verkeerslichtCounter + 1];
     }
 
     // Pak alle voertuigen tussen de lichten
-    vector<Voertuig *> VoertuigenVoorLicht = VoertuigenTussenVerkeerslichten(licht, volgendeLicht);
+    vector<Voertuig *> VoertuigenVoorLicht = voertuigenTussenVerkeerslichten(licht, volgendeLicht);
 
     // Pas alleen elementen aan voor eerste auto voor licht, de rest volgt automatisch
     if (!VoertuigenVoorLicht.empty()) {
@@ -552,11 +561,11 @@ void simulation::UpdateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
             // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
         } else if (licht->isRood()) {
             // 3.1 ELSE IF verkeerslicht is rood
-            if (IsVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
+            if (isVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
                 // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
                 BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
                 // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
-            } else if (IsVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
+            } else if (isVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                 eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
             }

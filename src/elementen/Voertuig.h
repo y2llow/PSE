@@ -17,15 +17,8 @@ class Voertuig {
     double positie;
     double snelheid;
     int id;
-    double simulationTimeinc = 0.0166;
-    double length = 4;
     double versnelling = 0;
-    double gVmax = 16.6;
     double kvmax = 0;
-    double amax = 1.44;
-    double bmax = 4.61;
-    double a = 0;
-    double vertraagFactor = 0.4;
 
 public:
     Voertuig() = default;
@@ -35,7 +28,7 @@ public:
           positie(positie) {
     }
 
-    string getBaan() const ;
+    string getBaan() const;
 
     void setBaan(const string &weg);
 
@@ -57,42 +50,12 @@ public:
 
     double getLength() const;
 
-    double getGVmax() const;
-
-    void setGVmax(double gVmax);
-
     double getKvmax() const;
 
     void setKvmax(double kvmax);
 
-    double getAmax() const;
-
-    void setAmax(double amax);
-
-    double getBmax() const;
-
-    void setBmax(double bmax);
-
-    double getVertraagFactor() const;
-
-    void setVertraagFactor(double vertraagFactor);
-
-    double getA() const;
-
-    void setA(double a);
-
     void UpdateVersnellingVoorStoppen();
-
-
-
-
-
-/*
-    void BerekenPositieVoertuig() ;
-
-    void BerekenVersnellingVoertuig(std::size_t counter , std::vector<Voertuig*> voertuigen) ;
-*/};
-
+};
 
 
 #endif //VOERTUIG_H

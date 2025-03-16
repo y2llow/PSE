@@ -41,9 +41,9 @@ public:
 
     void setGroen(bool groen);
 
-    void UpdateVerkeersLicht();
+    void updateVerkeersLicht();
 
-    void UpdateTijdSindsLaatsteVerandering(double tijd);
+    void updateTijdSindsLaatsteVerandering(double tijd);
 
     void herstartCyclus();
 

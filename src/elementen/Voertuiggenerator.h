@@ -12,11 +12,11 @@ class Voertuiggenerator {
     double frequentie;
 
 public:
-    [[nodiscard]] std::string getBaan() const;
+    std::string getBaan() const;
 
     void setBaan(const std::string &baan);
 
-    [[nodiscard]] double getFrequentie() const;
+    double getFrequentie() const;
 
     void setFrequentie(const double frequentie);
 };

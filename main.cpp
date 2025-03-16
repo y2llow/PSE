@@ -19,31 +19,28 @@ int main() {
 
     sim.ToString(); // implmented 2.1
 
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    sim.simulationRun(); // implemnted 3.1
-    sim.ToString();
-    for (int i = 0; i<4000;i++){
-        sim.simulationRun();
+    while (sim.getVoertuigen().size() < 5) {
+        sim.simulationRun(); // implemnted 3.1
+        sim.ToString();
     }
-    sim.ToString();
-    sim.simulationRun();
-    sim.ToString();
-    sim.simulationRun();
-    sim.ToString();
-    sim.simulationRun();
+
+
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
+    // sim.simulationRun(); // implemnted 3.1
+    // sim.ToString();
 
 
     return 0;
