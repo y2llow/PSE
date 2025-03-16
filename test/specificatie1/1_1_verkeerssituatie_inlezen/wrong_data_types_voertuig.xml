@@ -12,12 +12,12 @@
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>20</positie>
+        <positie>Apple</positie>
     </VOERTUIG>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>0</positie>
+        <positie>Pineapple</positie>
     </VOERTUIG>
 
     <VOERTUIGGENERATOR>

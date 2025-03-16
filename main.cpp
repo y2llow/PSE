@@ -19,7 +19,7 @@ int main() {
 
     sim.ToString(); // implmented 2.1
 
-    while (sim.getVoertuigen().size() < 5) {
+    while (sim.getVoertuigen().size() < 10) {
         sim.simulationRun(); // implemnted 3.1
         sim.ToString();
     }

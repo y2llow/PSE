@@ -532,9 +532,10 @@ void simulation::voertuigenGenereren() {
 
 void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, int verkeerslichtCounter) {
     //  1. IF tijd sinds laatste verandering > cyclus
-    if (licht->getTijdSindsLaatsteVerandering() > licht->getCyclus()) {
+    licht->updateTijdSindsLaatsteVerandering(SIMULATIE_TIJD);
+
+    if(licht->getTijdSindsLaatsteVerandering() > licht->getCyclus()){
         licht->updateVerkeersLicht(); // 1.1 THEN verander de kleur van het licht (groen ↔ rood)
-        licht->updateTijdSindsLaatsteVerandering(SIMULATIE_TIJD);
     }
 
     vector<Verkeerslicht *> verkeerslichten_baan = verkeerslichtenOpBaan(licht);

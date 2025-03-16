@@ -1,22 +1,18 @@
-<!--In this XML file the syntax is totally correct, but the used datatypes are wrong-->
-<!--E.g. lengte must be an integer, but I set it to a string here-->
-<!--None of these elements should be implemented, and an exception will be thrown because of the stoi function-->
-
 <VERKEERSSITUATIE>
     <BAAN>
         <naam>Middelheimlaan</naam>
-        <lengte>TTT</lengte>
+        <lengte>1000</lengte>
     </BAAN>
 
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
         <positie>400</positie>
-        <cyclus>SHOULDBEINT</cyclus>
+        <cyclus>20</cyclus>
     </VERKEERSLICHT>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>5</positie>
+        <positie>1050</positie>
     </VOERTUIG>
 
     <VOERTUIG>
@@ -26,7 +22,7 @@
 
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
-        <frequentie>SHOULDBEINT</frequentie>
+        <frequentie>5</frequentie>
     </VOERTUIGGENERATOR>
 
 </VERKEERSSITUATIE>

@@ -1,10 +1,5 @@
 <VERKEERSSITUATIE>
-    <BAAN>
-        <naam>Middelheimlaan</naam>
-        <lengte>1000</lengte>
-    </BAAN>
-
-    <VERKEERSLICHT>
+        <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
         <positie>400</positie>
         <cyclus>20</cyclus>

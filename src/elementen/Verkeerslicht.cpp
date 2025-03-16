@@ -3,6 +3,7 @@
 //
 
 #include "Verkeerslicht.h"
+#include <iostream>
 
 string Verkeerslicht::getBaan() const {
     return baan;
@@ -48,6 +49,12 @@ void Verkeerslicht::setGroen(bool green) {
 void Verkeerslicht::updateVerkeersLicht() {
     groen = rood;
     rood = !rood;
+    if (rood){
+        std::cout<<"Licht is rood"<<endl;
+    }
+    else{
+        std::cout<<"Licht is groen"<<endl;
+    }
     herstartCyclus();
     
     // if (rood) {
