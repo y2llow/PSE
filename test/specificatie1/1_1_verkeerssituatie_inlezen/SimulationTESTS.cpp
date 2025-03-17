@@ -2,6 +2,7 @@
 // Created by AbEms on 3/12/2025.
 //
 
+#include <cmath>
 #include <fstream>
 #include <gtest/gtest.h>
 
@@ -62,6 +63,166 @@ TEST_F(SimulationTESTS, ConsistencyWithLightPositionGTLength) {
     sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verkeerslicht_positie_gt_baan_lengte.xml");
     ASSERT_FALSE(sim.isConsistent());
 }
+
+TEST_F(SimulationTESTS, ToStringOutputTest) {
+
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test3.xml"));
+
+    // Stel de simulatie tijd in
+    sim.incSimulationTime(); // Stel de tijd in op 10.0 seconden
+
+    // Omleiden van cout naar een stringstream om de uitvoer te vangen
+    std::stringstream buffer;
+    std::streambuf* oldCoutBuffer = std::cout.rdbuf(buffer.rdbuf());
+
+    // Roep de ToString()-methode aan
+    sim.ToString();
+
+    // Herstel de oorspronkelijke cout-buffer
+    std::cout.rdbuf(oldCoutBuffer);
+
+    // Verkrijg de uitvoer van de stringstream
+    std::string output = buffer.str();
+
+    // Verwachtte uitvoer
+    std::string expectedOutput =
+        "Tijd: 0.0166\nVoertuig 1\n-> baan: Middelheimlaan\n-> positie: 100\n\n";
+
+    // Vergelijk de uitvoer met de verwachte uitvoer
+    EXPECT_EQ(output, expectedOutput);
+}
+
+
+TEST_F(SimulationTESTS, BerekenPositieZeroAccelerationTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    // Initial values
+    Voertuig* v = sim.getVoertuigen()[0];
+    double initialPos = v->getPositie();
+    double initialSpeed = v->getSnelheid();
+
+    // Set acceleration to zero
+    v->setVersnelling(0.0);
+
+    // Calculate new position
+    sim.berekenPositie(v);
+
+    // Expected values with zero acceleration
+    double expectedSpeed = initialSpeed; // Speed remains the same
+    double expectedPos = initialPos + initialSpeed * SIMULATIE_TIJD; // Position increases linearly
+
+    // Check results
+    EXPECT_NEAR(v->getSnelheid(), expectedSpeed, 0.001);
+    EXPECT_NEAR(v->getPositie(), expectedPos, 0.001);
+}
+
+TEST_F(SimulationTESTS, BerekenVersnellingNoLeadingVehicleTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    // Get the first vehicle
+    Voertuig* v = sim.getVoertuigen()[0];
+
+    // Set initial speed and acceleration
+    v->setSnelheid(10.0);
+    v->setVersnelling(0.0);
+
+    // Calculate acceleration with no leading vehicle
+    sim.BerekenVersnelling(v, 0);
+
+    // Expected acceleration: MAX_VERSNELLING * (1 - (v->getSnelheid() / v->getKvmax())^4)
+    double expectedAcceleration = MAX_VERSNELLING * (1 - ::pow((v->getSnelheid() / v->getKvmax()), 4));
+
+    // Check results
+    EXPECT_NEAR(v->getVersnelling(), expectedAcceleration, 0.001);
+}
+
+TEST_F(SimulationTESTS, BerekenVersnellingWithLeadingVehicleTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test2.xml"));
+
+    // Get the first and second vehicles
+    Voertuig* v1 = sim.getVoertuigen()[0];
+    Voertuig* v2 = sim.getVoertuigen()[1];
+
+    // Set positions and speeds
+    v1->setPositie(100.0);
+    v1->setSnelheid(10.0);
+    v2->setPositie(120.0); // Leading vehicle
+    v2->setSnelheid(8.0);
+
+    // Calculate acceleration for the first vehicle
+    sim.BerekenVersnelling(v1, 0);
+
+
+    double volgafstand = v2->getPositie() - v1->getPositie() - LENGTE;
+    double snelheidVerschil = v1->getSnelheid() - v2->getSnelheid();
+
+    double newsnelheid = v1->getSnelheid() - snelheidVerschil;
+    double newversnelling = 2 * sqrt(MAX_VERSNELLING * MAX_REMFACTOR);
+
+    double calculate = v1->getSnelheid() + (newsnelheid / newversnelling);
+
+    double maxNummer = max(0.0, calculate);
+    auto delta = (MIN_VOLGAFSTAND + maxNummer) / volgafstand;
+
+    double expectedAcceleration = MAX_VERSNELLING * (1 - pow((v1->getSnelheid() / v1->getKvmax()), 4) - pow(delta, 2));
+
+    // Check results
+    EXPECT_NEAR(v1->getVersnelling(), expectedAcceleration, 0.001);
+}
+
+TEST_F(SimulationTESTS, VerkeerslichtCycleResetTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    // Get the first traffic light
+    Verkeerslicht* licht = sim.getVerkeerslichten()[0];
+
+    // Set initial time since last change to the cycle time
+    licht->updateTijdSindsLaatsteVerandering(licht->getCyclus());
+
+    // Update the traffic light
+    licht->updateVerkeersLicht();
+
+    // Check that the time since last change is reset
+    EXPECT_EQ(licht->getTijdSindsLaatsteVerandering(), 0);
+}
+
+// TEST_F(SimulationTESTS, VoertuigRemovalOffRoadTest) {
+//     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+//
+//     // Get the first vehicle
+//     Voertuig* v = sim.getVoertuigen()[0];
+//
+//     // Set the vehicle's position beyond the road length
+//     Baan* baan = sim.getBaanByName(v->getBaan());
+//     v->setPositie(baan->getLengte() + 10.0);
+//
+//     // Run the simulation to check if the vehicle is removed
+//     sim.simulationRun();
+//
+//     // Check that the vehicle is no longer in the simulation
+//     EXPECT_EQ(v, nullptr);
+// }
+
+TEST_F(SimulationTESTS, VerkeerslichtStateToggleTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    // Get the first traffic light
+    Verkeerslicht* licht = sim.getVerkeerslichten()[0];
+
+    // Initial state
+    bool initialRood = licht->isRood();
+    bool initialGroen = licht->isGroen();
+
+    // Update the traffic light
+    licht->updateVerkeersLicht();
+
+    // Check that the states have toggled
+    EXPECT_EQ(licht->isRood(), !initialRood);
+    EXPECT_EQ(licht->isGroen(), !initialGroen);
+}
+
+
+
 
 
 int main(int argc, char **argv) {
