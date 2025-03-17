@@ -25,7 +25,8 @@ TEST_F(SimulationTESTS, EmptyXMLFileTest) {
 }
 
 TEST_F(SimulationTESTS, DifferentOrderOfElements) {
-    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml");
+    sim.parseXMLAndCreateObjects(
+        "../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml");
     EXPECT_EQ(int(sim.getVoertuigen().size()), 2);
     EXPECT_EQ(int(sim.getBanen().size()), 1);
     EXPECT_EQ(int(sim.getVoertuiggeneratoren().size()), 1);
@@ -39,7 +40,8 @@ TEST_F(SimulationTESTS, GoodSyntaxWrongDataTypeVoertuig) {
 }
 
 TEST_F(SimulationTESTS, GoodSyntaxWrongDataTypeVerkeerslicht) {
-    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types_verkeerslicht.xml");
+    sim.parseXMLAndCreateObjects(
+        "../test/specificatie1/1_1_verkeerssituatie_inlezen/wrong_data_types_verkeerslicht.xml");
     EXPECT_EQ(int(sim.getVerkeerslichten().size()), 0);
 }
 
@@ -54,13 +56,30 @@ TEST_F(SimulationTESTS, ConsistencyWithoutBaan) {
 }
 
 TEST_F(SimulationTESTS, ConsistencyWithVehiclePositionGTLength) {
-    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/voertuig_positie_gt_baan_lengte.xml");
+    sim.parseXMLAndCreateObjects(
+        "../test/specificatie1/1_1_verkeerssituatie_inlezen/voertuig_positie_gt_baan_lengte.xml");
     ASSERT_FALSE(sim.isConsistent());
 }
 
 TEST_F(SimulationTESTS, ConsistencyWithLightPositionGTLength) {
-    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/verkeerslicht_positie_gt_baan_lengte.xml");
+    sim.parseXMLAndCreateObjects(
+        "../test/specificatie1/1_1_verkeerssituatie_inlezen/verkeerslicht_positie_gt_baan_lengte.xml");
     ASSERT_FALSE(sim.isConsistent());
+}
+
+TEST_F(SimulationTESTS, VoertuigWordtVerwijderd) {
+    // De voertuig moet verwijderd worden als het buidten de baan is
+
+    sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/voertuig_verwijderen.xml");
+    int initial_size = sim.getVoertuigen().size();
+
+    for (int i = 0; i < 10; i++) {
+        sim.simulationRun();
+    }
+
+    int new_size = sim.getVoertuigen().size();
+
+    ASSERT_EQ(new_size, initial_size - 1);
 }
 
 

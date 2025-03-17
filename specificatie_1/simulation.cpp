@@ -401,8 +401,6 @@ bool simulation::isVoertuigOpBaan(const Voertuig *v) {
 void simulation::simulationRun() {
     int counter = 0;
 
-    // 3.4. Simulatie met voertuiggenerator
-    voertuigenGenereren();
 
     for (Voertuig *v: voertuigen) {
         // 3.1 Updated voertuig positie en snelheid
@@ -422,6 +420,9 @@ void simulation::simulationRun() {
 
         counter++;
     }
+
+    // 3.4. Simulatie met voertuiggenerator
+    voertuigenGenereren();
 
     int verkeerslichtCounter = 0;
     for (Verkeerslicht *l: verkeerslichten) {
