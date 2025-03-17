@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "specificatie_1/simulation.h"
+#include "src/simulatie/simulation.h"
 
 using namespace std;
 

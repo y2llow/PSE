@@ -24,7 +24,7 @@ set(RELEASE_SOURCE_FILES
         src/elementen/Baan.cpp
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
-        specificatie_1/simulation.cpp
+        src/simulatie/simulation.cpp
         main.cpp
         src/elementen/Constants.h
 )
@@ -39,7 +39,7 @@ set(DEBUG_SOURCE_FILES
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
         test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
-        specificatie_1/simulation.cpp
+        src/simulatie/simulation.cpp
         src/elementen/Constants.h
 )
 
