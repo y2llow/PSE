@@ -21,8 +21,10 @@ int main() {
     //     sim.simulationRun(); // implemnted 3.1}
     // };
     for (int i =0; i < 1000 ;i++) {
-        sim.ToString(); // implmented 2.1
-        sim.simulationRun(); // implemnted 3.1}
+        for (int j =0; j < 10 ;i++) {
+            sim.ToString(); // implmented 2.1
+            sim.simulationRun(); // implemnted 3.1}
+        }
     };
 
     sim.ToString();

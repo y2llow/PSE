@@ -583,12 +583,13 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
             } else if (isVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                 eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
-            }
-            else {
+            } else if  (((eerstVoertuigVoorLicht->getPositie() > licht->getPositie() - STOP_AFSTAND / 2) == true) &&
+                ((eerstVoertuigVoorLicht->getPositie() < licht->getPositie()) == true)) {
                 eerstVoertuigVoorLicht->setSnelheid(0);
                 eerstVoertuigVoorLicht->setVersnelling(0);
+            }else {
+                BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
             }
-                    // Voor als auto zou moeten stoppen in 2de helft stopzone
         }
     }
 }
