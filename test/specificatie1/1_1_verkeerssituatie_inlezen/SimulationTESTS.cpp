@@ -116,6 +116,25 @@ TEST_F(SimulationTESTS, BerekenPositieZeroAccelerationTest) {
     EXPECT_NEAR(v->getPositie(), expectedPos, 0.001);
 }
 
+//test: voor 3.1 de updatePositieEnSnelheidsTest
+TEST_F(SimulationTESTS, UpdatePositieEnSnelheidTest) {
+
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    Voertuig* voertuig = sim.getVoertuigen()[0];
+
+    //stel waarden in
+    voertuig->setSnelheid(50.0);
+    voertuig->setVersnelling(10.0);
+
+    //bewaar initiële positie
+    double initielePositie = voertuig->getPositie();
+
+    sim.updateVoertuig(voertuig, 0);
+
+    EXPECT_TRUE(voertuig->getPositie() > initielePositie);
+}
+
 TEST_F(SimulationTESTS, BerekenVersnellingNoLeadingVehicleTest) {
     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
 
