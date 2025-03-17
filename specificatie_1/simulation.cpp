@@ -297,16 +297,13 @@ bool simulation::isConsistent() const {
 }
 
 void simulation::ToString() {
-    cout << "------------- SIMULATIE " << getSimulationTime() << " ------------- " << endl;
-
     cout << "Tijd: " << getincSimulationTime() << endl;
 
     for (Voertuig *voertuig: voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
                 << "-> baan: " << voertuig->getBaan() << "\n"
-                << "-> positie: " << voertuig->getPositie() << "\n"
-                << "-> snelheid: " << voertuig->getSnelheid() << "\n"
-                << "-> versnelling: " << voertuig->getVersnelling() << "\n" << endl;
+                << "-> positie: " << voertuig->getPositie() << "\n"<< endl;
+
     }
 }
 
@@ -401,6 +398,8 @@ bool simulation::isVoertuigOpBaan(const Voertuig *v) {
 void simulation::simulationRun() {
     int counter = 0;
 
+    // 3.4. Simulatie met voertuiggenerator
+    voertuigenGenereren();
 
     for (Voertuig *v: voertuigen) {
         // 3.1 Updated voertuig positie en snelheid
@@ -421,8 +420,6 @@ void simulation::simulationRun() {
         counter++;
     }
 
-    // 3.4. Simulatie met voertuiggenerator
-    voertuigenGenereren();
 
     int verkeerslichtCounter = 0;
     for (Verkeerslicht *l: verkeerslichten) {
@@ -437,7 +434,7 @@ void simulation::simulationRun() {
 
 bool simulation::isVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l) {
     // Bepaal of het voertuig binnen de vertragingsafstand is
-    bool isInVertraagZone = v->getPositie() - l->getPositie() <= VERTRAAG_AFSTAND;
+    bool isInVertraagZone = abs(v->getPositie() - l->getPositie()) <= VERTRAAG_AFSTAND;
 
     // Bepaal of het voertuig buiten de stopzone is
     bool isOutsideStopZone = v->getPositie() < l->getPositie() - STOP_AFSTAND;

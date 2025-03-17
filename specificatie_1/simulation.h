@@ -10,6 +10,7 @@
 #include "../../src/elementen/Voertuig.h"
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Voertuiggenerator.h"
+#include "../../src/elementen/Constants.h"
 
 using namespace std;
 
