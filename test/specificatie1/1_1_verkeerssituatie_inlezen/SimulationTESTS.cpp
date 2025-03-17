@@ -189,6 +189,60 @@ TEST_F(SimulationTESTS, BerekenVersnellingWithLeadingVehicleTest) {
     EXPECT_NEAR(v1->getVersnelling(), expectedAcceleration, 0.001);
 }
 
+//test: voor 3.2 test voor het vertragen van een voertuig bij een rood verkeerslicht
+TEST_F(SimulationTESTS, VertragenBijRoodLicht) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test4.xml"));
+
+    Voertuig* voertuig = sim.getVoertuigen()[0];
+
+    // Sla de initiële snelheid op
+    double initieleSnelheid = voertuig->getSnelheid();
+
+    // Voer een simulatiestap uit
+    sim.simulationRun();
+
+    // Controleer of het voertuig is vertraagd
+    EXPECT_EQ(voertuig->getSnelheid(), initieleSnelheid);
+}
+
+TEST_F(SimulationTESTS, VersnellenBijGroenLicht) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test5.xml"));
+
+    Voertuig* voertuig = sim.getVoertuigen()[0];
+
+    // Sla de initiële snelheid op
+    double initieleSnelheid = voertuig->getSnelheid();
+
+    // Voer meerdere simulatiestappen uit
+    for (int i = 0; i < 50; i++) {
+        sim.simulationRun();
+    }
+
+    // Controleer of het voertuig is versneld
+    EXPECT_GT(voertuig->getSnelheid(), initieleSnelheid);
+}
+
+TEST_F(SimulationTESTS, BijwerkenAlleVoertuigen) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test6.xml"));
+
+    Voertuig* voertuig1 = sim.getVoertuigen()[0];
+    Voertuig* voertuig2 = sim.getVoertuigen()[1];
+    Voertuig* voertuig3 = sim.getVoertuigen()[2];
+
+    // Sla de initiële posities op
+    double initPositie1 = voertuig1->getPositie();
+    double initPositie2 = voertuig2->getPositie();
+    double initPositie3 = voertuig3->getPositie();
+
+    // Voer één simulatiestap uit
+    sim.simulationRun();
+
+    // Controleer of alle voertuigen zijn bijgewerkt
+    EXPECT_GT(voertuig1->getPositie(), initPositie1);
+    EXPECT_GT(voertuig2->getPositie(), initPositie2);
+    EXPECT_GT(voertuig3->getPositie(), initPositie3);
+}
+
 TEST_F(SimulationTESTS, VerkeerslichtCycleResetTest) {
     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
 

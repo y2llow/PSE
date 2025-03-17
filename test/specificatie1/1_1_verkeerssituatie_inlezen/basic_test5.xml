@@ -1,0 +1,17 @@
+<SIMULATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>300</positie>
+        <cyclus>20</cyclus>
+        <groen>true</groen>
+    </VERKEERSLICHT>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>280</positie>
+        <snelheid>5.0</snelheid>
+    </VOERTUIG>
+</SIMULATIE>
