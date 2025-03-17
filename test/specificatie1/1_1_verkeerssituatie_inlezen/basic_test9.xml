@@ -1,11 +1,10 @@
 <SIMULATIE>
     <BAAN>
         <naam>TestBaan</naam>
-        <lengte>200</lengte>
+        <lengte>500</lengte>
     </BAAN>
-    <VOERTUIG>
+    <VOERTUIGGENERATOR>
         <baan>TestBaan</baan>
-        <positie>195</positie>
-        <snelheid>30.0</snelheid>
-    </VOERTUIG>
+        <frequentie>1</frequentie>
+    </VOERTUIGGENERATOR>
 </SIMULATIE>

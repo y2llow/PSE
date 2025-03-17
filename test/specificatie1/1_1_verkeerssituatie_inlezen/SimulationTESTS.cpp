@@ -328,7 +328,7 @@ TEST_F(SimulationTESTS, BijwerkenAlleVerkeerslichten) {
 
 TEST_F(SimulationTESTS, ComplexeSimulatie) {
     // Parse het XML-bestand
-    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test7.xml"));
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test8.xml"));
 
     // Voer meerdere simulatiestappen uit
     for (int i = 0; i < 2000; i++) {
@@ -344,6 +344,53 @@ TEST_F(SimulationTESTS, ComplexeSimulatie) {
 
     // Controleer of er minder voertuigen zijn dan initieel
     EXPECT_LT(vergelijking, 5);
+}
+
+TEST_F(SimulationTESTS, VoertuiggeneratorToevoegenVoertuig) {
+    // Parse het XML-bestand
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test9.xml"));
+
+    int  vergelijking = static_cast<int>(sim.getVoertuigen().size());
+    // Controleer initieel aantal voertuigen
+    EXPECT_EQ( vergelijking, 0);
+
+    // Voer voldoende tijdstappen uit om een voertuig te genereren
+    for (int i = 0; i < 100; i++) {
+        sim.simulationRun();
+    }
+    int  vergelijkingen = static_cast<int>(sim.getVoertuigen().size());
+
+
+    // Controleer of er minstens één voertuig is gegenereerd
+    EXPECT_GE(vergelijkingen, 1);
+}
+
+TEST_F(SimulationTESTS, MeerdereVoertuiggeneratoren) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test10.xml"));
+
+    int  vergelijkingen = static_cast<int>(sim.getVoertuigen().size());
+    // Controleer initieel aantal voertuigen
+    EXPECT_EQ(vergelijkingen, 0);
+
+    // Voer voldoende tijdstappen uit om voertuigen te genereren
+    for (int i = 0; i < 1000; i++) {
+        sim.simulationRun();
+    }
+
+    // Tel het aantal voertuigen per baan
+    int voertuigenBaan1 = 0;
+    int voertuigenBaan2 = 0;
+
+    for (Voertuig* voertuig : sim.getVoertuigen()) {
+        if (voertuig->getBaan() == "Baan1") {
+            voertuigenBaan1++;
+        } else if (voertuig->getBaan() == "Baan2") {
+            voertuigenBaan2++;
+        }
+    }
+
+    // Controleer of er meer voertuigen zijn gegenereerd op Baan1 dan op Baan2
+    EXPECT_GT(voertuigenBaan1, voertuigenBaan2);
 }
 
 

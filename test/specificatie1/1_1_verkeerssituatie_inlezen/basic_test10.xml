@@ -1,0 +1,18 @@
+<SIMULATIE>
+    <BAAN>
+        <naam>Baan1</naam>
+        <lengte>500</lengte>
+    </BAAN>
+    <BAAN>
+        <naam>Baan2</naam>
+        <lengte>500</lengte>
+    </BAAN>
+    <VOERTUIGGENERATOR>
+        <baan>Baan1</baan>
+        <frequentie>1</frequentie>
+    </VOERTUIGGENERATOR>
+    <VOERTUIGGENERATOR>
+        <baan>Baan2</baan>
+        <frequentie>5</frequentie>
+    </VOERTUIGGENERATOR>
+</SIMULATIE>
