@@ -1,0 +1,11 @@
+<SIMULATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>200</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>195</positie>
+        <snelheid>30.0</snelheid>
+    </VOERTUIG>
+</SIMULATIE>

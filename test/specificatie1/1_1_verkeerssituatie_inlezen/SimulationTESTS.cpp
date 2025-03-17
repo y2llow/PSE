@@ -294,6 +294,57 @@ TEST_F(SimulationTESTS, VerkeerslichtStateToggleTest) {
     EXPECT_EQ(licht->isGroen(), !initialGroen);
 }
 
+TEST_F(SimulationTESTS, BijwerkenAlleVerkeerslichten) {
+    // Parse het XML-bestand
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test7.xml"));
+
+    // Haal de verkeerslichten op
+    Verkeerslicht* verkeerslicht1 = sim.getVerkeerslichten()[0];
+    Verkeerslicht* verkeerslicht2 = sim.getVerkeerslichten()[1];
+
+    // Bereken het aantal tijdstappen nodig voor cyclus van verkeerslicht1
+    int aantalStappen = ceil(verkeerslicht1->getCyclus() / SIMULATIE_TIJD);
+
+    // Voer voldoende tijdstappen uit voor verkeerslicht1 om te veranderen
+    for (int i = 0; i < aantalStappen + 5; i++) {
+        sim.simulationRun();
+    }
+
+    // Controleer of verkeerslicht1 is veranderd naar groen
+    EXPECT_FALSE(verkeerslicht1->isGroen());
+    EXPECT_TRUE(verkeerslicht2->isGroen()); // Verkeerslicht2 zou nog rood moeten zijn
+
+    // Bereken extra stappen nodig voor verkeerslicht2 om te veranderen
+    int extraStappen = ceil((verkeerslicht2->getCyclus() - verkeerslicht1->getCyclus()) / SIMULATIE_TIJD);
+
+    // Voer de extra stappen uit
+    for (int i = 0; i < extraStappen + 5; i++) {
+        sim.simulationRun();
+    }
+
+    // Controleer of verkeerslicht2 nu ook groen is
+    EXPECT_FALSE(verkeerslicht2->isGroen());
+}
+
+TEST_F(SimulationTESTS, ComplexeSimulatie) {
+    // Parse het XML-bestand
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test7.xml"));
+
+    // Voer meerdere simulatiestappen uit
+    for (int i = 0; i < 2000; i++) {
+        sim.simulationRun();
+
+        // Als alle voertuigen weg zijn, stop de loop
+        if (sim.getVoertuigen().empty()) {
+            break;
+        }
+    }
+
+    int  vergelijking = static_cast<int>(sim.getVoertuigen().size());
+
+    // Controleer of er minder voertuigen zijn dan initieel
+    EXPECT_LT(vergelijking, 5);
+}
 
 
 
