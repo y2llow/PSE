@@ -430,6 +430,55 @@ TEST_F(SimulationTESTS, VoertuiggeneratorEnVerkeerslichtsimulatie) {
         EXPECT_GT((maxPositie - minPositie), 100.0);
     }
 }
+TEST_F(SimulationTESTS, HappiestDayTest) {
+    // Parse het XML-bestand
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/happiestday.xml"));
+
+    // Controleer of alle elementen correct zijn ingeladen
+    EXPECT_EQ(static_cast<int>(sim.getBanen().size()), 1); // Er is één baan
+    EXPECT_EQ(static_cast<int>(sim.getVoertuiggeneratoren().size()), 1); // Er is één voertuiggenerator
+    EXPECT_EQ(static_cast<int>(sim.getVerkeerslichten().size()), 2); // Er zijn twee verkeerslichten
+    EXPECT_EQ(static_cast<int>(sim.getVoertuigen().size()), 2); // Er zijn twee voertuigen
+
+    // Voer de simulatie uit voor 1000 stappen (een "happiest day" scenario)
+    for (int i = 0; i < 1000; i++) {
+        sim.simulationRun();
+
+        // Controleer of alle voertuigen binnen de baan zijn
+        for (Voertuig* voertuig : sim.getVoertuigen()) {
+            Baan* baan = sim.getBaanByName(voertuig->getBaan());
+            ASSERT_NE(baan, nullptr); // Zorg ervoor dat de baan bestaat
+
+            // Controleer of de positie van het voertuig binnen de baanlengte valt
+            EXPECT_GE(voertuig->getPositie(), 0); // Positie moet >= 0 zijn
+            EXPECT_LE(voertuig->getPositie(), baan->getLengte()); // Positie moet <= baanlengte zijn
+        }
+
+        // Controleer of de verkeerslichten correct werken
+        for (Verkeerslicht* verkeerslicht : sim.getVerkeerslichten()) {
+            EXPECT_TRUE(verkeerslicht->isGroen() || verkeerslicht->isRood()); // Licht moet groen of rood zijn
+        }
+    }
+
+    // Controleer of er nieuwe voertuigen zijn gegenereerd
+    EXPECT_GT(static_cast<int>(sim.getVoertuigen().size()), 2); // Er moeten meer dan 2 voertuigen zijn (vanwege de generator)
+
+    // Controleer of alle voertuigen nog steeds binnen de baan zijn
+    for (Voertuig* voertuig : sim.getVoertuigen()) {
+        Baan* baan = sim.getBaanByName(voertuig->getBaan());
+        ASSERT_NE(baan, nullptr); // Zorg ervoor dat de baan bestaat
+
+        // Controleer of de positie van het voertuig binnen de baanlengte valt
+        EXPECT_GE(voertuig->getPositie(), 0); // Positie moet >= 0 zijn
+        EXPECT_LE(voertuig->getPositie(), baan->getLengte()); // Positie moet <= baanlengte zijn
+    }
+
+    // Controleer of de verkeerslichten nog steeds correct werken
+    for (Verkeerslicht* verkeerslicht : sim.getVerkeerslichten()) {
+        EXPECT_TRUE(verkeerslicht->isGroen() || verkeerslicht->isRood()); // Licht moet groen of rood zijn
+    }
+
+}
 
 
 

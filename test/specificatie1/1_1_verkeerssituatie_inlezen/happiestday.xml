@@ -1,0 +1,33 @@
+<SIMULATIE>
+    <BAAN>
+        <naam>PerfecteBaan</naam>
+        <lengte>1000</lengte>
+    </BAAN>
+
+    <VOERTUIGGENERATOR>
+        <baan>PerfecteBaan</baan>
+        <frequentie>5</frequentie>
+    </VOERTUIGGENERATOR>
+
+    <VERKEERSLICHT>
+        <baan>PerfecteBaan</baan>
+        <positie>300</positie>
+        <cyclus>10</cyclus>
+    </VERKEERSLICHT>
+    <VERKEERSLICHT>
+        <baan>PerfecteBaan</baan>
+        <positie>600</positie>
+        <cyclus>10</cyclus>
+    </VERKEERSLICHT>
+
+    <VOERTUIG>
+        <baan>PerfecteBaan</baan>
+        <positie>100</positie>
+        <snelheid>16.6</snelheid>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>PerfecteBaan</baan>
+        <positie>400</positie>
+        <snelheid>16.6</snelheid>
+    </VOERTUIG>
+</SIMULATIE>
