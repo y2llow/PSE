@@ -12,6 +12,7 @@
 #include "../../src/elementen/Voertuiggenerator.h"
 #include "../../src/elementen/Constants.h"
 
+class SimPrinter;
 using namespace std;
 
 class simulation {
@@ -24,9 +25,9 @@ class simulation {
     double simulationincreasedTime = 0;
     double lastGeneretedVoertuigTime = 0;
     int voertuigLastId = 1; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
-
+    static SimPrinter *simPrinter;
 public:
-    simulation(SimPrinter*) = default;
+    simulation(SimPrinter*);
 
     bool parseXMLAndCreateObjects(const std::string &filename);
 

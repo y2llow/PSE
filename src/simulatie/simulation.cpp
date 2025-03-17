@@ -3,7 +3,7 @@
 //
 
 #include "simulation.h"
-#include "../src/elementen/Constants.h"
+#include "../elementen/Constants.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -228,19 +228,39 @@ bool simulation::parseXMLAndCreateObjects(const string &filename) {
 }
 
 vector<Baan *> simulation::getBanen() const {
-    return banen;
+    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
+    vector<Baan*> bb;
+    for (auto* b : banen) {
+        bb.push_back(b);
+    }
+    return bb;
 }
 
 vector<Voertuig *> simulation::getVoertuigen() const {
-    return voertuigen;
+    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
+    vector<Voertuig*> vv;
+    for (auto* b : voertuigen) {
+        vv.push_back(b);
+    }
+    return vv;
 }
 
 vector<Verkeerslicht *> simulation::getVerkeerslichten() const {
-    return verkeerslichten;
+    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
+    vector<Verkeerslicht*> vv;
+    for (auto* b : verkeerslichten) {
+        vv.push_back(b);
+    }
+    return vv;
 }
 
 vector<Voertuiggenerator *> simulation::getVoertuiggeneratoren() const {
-    return voertuiggeneratoren;
+    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
+    vector<Voertuiggenerator*> vv;
+    for (auto* b : voertuiggeneratoren) {
+        vv.push_back(b);
+    }
+    return vv;
 }
 
 bool simulation::isConsistent() const {
