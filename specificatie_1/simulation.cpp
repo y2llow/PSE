@@ -298,11 +298,13 @@ bool simulation::isConsistent() const {
 
 void simulation::ToString() {
     cout << "Tijd: " << getincSimulationTime() << endl;
+    simPrinter.printStatus(voertuig, time);
 
     for (Voertuig *voertuig: voertuigen) {
         cout << "Voertuig " << voertuig->getId() << "\n"
                 << "-> baan: " << voertuig->getBaan() << "\n"
                 << "-> positie: " << voertuig->getPositie() << "\n"<< endl;
+                << "-> Kleur: ...."
 
     }
 }
@@ -392,10 +394,16 @@ void simulation::updateVoertuig(Voertuig *v, int counter) const {
 bool simulation::isVoertuigOpBaan(const Voertuig *v) {
     Baan *baan = getBaanByName(v->getBaan()); // de baan van de voertuig
 
+    Baan* baan = v->getBaan();
+
     return v->getPositie() <= baan->getLengte();
 }
 
 void simulation::simulationRun() {
+
+        for voertuig:
+            voertuig.simulate();
+
     int counter = 0;
 
     // 3.4. Simulatie met voertuiggenerator
@@ -407,7 +415,7 @@ void simulation::simulationRun() {
 
         if (!isVoertuigOpBaan(v)) {
             // Vehicle is no longer on the road, so remove it from the vector and delete it
-            __gnu_cxx::__normal_iterator<Voertuig **, vector<Voertuig *> > it = find(
+            auto it = find(
                 voertuigen.begin(), voertuigen.end(), v); // Find the iterator for v
 
             if (it != voertuigen.end()) {

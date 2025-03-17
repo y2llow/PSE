@@ -26,7 +26,7 @@ class simulation {
     int voertuigLastId = 1; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
 
 public:
-    simulation() = default;
+    simulation(SimPrinter*) = default;
 
     bool parseXMLAndCreateObjects(const std::string &filename);
 

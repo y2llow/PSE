@@ -55,6 +55,8 @@ public:
     void setKvmax(double kvmax);
 
     void UpdateVersnellingVoorStoppen();
+
+    void simulateStep();
 };
 
 

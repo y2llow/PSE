@@ -20,10 +20,10 @@ link_directories(./gtest/lib)
 # Make sure the "main" function is in "main_release"!
 set(RELEASE_SOURCE_FILES
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
-        src/Elementen/Verkeerslicht.cpp
-        src/Elementen/Baan.cpp
-        src/Elementen/Voertuig.cpp
-        src/Elementen/Voertuiggenerator.cpp
+        src/elementen/Verkeerslicht.cpp
+        src/elementen/Baan.cpp
+        src/elementen/Voertuig.cpp
+        src/elementen/Voertuiggenerator.cpp
         specificatie_1/simulation.cpp
         main.cpp
         src/elementen/Constants.h
@@ -34,10 +34,10 @@ set(RELEASE_SOURCE_FILES
 # Make sure the "main" function is in "main_debug"!
 set(DEBUG_SOURCE_FILES
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
-        src/Elementen/Verkeerslicht.cpp
-        src/Elementen/Baan.cpp
-        src/Elementen/Voertuig.cpp
-        src/Elementen/Voertuiggenerator.cpp
+        src/elementen/Verkeerslicht.cpp
+        src/elementen/Baan.cpp
+        src/elementen/Voertuig.cpp
+        src/elementen/Voertuiggenerator.cpp
         test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         specificatie_1/simulation.cpp
         src/elementen/Constants.h

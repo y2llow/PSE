@@ -12,7 +12,6 @@
 using namespace std;
 
 class Verkeerslicht {
-public:
     string baan;
     double positie;
     double cyclus;
@@ -20,7 +19,7 @@ public:
     bool groen = true;
     double tijdSindsLaatsteVerandering = 0;
 
-
+public:
     string getBaan() const ;
 
     void setBaan(const string &baan);
