@@ -7,225 +7,29 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "simulation.h"
 #include "../../src/TinyXML/tinyxml.h"
 #include <algorithm>
 #include <cmath>
 
+#include "SimPrinter.h"
 
-// Function to parse XML and create appropriate objects
-bool simulation::parseXMLAndCreateObjects(const string &filename) {
-    TiXmlDocument doc;
-    if (!doc.LoadFile(filename.c_str())) {
-        cerr << "Error loading file: " << doc.ErrorDesc() << endl;
-        return false;
-    }
 
-    TiXmlElement *root = doc.FirstChildElement();
-    if (!root) {
-        cerr << "Failed to load file: No root element." << endl;
-        return true;
-    }
-
-    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
-        string elementType = elem->Value();
-
-        if (elementType == "BAAN") {
-            Baan *baan = new Baan();
-            bool geldig = true;
-            // Loop through sub-elements to get properties
-            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
-                 subElem = subElem->NextSiblingElement()) {
-                string propertyName = subElem->Value();
-
-                if (propertyName == "naam") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een baan zonder naam!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    baan->setNaam(subElem->GetText());
-                } else if (propertyName == "lengte") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een baan zonder lengte!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        baan->setLengte(stoi(subElem->GetText()));
-                    } catch (exception &) {
-                        cerr << "De lengte van een baan is geen integer!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                }
-            }
-            if (geldig) { banen.push_back(baan); } // Add to vector
-        } else if (elementType == "VOERTUIG") {
-            Voertuig *voertuig = new Voertuig();
-            bool geldig = true;
-
-            voertuig->setId(voertuigLastId);
-            voertuigLastId++;
-
-            voertuig->setSnelheid(16.6); // TODO vw dit mischien
-            //we geven vMax de waarde van Vmax
-            voertuig->setKvmax(MAX_SNELHEID);
-
-            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
-                 subElem = subElem->NextSiblingElement()) {
-                string propertyName = subElem->Value();
-
-                if (propertyName == "baan") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een voertuig zonder baan!" << endl;
-                        geldig = false;
-                        break;
-                    }
-
-                    // Dit kan tot problemen en errors lijden als de voertuigen zijn eerst gedefinierd in de xml bestand voor de Baan
-                    // Baan voertuigbaan;
-                    // for (Baan* baan : banen) {
-                    //     if (baan->getNaam() == subElem->GetText()) {
-                    //         voertuigbaan.setNaam(baan->getNaam());
-                    //         voertuigbaan.setLengte(baan->getLengte());
-                    //     }
-                    // }
-
-                    voertuig->setBaan(subElem->GetText());
-                } else if (propertyName == "snelheid") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een voertuig zonder snelheid!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    string snelheidstring = subElem->GetText();
-
-                    try {
-                        double snelheid = std::stod(snelheidstring);
-                        voertuig->setSnelheid(snelheid);
-                        geldig = stoi(subElem->GetText()) >= 0; // snelheid moet positief zijn
-                    } catch (exception &) {
-                        cerr << "De snelheid van een voertuig is geen double!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                } else if (propertyName == "positie") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een voertuig zonder positie!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        voertuig->setPositie(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // positie moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een voertuig waarvan de positie geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                }
-            }
-            if (geldig) voertuigen.push_back(voertuig);
-        } else if (elementType == "VERKEERSLICHT") {
-            Verkeerslicht *verkeerslicht = new Verkeerslicht();
-            bool geldig = true;
-
-            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
-                 subElem = subElem->NextSiblingElement()) {
-                string propertyName = subElem->Value();
-
-                if (propertyName == "baan") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder baan!" << endl;
-                        geldig = false;
-                        break;
-                    }
-
-                    // Dit leidt tot problemen als het verkeerslicht gedefinieerd is voor de Baan in de xml file
-                    // Baan Verkeerslichtbaan;
-                    // for (Baan * baan : banen) {
-                    //     if (baan->getNaam() == subElem->GetText()) {
-                    //         Verkeerslichtbaan.setNaam(baan->getNaam());
-                    //         Verkeerslichtbaan.setLengte(baan->getLengte());
-                    //     }
-                    // }
-                    verkeerslicht->setBaan(subElem->GetText());
-                } else if (propertyName == "positie") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder positie!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        verkeerslicht->setPositie(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                } else if (propertyName == "cyclus") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder cyclus!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        verkeerslicht->setCyclus(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                }
-            }
-            if (geldig) verkeerslichten.push_back(verkeerslicht);
-        } else if (elementType == "VOERTUIGGENERATOR") {
-            Voertuiggenerator *generator = new Voertuiggenerator();
-            bool geldig = true;
-
-            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
-                 subElem = subElem->NextSiblingElement()) {
-                string propertyName = subElem->Value();
-
-                if (propertyName == "baan") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een VOERTUIGGENERATOR zonder baan!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    generator->setBaan(subElem->GetText());
-                } else if (propertyName == "frequentie") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een frequentie zonder baan!" << endl;
-                        geldig = false;
-                        break;
-                    }
-
-                    try {
-                        int freq = stoi(subElem->GetText());
-                        generator->setFrequentie(freq);
-                        geldig = freq >= 0; // frequentie moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                }
-            }
-
-            if (geldig) voertuiggeneratoren.push_back(generator);
-        } else {
-            cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
-        }
-    }
-
-    sortVoertuigenByPosition();
-    sortVerkeersLichtByPosition();
-    return true;
+int simulation::getVoertuigLastId() const {
+    return voertuigLastId;
 }
+
+void simulation::increaseVoertuigLastId() {
+    voertuigLastId++;
+}
+
+// SimPrinter * simulation::getSimPrinter() const {
+//     return simPrinter;
+// }
+//
+// void simulation::setSimPrinter(SimPrinter * const sim_printer) {
+//     simPrinter = sim_printer;
+// }
+
 
 vector<Baan *> simulation::getBanen() const {
     // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
@@ -270,29 +74,29 @@ bool simulation::isConsistent() const {
 
     // Elk voertuig staat op een bestaande baan
     for (Voertuig *const&v: voertuigen) {
-        if (getBaanByName(v->getBaan()) == nullptr) return false;
+        if (v->getBaan() == nullptr) return false;
     }
 
     // Elk verkeerslicht staat op een bestaande baan
     for (Verkeerslicht *const&v: verkeerslichten) {
-        if (getBaanByName(v->getBaan()) == nullptr) return false;
+        if (v->getBaan() == nullptr) return false;
     }
 
     // Elke voertuiggenerator staat op een bestaande baan
     for (Voertuiggenerator *const&v: voertuiggeneratoren) {
-        if (getBaanByName(v->getBaan()) == nullptr) return false;
+        if (v->getBaan() == nullptr) return false;
     }
 
     // De positie van elk voertuig is kleiner dan de lengte van de baan
     for (Voertuig *const&v: voertuigen) {
-        if (v->getPositie() > getBaanByName(v->getBaan())->getLengte()) {
+        if (v->getPositie() > v->getBaan()->getLengte()) {
             return false;
         }
     }
 
     // De positie van elk verkeerslicht is kleiner dan de lengte van de baan
     for (Verkeerslicht *const&v: verkeerslichten) {
-        if (v->getPositie() > getBaanByName(v->getBaan())->getLengte()) {
+        if (v->getPositie() > v->getBaan()->getLengte()) {
             return false;
         }
     }
@@ -304,7 +108,7 @@ bool simulation::isConsistent() const {
     }
 
     for (Voertuiggenerator *const&v: voertuiggeneratoren) {
-        vg_op_banen[v->getBaan()] += 1;
+        vg_op_banen[v->getBaan()->getNaam()] += 1;
     }
 
     for (const pair<const string, int> &k: vg_op_banen) {
@@ -317,14 +121,9 @@ bool simulation::isConsistent() const {
 }
 
 void simulation::ToString() {
-    cout << "Tijd: " << getincSimulationTime() << endl;
-    simPrinter.printStatus(voertuig, time);
 
     for (Voertuig *voertuig: voertuigen) {
-        cout << "Voertuig " << voertuig->getId() << "\n"
-                << "-> baan: " << voertuig->getBaan() << "\n"
-                << "-> positie: " << voertuig->getPositie() << "\n"<< endl;
-                << "-> Kleur: ...."
+        SimPrinter::printStatus(voertuig, getincSimulationTime());
 
     }
 }
@@ -412,7 +211,7 @@ void simulation::updateVoertuig(Voertuig *v, int counter) const {
 }
 
 bool simulation::isVoertuigOpBaan(const Voertuig *v) {
-    Baan *baan = getBaanByName(v->getBaan()); // de baan van de voertuig
+    // Baan *baan = getBaanByName(v->getBaan()); TODO:// de baan van de voertuig
 
     Baan* baan = v->getBaan();
 
@@ -421,8 +220,7 @@ bool simulation::isVoertuigOpBaan(const Voertuig *v) {
 
 void simulation::simulationRun() {
 
-        for voertuig:
-            voertuig.simulate();
+
 
     int counter = 0;
 
@@ -430,6 +228,10 @@ void simulation::simulationRun() {
     voertuigenGenereren();
 
     for (Voertuig *v: voertuigen) {
+        // TODO: make the program work this way
+        // for voertuig:
+        //    voertuig.simulate();
+
         // 3.1 Updated voertuig positie en snelheid
         updateVoertuig(v, counter);
 
@@ -500,7 +302,7 @@ vector<Voertuig *> simulation::voertuigenTussenVerkeerslichten(Verkeerslicht *li
     } else {
         // Voeg voertuigen toe die op dezelfde baan zijn en tussen de twee lichten staan
         for (Voertuig *v: voertuigen) {
-            if (v->getBaan() == lichtVoor->getBaan() &&
+            if (v->getBaan()->getNaam() == lichtVoor->getBaan()->getNaam() &&
                 v->getPositie() > lichtAchter->getPositie() &&
                 v->getPositie() < lichtVoor->getPositie()) {
                 VoertuigenVoorVerkeerslicht.push_back(v);
@@ -521,19 +323,27 @@ vector<Verkeerslicht *> simulation::verkeerslichtenOpBaan(Verkeerslicht *licht) 
     return verkeersLichtenOpDezelfdeBaan;
 }
 
-Baan *simulation::getBaanByName(const string &name) const {
-    for (Baan *b: banen) {
-        if (b->getNaam() == name) {
-            return b;
-        }
-    }
-    return nullptr;
+void simulation::addVoertuig(Voertuig *v) {
+    voertuigen.push_back(v);
 }
+
+void simulation::addVerkeerslicht(Verkeerslicht *v) {
+    verkeerslichten.push_back(v);
+}
+
+void simulation::addBaan(Baan *b) {
+    banen.push_back(b);
+}
+
+void simulation::addVoertuiggenerator(Voertuiggenerator *v) {
+    voertuiggeneratoren.push_back(v);
+}
+
 
 void simulation::voertuigenGenereren() {
     // 3. FOR elke voertuiggenerator
     for (const Voertuiggenerator* v : voertuiggeneratoren) {
-        string baan = v->getBaan();
+        Baan* baan = v->getBaan();
 
         // 3.1 IF tijd sinds laatste voertuig > frequentie
         if (simulationTime - lastGeneretedVoertuigTime > v->getFrequentie()) {

@@ -6,15 +6,17 @@
 #define VOERTUIGGENERATOR_H
 #include <string>
 
+#include "Baan.h"
+
 
 class Voertuiggenerator {
-    std::string baan;
+    Baan* baan;
     double frequentie;
 
 public:
-    std::string getBaan() const;
+    Baan* getBaan() const;
 
-    void setBaan(const std::string &baan);
+    void setBaan(Baan* b);
 
     double getFrequentie() const;
 

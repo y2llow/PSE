@@ -6,12 +6,11 @@
 #define SIMPRINTER_H
 
 
-class Voertuig;
+#include "../elementen/Voertuig.h"
 
 class SimPrinter {
-
-    public:
-    void printStatus(Voertuig* v, double time) const;
+public:
+    static void printStatus(Voertuig const* vehicle, double status);
 };
 
 

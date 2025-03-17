@@ -12,7 +12,7 @@
 using namespace std;
 
 class Verkeerslicht {
-    string baan;
+    Baan *baan;
     double positie;
     double cyclus;
     bool rood = false;
@@ -20,9 +20,9 @@ class Verkeerslicht {
     double tijdSindsLaatsteVerandering = 0;
 
 public:
-    string getBaan() const ;
+    Baan* getBaan() const;
 
-    void setBaan(const string &baan);
+    void setBaan(Baan* baan);
 
     [[nodiscard]] double getPositie() const;
 
@@ -48,7 +48,6 @@ public:
 
     double getTijdSindsLaatsteVerandering() const;
 };
-
 
 
 #endif //VERKEERSLICHT_H

@@ -6,7 +6,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-#include "../../../specificatie_1/simulation.h"
+#include "../../src/simulatie/simulation.h"
 
 class SimulationTESTS : public testing::Test {
     void SetUp() override {

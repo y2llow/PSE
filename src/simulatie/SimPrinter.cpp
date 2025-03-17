@@ -4,6 +4,15 @@
 
 #include "SimPrinter.h"
 
-void SimPrinter::printStatus(Voertuig *v, double time) const {
+#include <iostream>
 
+using namespace std;
+
+
+void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
+    cout << "Tijd: " << status << endl;
+
+    cout << "Voertuig " << voertuig->getId() << "\n"
+        << "-> baan: " << voertuig->getBaan() << "\n"
+        << "-> positie: " << voertuig->getPositie() << "\n"<<endl;
 }

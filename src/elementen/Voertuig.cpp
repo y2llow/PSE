@@ -9,11 +9,11 @@
 #include "Constants.h"
 
 
-string Voertuig::getBaan() const {
+Baan *Voertuig::getBaan() const {
     return baan;
 }
 
-void Voertuig::setBaan(const string &weg) {
+void Voertuig::setBaan(Baan *weg) {
     baan = weg;
 }
 

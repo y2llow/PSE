@@ -27,6 +27,8 @@ set(RELEASE_SOURCE_FILES
         src/simulatie/simulation.cpp
         main.cpp
         src/elementen/Constants.h
+        src/simulatie/Parser.cpp
+        src/simulatie/Parser.h
 )
 
 # Set source files for DEBUG target
@@ -43,6 +45,8 @@ set(DEBUG_SOURCE_FILES
         src/elementen/Constants.h
         src/simulatie/SimPrinter.cpp
         src/simulatie/SimPrinter.h
+        src/simulatie/Parser.cpp
+        src/simulatie/Parser.h
 )
 
 # Create RELEASE target

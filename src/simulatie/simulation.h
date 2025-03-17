@@ -10,9 +10,9 @@
 #include "../../src/elementen/Voertuig.h"
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Voertuiggenerator.h"
+#include "../../src/simulatie/SimPrinter.h"
 #include "../../src/elementen/Constants.h"
 
-class SimPrinter;
 using namespace std;
 
 class simulation {
@@ -24,12 +24,21 @@ class simulation {
     double simulationTime = 0;
     double simulationincreasedTime = 0;
     double lastGeneretedVoertuigTime = 0;
-    int voertuigLastId = 1; // TODO pas dit aan zodat we dit ergens anders kunnen opslagen
-    static SimPrinter *simPrinter;
-public:
-    simulation(SimPrinter*);
+    int voertuigLastId = 1;
+    // SimPrinter simPrinter;
 
-    bool parseXMLAndCreateObjects(const std::string &filename);
+public:
+    // simulation(SimPrinter*): simPrinter(SimPrinter()) {
+    // };
+
+    simulation();
+    int getVoertuigLastId()const;
+    void increaseVoertuigLastId();
+
+    [[nodiscard]] SimPrinter * getSimPrinter() const;
+
+    void setSimPrinter(SimPrinter * const sim_printer);
+
 
     [[nodiscard]] vector<Baan *> getBanen() const;
 
@@ -79,7 +88,11 @@ public:
 
     vector<Verkeerslicht *> verkeerslichtenOpBaan(Verkeerslicht *licht);
 
-    Baan* getBaanByName(const string &name) const;
+    void addVoertuig(Voertuig *v);
+    void addVerkeerslicht(Verkeerslicht *v);
+    void addBaan(Baan *b);
+    void addVoertuiggenerator(Voertuiggenerator *v);
+
 
     void voertuigenGenereren();
 

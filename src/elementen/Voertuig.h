@@ -13,7 +13,7 @@
 using namespace std;
 
 class Voertuig {
-    string baan;
+    Baan *baan;
     double positie;
     double snelheid;
     int id;
@@ -23,14 +23,14 @@ class Voertuig {
 public:
     Voertuig() = default;
 
-    Voertuig(const string &baan, const int positie)
+    Voertuig(Baan *baan, const int positie)
         : baan(baan),
           positie(positie) {
     }
 
-    string getBaan() const;
+    Baan *getBaan() const;
 
-    void setBaan(const string &weg);
+    void setBaan(Baan *weg);
 
     double getPositie() const;
 

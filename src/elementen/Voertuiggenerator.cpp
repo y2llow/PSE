@@ -5,11 +5,11 @@
 #include "Voertuiggenerator.h"
 
 
-std::string Voertuiggenerator::getBaan() const {
+Baan* Voertuiggenerator::getBaan() const {
     return baan;
 }
 
-void Voertuiggenerator::setBaan(const std::string &b) {
+void Voertuiggenerator::setBaan(Baan* b) {
     this->baan = b;
 }
 
