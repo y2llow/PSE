@@ -259,22 +259,26 @@ TEST_F(SimulationTESTS, VerkeerslichtCycleResetTest) {
     EXPECT_EQ(licht->getTijdSindsLaatsteVerandering(), 0);
 }
 
-// TEST_F(SimulationTESTS, VoertuigRemovalOffRoadTest) {
-//     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
-//
-//     // Get the first vehicle
-//     Voertuig* v = sim.getVoertuigen()[0];
-//
-//     // Set the vehicle's position beyond the road length
-//     Baan* baan = sim.getBaanByName(v->getBaan());
-//     v->setPositie(baan->getLengte() + 10.0);
-//
-//     // Run the simulation to check if the vehicle is removed
-//     sim.simulationRun();
-//
-//     // Check that the vehicle is no longer in the simulation
-//     EXPECT_EQ(v, nullptr);
-// }
+TEST_F(SimulationTESTS, VoertuigRemovalOffRoadTest) {
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
+
+    vector<Voertuig*> aantalVoertuigen = sim.getVoertuigen();
+    int aantalvoertuig = static_cast<int>(aantalVoertuigen.size());
+    // Get the first vehicle
+    Voertuig* v = sim.getVoertuigen()[0];
+
+    // Set the vehicle's position beyond the road length
+    Baan* baan = sim.getBaanByName(v->getBaan());
+    v->setPositie(baan->getLengte() + 10.0);
+
+    // Run the simulation to check if the vehicle is removed
+    sim.simulationRun();
+
+    int voertuigenGrootte = static_cast<int>(sim.getVoertuigen().size());
+
+    // Check that the vehicle is no longer in the simulation
+    EXPECT_EQ(voertuigenGrootte, aantalvoertuig - 1);
+}
 
 TEST_F(SimulationTESTS, VerkeerslichtStateToggleTest) {
     EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test.xml"));
@@ -310,9 +314,9 @@ TEST_F(SimulationTESTS, BijwerkenAlleVerkeerslichten) {
         sim.simulationRun();
     }
 
-    // Controleer of verkeerslicht1 is veranderd naar groen
+    // Controleer of verkeerslicht1 is veranderd naar rood
     EXPECT_FALSE(verkeerslicht1->isGroen());
-    EXPECT_TRUE(verkeerslicht2->isGroen()); // Verkeerslicht2 zou nog rood moeten zijn
+    EXPECT_TRUE(verkeerslicht2->isGroen()); // Verkeerslicht2 zou nog groen moeten zijn
 
     // Bereken extra stappen nodig voor verkeerslicht2 om te veranderen
     int extraStappen = ceil((verkeerslicht2->getCyclus() - verkeerslicht1->getCyclus()) / SIMULATIE_TIJD);
@@ -322,7 +326,7 @@ TEST_F(SimulationTESTS, BijwerkenAlleVerkeerslichten) {
         sim.simulationRun();
     }
 
-    // Controleer of verkeerslicht2 nu ook groen is
+    // Controleer of verkeerslicht2 nu ook rood is
     EXPECT_FALSE(verkeerslicht2->isGroen());
 }
 
@@ -391,6 +395,40 @@ TEST_F(SimulationTESTS, MeerdereVoertuiggeneratoren) {
 
     // Controleer of er meer voertuigen zijn gegenereerd op Baan1 dan op Baan2
     EXPECT_GT(voertuigenBaan1, voertuigenBaan2);
+}
+
+TEST_F(SimulationTESTS, VoertuiggeneratorEnVerkeerslichtsimulatie) {
+    // Parse het XML-bestand
+    EXPECT_TRUE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/basic_test11.xml"));
+
+    // Voer een lange simulatie uit (5000 stappen)
+    for (int i = 0; i < 5000; i++) {
+        sim.simulationRun();
+    }
+
+    int X = static_cast<int>(sim.getVoertuigen().size());
+
+    // We verwachten dat er voertuigen zijn gegenereerd
+    EXPECT_GE(X, 1);
+
+    // We verwachten dat de voertuigen zich verspreid hebben over de baan
+    if (X > 1) {
+        // Vind de meest extreme posities
+        double minPositie = 1000.0;
+        double maxPositie = 0.0;
+
+        for (Voertuig* voertuig : sim.getVoertuigen()) {
+            if (voertuig->getPositie() < minPositie) {
+                minPositie = voertuig->getPositie();
+            }
+            if (voertuig->getPositie() > maxPositie) {
+                maxPositie = voertuig->getPositie();
+            }
+        }
+
+        // Als er minstens 100 eenheden verschil is, beschouwen we de voertuigen als verspreid
+        EXPECT_GT((maxPositie - minPositie), 100.0);
+    }
 }
 
 
