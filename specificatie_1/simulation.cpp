@@ -401,6 +401,9 @@ bool simulation::isVoertuigOpBaan(const Voertuig *v) {
 void simulation::simulationRun() {
     int counter = 0;
 
+    // 3.4. Simulatie met voertuiggenerator
+    voertuigenGenereren();
+
     for (Voertuig *v: voertuigen) {
         // 3.1 Updated voertuig positie en snelheid
         updateVoertuig(v, counter);
@@ -429,9 +432,6 @@ void simulation::simulationRun() {
 
     simulationTime++;
     incSimulationTime();
-
-    // 3.4. Simulatie met voertuiggenerator
-    voertuigenGenereren();
 }
 
 bool simulation::isVoertuigInVertraagZone(Voertuig *v, Verkeerslicht *l) {
@@ -534,6 +534,7 @@ void simulation::voertuigenGenereren() {
                 voertuigLastId++;
 
                 voertuigen.push_back(generated_v);
+                sortVoertuigenByPosition();
 
                 lastGeneretedVoertuigTime = simulationTime;
 
@@ -585,9 +586,10 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
                 // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
                 eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
             }
-            // else {
-            //     eerstVoertuigVoorLicht->setSnelheid(0);
-            // }
+            else {
+                eerstVoertuigVoorLicht->setSnelheid(0);
+                eerstVoertuigVoorLicht->setVersnelling(0);
+            }
                     // Voor als auto zou moeten stoppen in 2de helft stopzone
         }
     }
