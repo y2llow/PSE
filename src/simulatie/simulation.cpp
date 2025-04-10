@@ -363,14 +363,16 @@ void simulation::voertuigenGenereren() {
 
             // 3.1.1 IF geen voertuig op baan tussen posities 0 en 2l
             if (addCar) {
-                Voertuig* generated_v = new Voertuig();
+                // Haal het type op uit de generator
+                VoertuigType type = v->getType();
 
-                // 3.1.1.1 THEN voeg voertuig toe aan baan op positie 0
-                generated_v->setPositie(0);
-                generated_v->setSnelheid(16.6);
-                generated_v->setBaan(baan);
+                // Maak een nieuw voertuig met het juiste type
+                Voertuig* generated_v = new Voertuig(baan, 0, type);
+
+                // Zet de nodige attributen
                 generated_v->setId(voertuigLastId);
-                generated_v->setKvmax(0); //TODO aanpassen zodat je de KVmax van correcten vopertuig type pakt
+                generated_v->setSnelheid(generated_v->getMaxSnelheid()); // Gebruik de maximale snelheid van dit type
+                generated_v->setKvmax(generated_v->getMaxSnelheid());    // Gebruik de maximale snelheid van dit type
 
                 voertuigLastId++;
 
@@ -378,11 +380,8 @@ void simulation::voertuigenGenereren() {
                 sortVoertuigenByPosition();
 
                 lastGeneretedVoertuigTime = simulationTime;
-
-                // sortVoertuigenByPosition();
             }
         }
-
     }
 }
 
