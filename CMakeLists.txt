@@ -29,6 +29,9 @@ set(RELEASE_SOURCE_FILES
         src/elementen/Constants.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
+        src/elementen/TypeVoertuig.cpp
+        src/elementen/TypeVoertuig.h
+        src/simulatie/SimPrinter.cpp    # Zorg ervoor dat deze is toegevoegd
 )
 
 # Set source files for DEBUG target
@@ -47,6 +50,8 @@ set(DEBUG_SOURCE_FILES
         src/simulatie/SimPrinter.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
+        src/elementen/TypeVoertuig.cpp
+        src/elementen/TypeVoertuig.h
 )
 
 # Create RELEASE target
