@@ -50,17 +50,45 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
         for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
 
+
         if (elementType == "VOERTUIG") {
-            Voertuig *voertuig = new Voertuig();
+            // Standaard type is AUTO
+            VoertuigType type = VoertuigType::AUTO;
+
+            // Eerst controleren we of er een type is gespecificeerd
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
+                string propertyName = subElem->Value();
+                if (propertyName == "type") {
+                    if (subElem->GetText()) {
+                        std::string typeString = subElem->GetText();
+
+                        // Converteer string naar VoertuigType enum
+                        if (typeString == "AUTO") {
+                            type = VoertuigType::AUTO;
+                        } else if (typeString == "BUS") {
+                            type = VoertuigType::BUS;
+                        } else if (typeString == "BRANDWEERWAGEN") {
+                            type = VoertuigType::BRANDWEERWAGEN;
+                        } else if (typeString == "ZIEKENWAGEN") {
+                            type = VoertuigType::ZIEKENWAGEN;
+                        } else if (typeString == "POLITIECOMBI") {
+                            type = VoertuigType::POLITIECOMBI;
+                        } else {
+                            cerr << "Onbekend voertuigtype: " << typeString << ". Type AUTO wordt gebruikt." << endl;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            // Nu we het type weten, maken we het voertuig
+            Baan* voertuigbaan = nullptr;
+            int positie = 0;
+            double snelheid = 0;
             bool geldig = true;
 
-            voertuig->setId(sim->getVoertuigLastId());
-            sim->incSimulationTime();
-
-            voertuig->setSnelheid(16.6); // TODO vw dit mischien
-            //we geven vMax de waarde van Vmax
-            voertuig->setKvmax(MAX_SNELHEID);
-
+            // Eerste pass om baan en positie te verzamelen (nodig voor constructor)
             for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
                  subElem = subElem->NextSiblingElement()) {
                 string propertyName = subElem->Value();
@@ -72,29 +100,15 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                         break;
                     }
 
-                    Baan* voertuigbaan = nullptr;
                     for (Baan* baan : sim->getBanen()) {
                         if (baan->getNaam() == subElem->GetText()) {
                             voertuigbaan = baan;
                             break;
                         }
                     }
-                    voertuig->setBaan(voertuigbaan);
 
-                } else if (propertyName == "snelheid") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een voertuig zonder snelheid!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    string snelheidstring = subElem->GetText();
-
-                    try {
-                        double snelheid = std::stod(snelheidstring);
-                        voertuig->setSnelheid(snelheid);
-                        geldig = stoi(subElem->GetText()) >= 0; // snelheid moet positief zijn
-                    } catch (exception &) {
-                        cerr << "De snelheid van een voertuig is geen double!" << endl;
+                    if (voertuigbaan == nullptr) {
+                        cerr << "Baan niet gevonden voor voertuig!" << endl;
                         geldig = false;
                         break;
                     }
@@ -105,8 +119,12 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                         break;
                     }
                     try {
-                        voertuig->setPositie(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // positie moet positief zijn
+                        positie = stoi(subElem->GetText());
+                        if (positie < 0) {
+                            cerr << "Positie moet positief zijn!" << endl;
+                            geldig = false;
+                            break;
+                        }
                     } catch (exception &) {
                         cerr << "Er is een voertuig waarvan de positie geen integer is!" << endl;
                         geldig = false;
@@ -114,7 +132,63 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                     }
                 }
             }
-            if (geldig) sim->addVoertuig(voertuig);
+
+            // Als we geen geldige baan of positie hebben, sla over
+            if (!geldig || voertuigbaan == nullptr) {
+                cerr << "Voertuig wordt overgeslagen vanwege ongeldige baan of positie." << endl;
+                continue;
+            }
+
+            // Maak het voertuig met het juiste type
+            Voertuig *voertuig = new Voertuig(voertuigbaan, positie, type);
+            voertuig->setId(sim->getVoertuigLastId());
+            sim->incSimulationTime();
+
+            // Initialiseer de snelheid met de maximale snelheid van het type
+            // (je kunt dit later overschrijven als 'snelheid' gespecificeerd is)
+            voertuig->setSnelheid(voertuig->getMaxSnelheid());
+            voertuig->setKvmax(voertuig->getMaxSnelheid());
+
+            // Tweede pass voor andere eigenschappen
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
+                string propertyName = subElem->Value();
+
+                // Sla baan en positie over, die hebben we al verwerkt
+                if (propertyName == "baan" || propertyName == "positie" || propertyName == "type") {
+                    continue;
+                } else if (propertyName == "snelheid") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een voertuig zonder snelheid!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    string snelheidstring = subElem->GetText();
+
+                    try {
+                        snelheid = std::stod(snelheidstring);
+                        if (snelheid < 0) {
+                            cerr << "Snelheid moet positief zijn!" << endl;
+                            geldig = false;
+                            break;
+                        }
+                        voertuig->setSnelheid(snelheid);
+                    } catch (exception &) {
+                        cerr << "De snelheid van een voertuig is geen double!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                }
+                // Hier kun je meer eigenschappen toevoegen indien nodig
+            }
+
+            // Voeg het voertuig toe aan de simulatie als het geldig is
+            if (geldig) {
+                sim->addVoertuig(voertuig);
+            } else {
+                delete voertuig; // Voorkom memory leak als het voertuig ongeldig is
+            }
+
         } else if (elementType == "VERKEERSLICHT") {
             Verkeerslicht *verkeerslicht = new Verkeerslicht();
             bool geldig = true;

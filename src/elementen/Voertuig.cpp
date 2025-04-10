@@ -1,13 +1,8 @@
-//
-// Created by s0243673@ad.ua.ac.be on 2/27/25.
-//
-
 #include "Voertuig.h"
 
 #include <cmath>
 
 #include "Constants.h"
-
 
 Baan *Voertuig::getBaan() const {
     return baan;
@@ -41,7 +36,6 @@ void Voertuig::setId(int car_id) {
     id = car_id;
 }
 
-
 double Voertuig::getVersnelling() const {
     return versnelling;
 }
@@ -58,7 +52,36 @@ void Voertuig::setKvmax(double kvm) {
     Voertuig::kvmax = kvm;
 }
 
-
 void Voertuig::UpdateVersnellingVoorStoppen() {
-    versnelling = (-(MAX_REMFACTOR * snelheid) / kvmax);
+    // Gebruik de specifieke maxRemfactor voor dit type voertuig
+    versnelling = (-(getMaxRemfactor() * snelheid) / kvmax);
+
+    // Pas versnelling aan op basis van de simulatie constanten indien nodig
+    // Dit is een voorbeeld en kan aangepast worden naar de exacte logica die je nodig hebt
+    // bijvoorbeeld rekening houdend met VERTRAAG_AFSTAND, STOP_AFSTAND, etc.
 }
+
+
+
+//// Implementatie van de simulateStep methode, gebruik makend van de type-specifieke constanten
+//void Voertuig::simulateStep() {
+//    // Update positie op basis van huidige snelheid en de simulatietijd
+//    positie += snelheid * SIMULATIE_TIJD;
+//
+//    // Update snelheid op basis van versnelling en de simulatietijd
+//    snelheid += versnelling * SIMULATIE_TIJD;
+//
+//    // Zorg ervoor dat de snelheid niet negatief wordt
+//    if (snelheid < 0) {
+//        snelheid = 0;
+//    }
+//
+//    // Zorg ervoor dat de snelheid niet boven de maximale snelheid voor dit type voertuig komt
+//    double maxSnelheid = getMaxSnelheid();
+//    if (snelheid > maxSnelheid) {
+//        snelheid = maxSnelheid;
+//    }
+//
+//    // Hier kan extra logica worden toegevoegd voor voertuiggedrag
+//    // zoals het aanpassen van versnelling op basis van afstand tot voorligger, etc.
+//}
