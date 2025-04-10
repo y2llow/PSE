@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     simulation* sim = new simulation();
     Parser parser;
-    parser.parseElements("../src/voorbeeld.xml", sim); // implemented 1.1 & 1.2
+    parser.parseElements("../src/voorbeeld2.xml", sim); // implemented 1.1 & 1.2
 
 
     // Om de ingelezen verkeerssituatie te kunnen simuleren moet de informatie consistent zijn
