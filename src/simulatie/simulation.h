@@ -28,8 +28,8 @@ class simulation {
     // SimPrinter simPrinter;
 
 public:
-    // simulation(SimPrinter*): simPrinter(SimPrinter()) {
-    // };
+//    simulation(SimPrinter*): simPrinter(SimPrinter()) {
+//    };
 
     simulation();
     int getVoertuigLastId()const;

@@ -13,6 +13,12 @@
 
 #include "SimPrinter.h"
 
+simulation::simulation() {
+    simulationTime = 0;
+    simulationincreasedTime = 0;
+    lastGeneretedVoertuigTime = 0;
+    voertuigLastId = 1;
+}
 
 int simulation::getVoertuigLastId() const {
     return voertuigLastId;
@@ -121,7 +127,6 @@ bool simulation::isConsistent() const {
 }
 
 void simulation::ToString() {
-
     for (Voertuig *voertuig: voertuigen) {
         SimPrinter::printStatus(voertuig, getincSimulationTime());
 
@@ -184,22 +189,22 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
     int sizeVoertuigen = vsize;
 
     if (sizeVoertuigen > counter + 1) {
-        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - LENGTE;
+        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
         double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
         double newsnelheid = v->getSnelheid() - snelheidVerschil;
-        double newversnelling = 2 * sqrt(MAX_VERSNELLING * MAX_REMFACTOR);
+        double newversnelling = 2 * sqrt(v->getVersnelling() * v->getMaxRemfactor());
 
         double calculate = v->getSnelheid() + (newsnelheid / newversnelling);
 
         double maxNummer = max(0.0, calculate);
-        delta = (MIN_VOLGAFSTAND + maxNummer) / volgafstand;
+        delta = (v->getMinVolgafstand() + maxNummer) / volgafstand;
 
-        double newVersnelling = MAX_VERSNELLING * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+        double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
                                                    pow(delta, 2));
         v->setVersnelling(newVersnelling);
     } else {
-        double newVersnelling = MAX_VERSNELLING * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+        double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
                                                    pow(delta, 2));
         v->setVersnelling(newVersnelling);
     }
@@ -281,11 +286,11 @@ bool simulation::isVoertuigInStopZone(Voertuig *v, Verkeerslicht *l) {
 }
 
 void simulation::BerekenSnelheidNaVertraging(Voertuig *v) {
-    v->setKvmax(MAX_SNELHEID * VERTRAAG_FACTOR);
+    v->setKvmax(v->getMaxSnelheid() * VERTRAAG_FACTOR);
 }
 
 void simulation::BerekenSnelheidNaVersnelling(Voertuig *v) {
-    v->setKvmax(MAX_SNELHEID);
+    v->setKvmax(v->getMaxSnelheid());
 }
 
 vector<Voertuig *> simulation::voertuigenTussenVerkeerslichten(Verkeerslicht *lichtVoor, Verkeerslicht *lichtAchter) {
@@ -365,7 +370,7 @@ void simulation::voertuigenGenereren() {
                 generated_v->setSnelheid(16.6);
                 generated_v->setBaan(baan);
                 generated_v->setId(voertuigLastId);
-                generated_v->setKvmax(MAX_SNELHEID);
+                generated_v->setKvmax(0); //TODO aanpassen zodat je de KVmax van correcten vopertuig type pakt
 
                 voertuigLastId++;
 
