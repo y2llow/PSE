@@ -1,31 +1,36 @@
 <VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
         <frequentie>5</frequentie>
-        <type>auto</type>
+        <type>bus</type>
     </VOERTUIGGENERATOR>
-
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>20</positie>
-        <type>bus</type>
+        <type>auto</type>
     </VOERTUIG>
-
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>40</positie>
-        <type>brandweerwagen</type>
+        <type>bus</type>
     </VOERTUIG>
-
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>60</positie>
-        <type>ziekenwagen</type>
+        <type>brandweerwagen</type>
     </VOERTUIG>
-
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>80</positie>
+        <type>ziekenwagen</type>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>100</positie>
         <type>politiecombi</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>
