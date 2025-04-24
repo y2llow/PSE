@@ -9,7 +9,6 @@
 #include "../TinyXML/tinyxml.h"
 
 using namespace std;
-class Baan;
 class Parser {
 private:
     static map<string, Baan*> kruisPunten;

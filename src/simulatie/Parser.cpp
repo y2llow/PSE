@@ -44,7 +44,10 @@ void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
                     }
                 }
             }
-            if (geldig) { sim->addBaan(baan); } // Add to vector
+            if (geldig) {
+                sim->addBaan(baan);
+                kruisPunten[baan->getNaam()] = baan;
+            } // Add to vector
         }
     }
 }
@@ -343,6 +346,24 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
 
             // Voeg de generator toe aan de simulatie
             sim->addVoertuiggenerator(generator);
+        }
+    }
+}
+
+void Parser::parseKruisPunten(TiXmlElement *root, simulation *sim) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
+
+        if (elementType == "KRUISPUNT") {
+            for (TiXmlElement* baanElem = elem->FirstChildElement("baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan")) {
+
+                // Attributen ophalen
+                const char *positie = baanElem->Attribute("positie");
+                const char *baanNaam = baanElem->GetText();
+
+
+
+            }
         }
     }
 }

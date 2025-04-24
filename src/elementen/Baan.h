@@ -9,7 +9,7 @@
 
 class Baan {
     std::string naam;
-    std::map< std::string , std::pair<int,int> > kruispunten;
+    std::map< Baan* , std::pair<int,int> > kruispunten;
     int lengte;
 
 public:
