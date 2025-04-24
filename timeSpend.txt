@@ -7,4 +7,13 @@ abdellah:
 
 
 yamanoo:
+1.5 Kruispunten inlezen -
 
+
+
+
+
+
+
+
+TODO::tests: zorgen dat het inlezen van 2 verschillende kruispunten in dezelfde positie niet mogelijk is

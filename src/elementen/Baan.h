@@ -5,10 +5,11 @@
 #ifndef BAAN_H
 #define BAAN_H
 #include <string>
-
+#include <map>
 
 class Baan {
     std::string naam;
+    std::map< std::string , std::pair<int,int> > kruispunten;
     int lengte;
 
 public:

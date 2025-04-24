@@ -3,11 +3,6 @@
 //
 
 #include "Parser.h"
-
-#include <iostream>
-
-
-#include "Parser.h"
 #include <iostream>
 
 void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
@@ -44,7 +39,10 @@ void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
                     }
                 }
             }
-            if (geldig) { sim->addBaan(baan); } // Add to vector
+            if (geldig){
+                sim->addBaan(baan);
+                kruisPunten[baan->getNaam()] = baan;
+            } // Add to vector
         }
     }
 }
@@ -347,6 +345,21 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
     }
 }
 
+void Parser::parseKruisPunten(TiXmlElement* root, simulation* sim){
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
+
+        if (elementType == "KRUISPUNT") {
+            for (TiXmlElement *baanElem = elem->FirstChildElement("baan"); baanElem; baanElem = baanElem->NextSiblingElement()) {
+
+                const char* positie = baanElem->Attribute("positie");
+                const char* baanNaam = baanElem->GetText();
+
+            }
+        }
+    }
+}
+
 bool Parser::parseElements(const std::string &filename, simulation *sim) {
     TiXmlDocument doc;
 
@@ -365,6 +378,7 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
     parseBanen(root, sim);
     parseVoertuigen(root, sim);
     parseVerkeerslichten(root, sim);
+    parseKruisPunten(root, sim);
     parseVoertuiggeneratoren(root, sim);
 
     sim->sortVoertuigenByPosition();
