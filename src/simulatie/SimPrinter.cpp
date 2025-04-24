@@ -13,21 +13,15 @@ void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
     cout << "Tijd: " << status << endl;
 
     cout << "Voertuig " << voertuig->getId() << "\n"
-        << "-> baan: " << voertuig->getBaan() << "\n"
-        << "-> positie: " << voertuig->getPositie() << "\n"<<endl;
+        << "-> baan: " << voertuig->getBaan()->getNaam()  << "\n"
+        << "-> positie: " << voertuig->getPositie() << "\n"
+        << "-> snelheid: " << voertuig->getSnelheid() << "\n" <<endl;
 }
+
+// De 2de printstatus geeft meer kenmerken van d auto kan handig zijn voor als je iets will checken
+// !!!! DUS NIET VERWIJDEREN !!!
+
 /*
- * //
-// Created by s0246031@ad.ua.ac.be on 3/17/25.
-//
-
-#include "SimPrinter.h"
-
-#include <iostream>
-
-using namespace std;
-
-
 void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
     cout << "Tijd: " << status << endl;
 
