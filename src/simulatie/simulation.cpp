@@ -64,6 +64,15 @@ vector<Verkeerslicht *> simulation::getVerkeerslichten() const {
     return vv;
 }
 
+vector<Bushalte *> simulation::getBushaltes() const {
+    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
+    vector<Bushalte*> bb;
+    for (auto* b : bushaltes) {
+        bb.push_back(b);
+    }
+    return bb;
+}
+
 vector<Voertuiggenerator *> simulation::getVoertuiggeneratoren() const {
     // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
     vector<Voertuiggenerator*> vv;
@@ -150,7 +159,6 @@ double simulation::UpdateSimulationTime() const {
     return simulationTime + SIMULATIE_TIJD;
 }
 
-
 void simulation::sortVoertuigenByPosition() {
     sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig *a, const Voertuig *b) {
         return a->getPositie() < b->getPositie();
@@ -162,7 +170,6 @@ void simulation::sortVerkeersLichtByPosition() {
         return a->getPositie() < b->getPositie();
     });
 }
-
 
 void simulation::berekenPositie(Voertuig *v) const {
     //berekenen van nieuwe positie
@@ -336,6 +343,10 @@ void simulation::addVerkeerslicht(Verkeerslicht *v) {
     verkeerslichten.push_back(v);
 }
 
+void simulation::addBushalte(Bushalte *b) {
+    bushaltes.push_back(b);
+}
+
 void simulation::addBaan(Baan *b) {
     banen.push_back(b);
 }
@@ -343,7 +354,6 @@ void simulation::addBaan(Baan *b) {
 void simulation::addVoertuiggenerator(Voertuiggenerator *v) {
     voertuiggeneratoren.push_back(v);
 }
-
 
 void simulation::voertuigenGenereren() {
     // 3. FOR elke voertuiggenerator

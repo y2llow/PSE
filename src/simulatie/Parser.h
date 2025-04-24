@@ -17,6 +17,7 @@ public:
     static void parseBanen(TiXmlElement* root, simulation* sim);
     static void parseVoertuigen(TiXmlElement *root, simulation *sim);
     static void parseVerkeerslichten(TiXmlElement* root, simulation* sim);
+    static void parseBushaltes(TiXmlElement *root, simulation *sim);
     static void parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim);
 };
 #endif //PARSER_H

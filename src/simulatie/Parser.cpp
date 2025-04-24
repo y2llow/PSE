@@ -1,15 +1,5 @@
-//
-// Created by s0246031@ad.ua.ac.be on 3/17/25.
-//
-
-#include "Parser.h"
-
-#include <iostream>
-
-
 #include "Parser.h"
 #include <iostream>
-
 void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
@@ -254,6 +244,68 @@ void Parser::parseVerkeerslichten(TiXmlElement *root, simulation *sim) {
     }
 }
 
+void Parser::parseBushaltes(TiXmlElement *root, simulation *sim) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
+
+        if (elementType == "BUSHALTE") {
+            Bushalte * bushalte = new Bushalte();
+            bool geldig = true;
+
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
+                string propertyName = subElem->Value();
+
+                if (propertyName == "baan") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een bushalte zonder baan!" << endl;
+                        geldig = false;
+                        break;
+                    }
+
+                    Baan *voertuigbaan = nullptr;
+                    for (Baan *baan: sim->getBanen()) {
+                        if (baan->getNaam() == subElem->GetText()) {
+                            voertuigbaan = baan;
+                            break;
+                        }
+                    }
+                    bushalte->setBaan(voertuigbaan);
+                } else if (propertyName == "positie") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een verkeerslicht zonder positie!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    try {
+                        bushalte->setPositie(stoi(subElem->GetText()));
+                        geldig = stoi(subElem->GetText()) >= 0; // Positie moet positief zijn
+                    } catch (exception &) {
+                        cerr << "Er is een bushalte waarvan de positie geen integer is!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                } else if (propertyName == "wachttijd") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een bushalte zonder wachttijd!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    try {
+                        bushalte->setWachttijd(stoi(subElem->GetText()));
+                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
+                    } catch (exception &) {
+                        cerr << "Er is een bushalte waarvan de wachttijd geen integer is!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                }
+            }
+            if (geldig) sim->addBushalte(bushalte);
+        }
+    }
+}
+
 void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
@@ -365,6 +417,7 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
     parseBanen(root, sim);
     parseVoertuigen(root, sim);
     parseVerkeerslichten(root, sim);
+    parseBushaltes(root, sim);
     parseVoertuiggeneratoren(root, sim);
 
     sim->sortVoertuigenByPosition();
