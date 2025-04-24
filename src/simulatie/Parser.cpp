@@ -46,7 +46,7 @@ void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
             }
             if (geldig) {
                 sim->addBaan(baan);
-                kruisPunten[baan->getNaam()] = baan;
+                banenMap[baan->getNaam()] = baan;
             } // Add to vector
         }
     }
@@ -350,13 +350,14 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
     }
 }
 
+map<string, Baan*> Parser::banenMap;
 void Parser::parseKruisPunten(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
-        vector<int> positiePunten;
-        vector<string> banenNaam;
 
         if (elementType == "KRUISPUNT") {
+            vector<int> positiePunten;
+            vector<string> banenNaam;
             for (TiXmlElement *baanElem = elem->FirstChildElement(
                     "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan")) {
 
@@ -368,18 +369,86 @@ void Parser::parseKruisPunten(TiXmlElement *root, simulation *sim) {
                 positiePunten.push_back(positieInt);
                 banenNaam.push_back(baanNaam);
             }
-        }
-        vector<Baan*> banenP;
-        for (auto s: kruisPunten){
-            banenP.push_back(s.second);
-        }
-        for (auto s: kruisPunten){
-            if (s.first == banenNaam[0]){
-                s.second->kruispunten[banenP[1]] = {positiePunten[0],positiePunten[1]};
+
+            vector<Baan*> banenP;
+            for (auto s: banenMap){
+                if (s.first == banenNaam[0]){
+                    banenP.insert(banenP.begin(), s.second);
+                }
+                else if (s.first == banenNaam[1]){
+                    banenP.push_back(s.second);
+                }
             }
-            else if (s.first == banenNaam[1]){
-                s.second->kruispunten[banenP[0]] = {positiePunten[1],positiePunten[0]};
+            for (auto s: banenMap){
+                if (s.first == banenNaam[0]){
+                    s.second->kruispunten[banenP[1]] = {positiePunten[0],positiePunten[1]};
+                }
+                else if (s.first == banenNaam[1]){
+                    s.second->kruispunten[banenP[0]] = {positiePunten[1],positiePunten[0]};
+                }
             }
+        }
+    }
+}
+
+void Parser::parseBushaltes(TiXmlElement *root, simulation *sim) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
+
+        if (elementType == "BUSHALTE") {
+            Bushalte * bushalte = new Bushalte();
+            bool geldig = true;
+
+            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
+                 subElem = subElem->NextSiblingElement()) {
+                string propertyName = subElem->Value();
+
+                if (propertyName == "baan") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een bushalte zonder baan!" << endl;
+                        geldig = false;
+                        break;
+                    }
+
+                    Baan *voertuigbaan = nullptr;
+                    for (Baan *baan: sim->getBanen()) {
+                        if (baan->getNaam() == subElem->GetText()) {
+                            voertuigbaan = baan;
+                            break;
+                        }
+                    }
+                    bushalte->setBaan(voertuigbaan);
+                } else if (propertyName == "positie") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een verkeerslicht zonder positie!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    try {
+                        bushalte->setPositie(stoi(subElem->GetText()));
+                        geldig = stoi(subElem->GetText()) >= 0; // Positie moet positief zijn
+                    } catch (exception &) {
+                        cerr << "Er is een bushalte waarvan de positie geen integer is!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                } else if (propertyName == "wachttijd") {
+                    if (!subElem->GetText()) {
+                        cerr << "Er is een bushalte zonder wachttijd!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                    try {
+                        bushalte->setWachttijd(stoi(subElem->GetText()));
+                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
+                    } catch (exception &) {
+                        cerr << "Er is een bushalte waarvan de wachttijd geen integer is!" << endl;
+                        geldig = false;
+                        break;
+                    }
+                }
+            }
+            if (geldig) sim->addBushalte(bushalte);
         }
     }
 }
@@ -403,6 +472,7 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
     parseVoertuigen(root, sim);
     parseVerkeerslichten(root, sim);
     parseVoertuiggeneratoren(root, sim);
+    parseBushaltes(root, sim);
     parseKruisPunten(root,sim);
 
     sim->sortVoertuigenByPosition();

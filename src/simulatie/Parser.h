@@ -11,7 +11,7 @@
 using namespace std;
 class Parser {
 private:
-    static map<string, Baan*> kruisPunten;
+    static map<string, Baan*> banenMap;
 public:
     // Function to parse XML and create appropriate objects
     static bool parseElements(const std::string &filename, simulation* sim);
