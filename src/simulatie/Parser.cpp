@@ -218,6 +218,9 @@ void Parser::parseVerkeerslichten(TiXmlElement *root, simulation *sim) {
                     for (Baan *baan: sim->getBanen()) {
                         if (baan->getNaam() == subElem->GetText()) {
                             voertuigbaan = baan;
+
+                            //de verkeerslicht heeft de informatie voor op welk baan het staat <-> de baan heeft de info over welk verkeerslicht op dat baan staat
+                            baan->VulVerkeerslichtenVector(verkeerslicht);
                             break;
                         }
                     }
@@ -414,6 +417,10 @@ void Parser::parseBushaltes(TiXmlElement *root, simulation *sim) {
                     for (Baan *baan: sim->getBanen()) {
                         if (baan->getNaam() == subElem->GetText()) {
                             voertuigbaan = baan;
+
+                            //bushalte heeft info over de baan waarop het ligt <-> de baan heeft info over de bushalte die op dat baan ligt.
+                            baan->VulBushaltesVector(bushalte);
+
                             break;
                         }
                     }
@@ -474,6 +481,7 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
     parseVoertuiggeneratoren(root, sim);
     parseBushaltes(root, sim);
     parseKruisPunten(root,sim);
+
 
     sim->sortVoertuigenByPosition();
     sim->sortVerkeersLichtByPosition();

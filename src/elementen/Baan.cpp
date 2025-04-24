@@ -19,3 +19,20 @@ void Baan::setNaam(const std::string &name) {
 void Baan::setLengte(const int length) {
     this->lengte = length;
 }
+
+void Baan::VulVerkeerslichtenVector(Verkeerslicht * VL) {
+    this->verkeerslichten.push_back(VL);
+}
+
+void Baan::VulBushaltesVector(Bushalte *BH) {
+    this->bushaltes.push_back(BH);
+}
+
+const std::vector<Verkeerslicht *> &Baan::getVerkeerslichten() const {
+    return verkeerslichten;
+}
+
+const std::vector<Bushalte *> &Baan::getBushaltes() const {
+    return bushaltes;
+}
+

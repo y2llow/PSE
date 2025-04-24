@@ -5,10 +5,20 @@
 #ifndef BAAN_H
 #define BAAN_H
 #include <string>
+#include <vector>
 #include <map>
+class Verkeerslicht;
+class Bushalte;
 
 class Baan {
     std::string naam;
+
+    //de baan moet de verkeerslichten bevatten (dit staat vast aan een baan)
+    std::vector<Verkeerslicht*> verkeerslichten;
+
+    //de baan moet de bushaltes bevatten (dit staat vast aan een baan)
+    std::vector<Bushalte*> bushaltes;
+
     int lengte;
 
 public:
@@ -28,6 +38,14 @@ public:
     void setNaam(const std::string &naam);
 
     void setLengte(const int lengte);
+
+    void VulVerkeerslichtenVector(Verkeerslicht* VL);
+
+    void VulBushaltesVector(Bushalte* BH);
+
+    const std::vector<Verkeerslicht *> &getVerkeerslichten() const;
+
+    const std::vector<Bushalte *> &getBushaltes() const;
 
 
 };

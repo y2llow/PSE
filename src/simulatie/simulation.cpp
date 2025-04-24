@@ -10,6 +10,7 @@
 #include "../../src/TinyXML/tinyxml.h"
 #include <algorithm>
 #include <cmath>
+#include <regex>
 
 #include "SimPrinter.h"
 
@@ -445,3 +446,112 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
         }
     }
 }
+
+void simulation::generateSimulation() {
+    vector<string> ss;
+    for (auto b: banen){
+        string s = "(BN)      |(LT)\n > verkeerslichten  |(VL)\n >bushaltes        |(BH)";
+
+        string BN = b->getNaam();
+        string LT((b->getLengte()/5),'=' );
+        string VL(size(LT), ' ');
+        string BH(size(LT), ' ');
+        int index1 = 0;
+        int index2 = 0;
+
+        for (auto vl: verkeerslichten){
+            if (vl->getBaan()->getNaam() == b->getNaam()){
+                int vlPositie = vl->getPositie()/simulatieSchaal + 28 + LT.size()+BN.size();
+                index1 = 28+LT.size()+ BN.size();
+
+                if (vl->isRood()){
+                    VL[vlPositie] = 'R';
+                }
+                else if (vl->isGroen()){
+                    VL[vlPositie] = 'G';
+                }
+            }
+        }
+        for (auto bh: bushaltes){
+            if (bh->getBaan()->getNaam() == b->getNaam()){
+                int bhPositie = bh->getPositie()/simulatieSchaal + 49 + VL.size() + LT.size() + BN.size();
+                index2 = 49 + VL.size() + LT.size() + BN.size();
+                VL[bhPositie] = '|';
+                BH[bhPositie] = 'B';
+            }
+        }
+        for (auto v: voertuigen){
+            if (v->getBaan()->getNaam() == b->getNaam()) {
+                int voertuigpositie = v->getPositie() / simulatieSchaal + BN.size() + 6;
+                if (v->getType() == VoertuigType::AUTO) {
+                    LT[voertuigpositie] = 'A';
+                } else if (v->getType() == VoertuigType::BUS) {
+                    LT[voertuigpositie] = 'B';
+                } else if (v->getType() == VoertuigType::BRANDWEERWAGEN) {
+                    LT[voertuigpositie] = 'I';
+                } else if (v->getType() == VoertuigType::ZIEKENWAGEN) {
+                    LT[voertuigpositie] = 'Z';
+                } else if (v->getType() == VoertuigType::POLITIECOMBI) {
+                    LT[voertuigpositie] = 'P';
+                }
+            }
+        }
+        s = regex_replace(s, regex("(BN)"), BN);
+        s = regex_replace(s, regex("(LT)"), LT);
+        s = regex_replace(s, regex("(VL)"), VL);
+        s = regex_replace(s, regex("(BH)"), BH);
+
+        ss.push_back(s);
+        vtXvlIndex.push_back({index1,index2});
+    }
+    Gsim = ss;
+}
+
+void simulation::updateSimulation() {
+    for (int i = 0; i <banen.size();i++){
+        string s = Gsim[i];
+        Baan* b = banen[i];
+
+        for (auto v: voertuigen){
+            if (v->getBaan()->getNaam() == b->getNaam()){
+                int Vindex = vtXvlIndex[i].first + v->getPositie()/simulatieSchaal;
+                if (s[Vindex] == '='){
+                    s[Vindex] = s[Vindex-1];
+                    s[Vindex-1] = '=';
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+        for (auto vl: verkeerslichten){
+            if (vl->getBaan()->getNaam() == b->getNaam()){
+                int VLindex = vtXvlIndex[i].second + vl->getPositie()/simulatieSchaal;
+                if(s[VLindex] == 'R'){
+                    if(vl->isRood()){
+                        continue;
+                    }
+                    else if(vl->isGroen()){
+                        s[VLindex] = 'G';
+                    }
+                }
+                else if(s[VLindex] == 'G'){
+                    if( vl->isGroen()){
+                        continue;
+                    }
+                    else if(vl->isRood()){
+                        s[VLindex] = 'R';
+                    }
+                }
+            }
+        }
+    }
+}
+
+void simulation::printSimulation() {
+    for (auto s: Gsim){
+        cout<<s<<endl;
+    }
+}
+
+
