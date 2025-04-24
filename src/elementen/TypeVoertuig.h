@@ -23,11 +23,11 @@ public:
               minVolgafstand(minVolgafstand) {}
 
     // Getters voor de constante waarden
-    double getLengte() const { return lengte; }
-    double getMaxSnelheid() const { return maxSnelheid; }
-    double getMaxVersnelling() const { return maxVersnelling; }
-    double getMaxRemfactor() const { return maxRemfactor; }
-    double getMinVolgafstand() const { return minVolgafstand; }
+    double getLengte() const;
+    double getMaxSnelheid() const;
+    double getMaxVersnelling() const;
+    double getMaxRemfactor() const;
+    double getMinVolgafstand() const;
 
     // Fabrieks-functie om het juiste type voertuig te maken
     static TypeVoertuig createVoertuigType(VoertuigType type);

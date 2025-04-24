@@ -22,3 +22,9 @@ TypeVoertuig TypeVoertuig::createVoertuigType(VoertuigType type) {
             return TypeVoertuig(4, 16.6, 1.44, 4.61, 4);
     }
 }
+
+double TypeVoertuig::getLengte() const {return lengte;}
+double TypeVoertuig::getMaxSnelheid() const { return maxSnelheid; }
+double TypeVoertuig::getMaxVersnelling() const { return maxVersnelling; }
+double TypeVoertuig::getMaxRemfactor() const { return maxRemfactor; }
+double TypeVoertuig::getMinVolgafstand() const { return minVolgafstand; }
