@@ -9,9 +9,9 @@
 #include "../../src/elementen/Baan.h"
 #include "../../src/elementen/Voertuig.h"
 #include "../../src/elementen/Verkeerslicht.h"
+#include "../../src/elementen/Bushalte.h"
 #include "../../src/elementen/Voertuiggenerator.h"
 #include "../../src/simulatie/SimPrinter.h"
-#include "../../src/elementen/Constants.h"
 
 using namespace std;
 
@@ -20,6 +20,7 @@ class simulation {
     vector<Baan *> banen;
     vector<Voertuig *> voertuigen;
     vector<Verkeerslicht *> verkeerslichten;
+    vector<Bushalte *> bushaltes;
     vector<Voertuiggenerator *> voertuiggeneratoren;
     double simulationTime = 0;
     double simulationincreasedTime = 0;
@@ -45,6 +46,8 @@ public:
     [[nodiscard]] vector<Voertuig *> getVoertuigen() const;
 
     [[nodiscard]] vector<Verkeerslicht *> getVerkeerslichten() const;
+
+    [[nodiscard]] vector<Bushalte *> getBushaltes() const;
 
     [[nodiscard]] vector<Voertuiggenerator *> getVoertuiggeneratoren() const;
 
@@ -90,6 +93,7 @@ public:
 
     void addVoertuig(Voertuig *v);
     void addVerkeerslicht(Verkeerslicht *v);
+    void addBushalte(Bushalte *b);
     void addBaan(Baan *b);
     void addVoertuiggenerator(Voertuiggenerator *v);
 
