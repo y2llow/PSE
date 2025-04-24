@@ -8,6 +8,11 @@
         <frequentie>5</frequentie>
         <type>bus</type>
     </VOERTUIGGENERATOR>
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>400</positie>
+        <cyclus>1</cyclus>
+    </VERKEERSLICHT>
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>20</positie>

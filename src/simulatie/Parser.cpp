@@ -7,6 +7,9 @@
 #include <iostream>
 
 
+#include "Parser.h"
+#include <iostream>
+
 void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
@@ -46,7 +49,7 @@ void Parser::parseBanen(TiXmlElement *root, simulation *sim) {
     }
 }
 
-void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
+void Parser::parseVoertuigen(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
 
@@ -134,7 +137,7 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
             // Als we geen geldige baan of positie hebben, sla over
             if (!geldig || voertuigbaan == nullptr) {
                 cerr << "Voertuig wordt overgeslagen vanwege ongeldige baan of positie." << endl;
-                return; // of continue als dit in een lus staat
+                continue;
             }
 
             // Maak het voertuig met het juiste type
@@ -185,7 +188,15 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
             } else {
                 delete voertuig; // Voorkom memory leak als het voertuig ongeldig is
             }
-        } else if (elementType == "VERKEERSLICHT") {
+        }
+    }
+}
+
+void Parser::parseVerkeerslichten(TiXmlElement *root, simulation *sim) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
+
+        if (elementType == "VERKEERSLICHT") {
             Verkeerslicht *verkeerslicht = new Verkeerslicht();
             bool geldig = true;
 
@@ -216,7 +227,7 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                     }
                     try {
                         verkeerslicht->setPositie(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
+                        geldig = stoi(subElem->GetText()) >= 0; // Positie moet positief zijn
                     } catch (exception &) {
                         cerr << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
                         geldig = false;
@@ -239,61 +250,15 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                 }
             }
             if (geldig) sim->addVerkeerslicht(verkeerslicht);
-        } else if (elementType == "VERKEERSLICHT") {
-            Verkeerslicht *verkeerslicht = new Verkeerslicht();
-            bool geldig = true;
+        }
+    }
+}
 
-            for (TiXmlElement *subElem = elem->FirstChildElement(); subElem != nullptr;
-                 subElem = subElem->NextSiblingElement()) {
-                string propertyName = subElem->Value();
+void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
+    for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
+        string elementType = elem->Value();
 
-                if (propertyName == "baan") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder baan!" << endl;
-                        geldig = false;
-                        break;
-                    }
-
-                    Baan *voertuigbaan = nullptr;
-                    for (Baan *baan: sim->getBanen()) {
-                        if (baan->getNaam() == subElem->GetText()) {
-                            voertuigbaan = baan;
-                            break;
-                        }
-                    }
-                    verkeerslicht->setBaan(voertuigbaan);
-                } else if (propertyName == "positie") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder positie!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        verkeerslicht->setPositie(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een verkeerslicht waarvan de positie geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                } else if (propertyName == "cyclus") {
-                    if (!subElem->GetText()) {
-                        cerr << "Er is een verkeerslicht zonder cyclus!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                    try {
-                        verkeerslicht->setCyclus(stoi(subElem->GetText()));
-                        geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
-                    } catch (exception &) {
-                        cerr << "Er is een verkeerslicht waarvan de cyclus geen integer is!" << endl;
-                        geldig = false;
-                        break;
-                    }
-                }
-            }
-            if (geldig) sim->addVerkeerslicht(verkeerslicht);
-        } else if (elementType == "VOERTUIGGENERATOR") {
+        if (elementType == "VOERTUIGGENERATOR") {
             // Standaard waarden
             Baan* voertuigbaan = nullptr;
             double frequentie = 0;
@@ -350,7 +315,6 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
                         std::string typeString = subElem->GetText();
 
                         // Converteer string naar VoertuigType enum
-                        // Converteer string naar VoertuigType enum
                         if (typeString == "auto") {
                             type = VoertuigType::AUTO;
                         } else if (typeString == "bus") {
@@ -371,7 +335,7 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
             // Controleer of alle verplichte eigenschappen zijn ingesteld
             if (!geldig || voertuigbaan == nullptr) {
                 cerr << "Voertuiggenerator wordt overgeslagen vanwege ongeldige parameters." << endl;
-                return; // of continue als dit in een lus staat
+                continue;
             }
 
             // Maak de generator met de verzamelde gegevens
@@ -379,10 +343,6 @@ void Parser::parseOtherElements(TiXmlElement *root, simulation *sim) {
 
             // Voeg de generator toe aan de simulatie
             sim->addVoertuiggenerator(generator);
-        } else if (elementType == "BAAN"){
-            continue;
-        } else {
-            cerr << "Er is een onherkenbaar element in de XML bestand" << endl;
         }
     }
 }
@@ -401,8 +361,11 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
         return true;
     }
 
+    // Parse alle elementen in aparte functies
     parseBanen(root, sim);
-    parseOtherElements(root, sim);
+    parseVoertuigen(root, sim);
+    parseVerkeerslichten(root, sim);
+    parseVoertuiggeneratoren(root, sim);
 
     sim->sortVoertuigenByPosition();
     sim->sortVerkeersLichtByPosition();

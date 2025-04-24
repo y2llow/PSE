@@ -10,15 +10,13 @@
 
 using namespace std;
 class Parser {
-
 public:
     // Function to parse XML and create appropriate objects
-    bool parseElements(const std::string &filename, simulation* sim);
+    static bool parseElements(const std::string &filename, simulation* sim);
 
-    void parseBanen(TiXmlElement* root, simulation* sim);
-    void parseOtherElements(TiXmlElement* root, simulation* sim);
+    static void parseBanen(TiXmlElement* root, simulation* sim);
+    static void parseVoertuigen(TiXmlElement *root, simulation *sim);
+    static void parseVerkeerslichten(TiXmlElement* root, simulation* sim);
+    static void parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim);
 };
-
-
-
 #endif //PARSER_H
