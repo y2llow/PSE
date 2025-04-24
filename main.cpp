@@ -18,8 +18,14 @@ int main() {
     }
 
     sim->ToString();
-    sim->simulationRun();
-    sim->ToString();
+    sim->generateSimulation();
+    sim->printSimulation();
+    for (int i = 0; i<2;i++){
+        sim->simulationRun();
+        sim->ToString();
+        sim->updateSimulation();
+        sim->printSimulation();
+    }
 
 
     return 0;

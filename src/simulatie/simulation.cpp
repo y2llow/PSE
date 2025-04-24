@@ -450,18 +450,18 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
 void simulation::generateSimulation() {
     vector<string> ss;
     for (auto b: banen){
-        string s = "(BN)      |(LT)\n > verkeerslichten  |(VL)\n >bushaltes        |(BH)";
+        string s = "BN      |LT\n >verkeerslichten   |VL\n >bushaltes         |BH";
 
         string BN = b->getNaam();
         string LT((b->getLengte()/5),'=' );
-        string VL(size(LT), ' ');
-        string BH(size(LT), ' ');
+        string VL((b->getLengte()/5), ' ');
+        string BH((b->getLengte()/5), ' ');
         int index1 = 0;
         int index2 = 0;
 
         for (auto vl: verkeerslichten){
             if (vl->getBaan()->getNaam() == b->getNaam()){
-                int vlPositie = vl->getPositie()/simulatieSchaal + 28 + LT.size()+BN.size();
+                int vlPositie = vl->getPositie()/simulatieSchaal;
                 index1 = 28+LT.size()+ BN.size();
 
                 if (vl->isRood()){
@@ -474,15 +474,15 @@ void simulation::generateSimulation() {
         }
         for (auto bh: bushaltes){
             if (bh->getBaan()->getNaam() == b->getNaam()){
-                int bhPositie = bh->getPositie()/simulatieSchaal + 49 + VL.size() + LT.size() + BN.size();
-                index2 = 49 + VL.size() + LT.size() + BN.size();
+                int bhPositie = bh->getPositie()/simulatieSchaal;
+                index2 = 48 + VL.size() + LT.size() + BN.size();
                 VL[bhPositie] = '|';
                 BH[bhPositie] = 'B';
             }
         }
         for (auto v: voertuigen){
             if (v->getBaan()->getNaam() == b->getNaam()) {
-                int voertuigpositie = v->getPositie() / simulatieSchaal + BN.size() + 6;
+                int voertuigpositie = v->getPositie() / simulatieSchaal;
                 if (v->getType() == VoertuigType::AUTO) {
                     LT[voertuigpositie] = 'A';
                 } else if (v->getType() == VoertuigType::BUS) {
@@ -496,10 +496,10 @@ void simulation::generateSimulation() {
                 }
             }
         }
-        s = regex_replace(s, regex("(BN)"), BN);
-        s = regex_replace(s, regex("(LT)"), LT);
-        s = regex_replace(s, regex("(VL)"), VL);
-        s = regex_replace(s, regex("(BH)"), BH);
+        s = regex_replace(s, regex("BN"), BN);
+        s = regex_replace(s, regex("LT"), LT);
+        s = regex_replace(s, regex("VL"), VL);
+        s = regex_replace(s, regex("BH"), BH);
 
         ss.push_back(s);
         vtXvlIndex.push_back({index1,index2});
@@ -508,7 +508,7 @@ void simulation::generateSimulation() {
 }
 
 void simulation::updateSimulation() {
-    for (int i = 0; i <banen.size();i++){
+    for (size_t i = 0; i <banen.size();i++){
         string s = Gsim[i];
         Baan* b = banen[i];
 
