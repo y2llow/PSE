@@ -9,10 +9,11 @@
 
 class Baan {
     std::string naam;
-    std::map< Baan* , std::pair<int,int> > kruispunten;
     int lengte;
 
 public:
+    //eerste int in de pair is voor this->position en 2de int is voor baan->position
+    std::map< Baan* , std::pair<int,int> > kruispunten;
     Baan() = default;
 
     Baan(const std::string &naam, const int lengte)
@@ -27,6 +28,8 @@ public:
     void setNaam(const std::string &naam);
 
     void setLengte(const int lengte);
+
+
 };
 
 

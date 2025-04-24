@@ -353,16 +353,32 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement *root, simulation *sim) {
 void Parser::parseKruisPunten(TiXmlElement *root, simulation *sim) {
     for (TiXmlElement *elem = root->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
         string elementType = elem->Value();
+        vector<int> positiePunten;
+        vector<string> banenNaam;
 
         if (elementType == "KRUISPUNT") {
-            for (TiXmlElement* baanElem = elem->FirstChildElement("baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan")) {
+            for (TiXmlElement *baanElem = elem->FirstChildElement(
+                    "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan")) {
 
                 // Attributen ophalen
                 const char *positie = baanElem->Attribute("positie");
-                const char *baanNaam = baanElem->GetText();
-
-
-
+                int positieInt = atoi(positie);
+                const char *baanNaamCStr = baanElem->GetText();
+                string baanNaam(baanNaamCStr);
+                positiePunten.push_back(positieInt);
+                banenNaam.push_back(baanNaam);
+            }
+        }
+        vector<Baan*> banenP;
+        for (auto s: kruisPunten){
+            banenP.push_back(s.second);
+        }
+        for (auto s: kruisPunten){
+            if (s.first == banenNaam[0]){
+                s.second->kruispunten[banenP[1]] = {positiePunten[0],positiePunten[1]};
+            }
+            else if (s.first == banenNaam[1]){
+                s.second->kruispunten[banenP[0]] = {positiePunten[1],positiePunten[0]};
             }
         }
     }
@@ -387,6 +403,7 @@ bool Parser::parseElements(const std::string &filename, simulation *sim) {
     parseVoertuigen(root, sim);
     parseVerkeerslichten(root, sim);
     parseVoertuiggeneratoren(root, sim);
+    parseKruisPunten(root,sim);
 
     sim->sortVoertuigenByPosition();
     sim->sortVerkeersLichtByPosition();
