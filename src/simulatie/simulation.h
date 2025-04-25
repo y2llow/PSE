@@ -22,19 +22,19 @@ class simulation {
     vector<Verkeerslicht *> verkeerslichten;
     vector<Bushalte *> bushaltes;
     vector<Voertuiggenerator *> voertuiggeneratoren;
-
-    //dit bevant gewoon vanaf wanneer begint de lijn van de voertuigen en van de verkeerslichten op de baan voor het genereren van grafische simulatie
-    pair<int,int> vtXvlIndex;
-    map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
-    map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
-    int simulatieSchaal = 5;
     double simulationTime = 0;
     double simulationincreasedTime = 0;
     double lastGeneretedVoertuigTime = 0;
     int voertuigLastId = 1;
 
+
+    //2.2
     //de simulatie grafisch gegeven (als string)
     vector<string> Gsim;
+    pair<int,int> vtXvlIndex;
+    map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
+    map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
+    int simulatieSchaal = 5;
 
     // SimPrinter simPrinter;
 
