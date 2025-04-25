@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     simulation* sim = new simulation();
     Parser parser;
-    parser.parseElements("../src/voorbeeldXML/voorbeeld5.xml", sim);
+    parser.parseElements("../src/voorbeeldXML/voorbeeld2.xml", sim);
 
     // Om de ingelezen verkeerssituatie te kunnen simuleren moet de informatie consistent zijn
     if (!sim->isConsistent()) {
@@ -20,7 +20,7 @@ int main() {
     sim->ToString();
     sim->generateSimulation();
     sim->printSimulation();
-    for (int i = 0; i<1000;i++){
+    for (int i = 0; i<4000;i++){
         sim->simulationRun();
         sim->ToString();
         sim->updateSimulation();
