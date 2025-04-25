@@ -450,7 +450,7 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
 void simulation::generateSimulation() {
     vector<string> ss;
     for (auto b: banen){
-        string s = "BN      |LT\n >verkeerslichten   |VL\n >bushaltes         |BH";
+        string s = "BN      |LT\n >verkeerslichten   |VL\n >bushaltes         |BH\n";
 
         string BN = b->getNaam();
         string LT((b->getLengte()/5),'=' );
@@ -475,7 +475,6 @@ void simulation::generateSimulation() {
         for (auto bh: bushaltes){
             if (bh->getBaan()->getNaam() == b->getNaam()){
                 int bhPositie = bh->getPositie()/simulatieSchaal;
-                index2 = 48 + VL.size() + LT.size() + BN.size();
                 VL[bhPositie] = '|';
                 BH[bhPositie] = 'B';
             }
@@ -483,6 +482,7 @@ void simulation::generateSimulation() {
         for (auto v: voertuigen){
             if (v->getBaan()->getNaam() == b->getNaam()) {
                 int voertuigpositie = v->getPositie() / simulatieSchaal;
+                index2 = BN.size()+6;
                 if (v->getType() == VoertuigType::AUTO) {
                     LT[voertuigpositie] = 'A';
                 } else if (v->getType() == VoertuigType::BUS) {
@@ -509,15 +509,14 @@ void simulation::generateSimulation() {
 
 void simulation::updateSimulation() {
     for (size_t i = 0; i <banen.size();i++){
-        string s = Gsim[i];
         Baan* b = banen[i];
 
         for (auto v: voertuigen){
             if (v->getBaan()->getNaam() == b->getNaam()){
-                int Vindex = vtXvlIndex[i].first + v->getPositie()/simulatieSchaal;
-                if (s[Vindex] == '='){
-                    s[Vindex] = s[Vindex-1];
-                    s[Vindex-1] = '=';
+                int Vindex = vtXvlIndex[i].second + v->getPositie()/simulatieSchaal;
+                if (Gsim[i][Vindex] == '='){
+                    Gsim[i][Vindex] = Gsim[i][Vindex-1];
+                    Gsim[i][Vindex-1] = '=';
                 }
                 else{
                     continue;
@@ -526,21 +525,21 @@ void simulation::updateSimulation() {
         }
         for (auto vl: verkeerslichten){
             if (vl->getBaan()->getNaam() == b->getNaam()){
-                int VLindex = vtXvlIndex[i].second + vl->getPositie()/simulatieSchaal;
-                if(s[VLindex] == 'R'){
+                int VLindex = vtXvlIndex[i].first + vl->getPositie()/simulatieSchaal;
+                if(Gsim[i][VLindex] == 'R'){
                     if(vl->isRood()){
                         continue;
                     }
                     else if(vl->isGroen()){
-                        s[VLindex] = 'G';
+                        Gsim[i][VLindex] = 'G';
                     }
                 }
-                else if(s[VLindex] == 'G'){
+                else if(Gsim[i][VLindex] == 'G'){
                     if( vl->isGroen()){
                         continue;
                     }
                     else if(vl->isRood()){
-                        s[VLindex] = 'R';
+                        Gsim[i][VLindex] = 'R';
                     }
                 }
             }
@@ -549,7 +548,7 @@ void simulation::updateSimulation() {
 }
 
 void simulation::printSimulation() {
-    for (auto s: Gsim){
+    for (auto &s: Gsim){
         cout<<s<<endl;
     }
 }
