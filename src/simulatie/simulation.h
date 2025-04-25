@@ -23,7 +23,7 @@ class simulation {
     vector<Bushalte *> bushaltes;
     vector<Voertuiggenerator *> voertuiggeneratoren;
 
-    //dit bevant gewoon vanaf wanneer begint de lijn van de voertuigen en van de verkeerslichten op de baan voor het genereren van grafische simulatie
+    //dit bevant gewoon vanaf wanneer begint de lijn van de voertuigen en van de verkeerslichten op de baan voor het genereren van grafische simulatie (dit moet weg, dat doe ik morgen)
     vector<pair<int,int>> vtXvlIndex;
     int simulatieSchaal = 5;
     double simulationTime = 0;
