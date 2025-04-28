@@ -1,0 +1,31 @@
+<VERKEERSSITUATIE>
+    <BAAN>
+    <naam>Middelheimlaan</naam>
+    <lengte>500</lengte>
+    </BAAN>
+
+    <VERKEERSLICHT>
+    <baan>Middelheimlaan</baan>
+    <positie>100</positie>
+    <cyclus>100</cyclus>
+    </VERKEERSLICHT>
+
+    <VOERTUIG>
+    <baan>Middelheimlaan</baan>
+    <positie>0</positie>
+    <type>auto</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>30</positie>
+        <type>auto</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>80</positie>
+        <type>auto</type>
+    </VOERTUIG>
+
+</VERKEERSSITUATIE>
