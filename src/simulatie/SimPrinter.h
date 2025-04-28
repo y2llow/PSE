@@ -14,11 +14,12 @@
 class SimPrinter {
 private:
     vector<string> Gsim;
-    pair<int,int> vtXvlIndex;
+    map<Baan*, pair<int,int>> vtXvlIndex;
     map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
     map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
     int simCounter = 0;
+    int HTMLminTAB = 10;
 
 public:
     static void printStatus(Voertuig const* vehicle, double status);
@@ -32,10 +33,6 @@ public:
     void generateTXT();
 
     void updateTXT();
-
-    void generateHTML();
-
-    void updateHTML();
 };
 
 
