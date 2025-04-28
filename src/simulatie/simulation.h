@@ -30,13 +30,10 @@ class simulation {
 
     //2.2
     //de simulatie grafisch gegeven (als string)
-    vector<string> Gsim;
-    pair<int,int> vtXvlIndex;
-    map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
-    map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
 
     // SimPrinter simPrinter;
+    SimPrinter simPr;
 
 public:
 //    simulation(SimPrinter*): simPrinter(SimPrinter()) {

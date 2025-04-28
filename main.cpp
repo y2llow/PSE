@@ -20,7 +20,7 @@ int main() {
     sim->ToString();
     sim->generateSimulation();
     sim->printSimulation();
-    for (int i = 0; i<4000;i++){
+    for (int i = 0; i<100;i++){
         sim->simulationRun();
         sim->ToString();
         sim->updateSimulation();

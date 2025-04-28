@@ -448,141 +448,15 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
 }
 
 void simulation::generateSimulation() {
-    vector<string> ss;
-    bool firstTime = true;
-    for (auto b: banen) {
-        string s = "BN\t\t\t|LT\n >verkeerslichten\t\t|VL\n >bushaltes\t\t\t\t|BH\n";
-
-        string BN = b->getNaam();
-        string LT((b->getLengte() / simulatieSchaal), '=');
-        string VL((b->getLengte() / simulatieSchaal), ' ');
-        string BH((b->getLengte() / simulatieSchaal), ' ');
-        int index1 = 0;
-        int index2 = 0;
-        if (firstTime) {
-             index1 = BN.size() + 4;
-             index2 = 25 + LT.size() + BN.size();
-            vtXvlIndex = {index1, index2};
-            firstTime = false;
-        }
-
-        for (auto v: voertuigen) {
-            if (v->getBaan()->getNaam() == b->getNaam()) {
-                int voertuigpositie = v->getPositie() / simulatieSchaal;
-                if (v->getType() == VoertuigType::AUTO) {
-                    LT[voertuigpositie] = 'A';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
-                } else if (v->getType() == VoertuigType::BUS) {
-                    LT[voertuigpositie] = 'B';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
-                } else if (v->getType() == VoertuigType::BRANDWEERWAGEN) {
-                    LT[voertuigpositie] = 'I';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
-                } else if (v->getType() == VoertuigType::ZIEKENWAGEN) {
-                    LT[voertuigpositie] = 'Z';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
-                } else if (v->getType() == VoertuigType::POLITIECOMBI) {
-                    LT[voertuigpositie] = 'P';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
-                }
-            }
-        }
-        for (auto vl: verkeerslichten) {
-            if (vl->getBaan()->getNaam() == b->getNaam()) {
-                int vlPositie = vl->getPositie() / simulatieSchaal;
-                if (vl->isRood()) {
-                    VL[vlPositie] = 'R';
-                    verkeerslichtenOpBaanSIM[b][vlPositie] = vl;
-                } else if (vl->isGroen()) {
-                    VL[vlPositie] = 'G';
-                    verkeerslichtenOpBaanSIM[b][vlPositie] = vl;
-                }
-            }
-        }
-        for (auto bh: bushaltes) {
-            if (bh->getBaan()->getNaam() == b->getNaam()) {
-                int bhPositie = bh->getPositie() / simulatieSchaal;
-                VL[bhPositie] = '|';
-                BH[bhPositie] = 'B';
-            }
-        }
-        s = regex_replace(s, regex("BN"), BN);
-        s = regex_replace(s, regex("LT"), LT);
-        s = regex_replace(s, regex("VL"), VL);
-        s = regex_replace(s, regex("BH"), BH);
-
-        ss.push_back(s);
-    }
-    Gsim = ss;
+    simPr.generateSimulation(simulatieSchaal,voertuigen,verkeerslichten,bushaltes,banen);
 }
 
 void simulation::updateSimulation() {
-
-    //we behandelen elk baan met zijn voertuigen en verkeerslichten
-    for (auto b: voertuigenOpBaanSIM) {
-        int counter = 0;
-        for (auto v: b.second) {
-            //we berekenen de "nieuwe" index
-            int Vindex = vtXvlIndex.first + v.second->getPositie() / simulatieSchaal;
-
-            //we kijken of de voertuig op de baan is
-            if (v.second->getPositie() <= b.first->getLengte()) {
-                //we kijken of de nieuwe index en de oude index het zelfde zijn
-                if (Vindex == v.first) {
-                    //iteratie skippen
-                    continue;
-                }
-                    //als de nieuwe index groter is
-                else if (Vindex > v.first) {
-                    //dan gaan we in de simulatie de characters updaten
-                    char c = Gsim[counter][v.first];
-                    Gsim[counter][v.first] = '=';
-                    Gsim[counter][Vindex] = c;
-
-                    //we moeten dan ook de informatie in de mappen aanpassen aan de nieuwe gegevens
-                    Voertuig *v2 = v.second;
-                    voertuigenOpBaanSIM[b.first].erase(v.first);
-                    voertuigenOpBaanSIM[b.first][Vindex] = v2;
-
-                }
-            //als de voertuig buiten de baan ligt dan moeten we het uit de baan map verwijderen en uit de simulatie string ook.
-            } else if (v.second->getPositie() > b.first->getLengte()) {
-                Gsim[counter][v.first] = '=';
-                voertuigenOpBaanSIM[b.first].erase(v.first);
-            }
-        }
-        counter++;
-    }
-
-    for (auto b: verkeerslichtenOpBaanSIM) {
-        int counter = 0;
-        for (auto vl: b.second) {
-            int vlIndex = vtXvlIndex.second + vl.first;
-            if (vl.second->isRood()){
-                if(Gsim[counter][vlIndex] == 'R'){
-                    continue;
-                }
-                else if (Gsim[counter][vlIndex] == 'G'){
-                    Gsim[counter][vlIndex] = 'R';
-                }
-            }
-            else if(vl.second->isGroen()){
-                if(Gsim[counter][vlIndex] == 'G'){
-                    continue;
-                }
-                else if (Gsim[counter][vlIndex] == 'R'){
-                    Gsim[counter][vlIndex] = 'G';
-                }
-            }
-        }
-        counter++;
-    }
+    simPr.updateSimulation();
 }
 
 void simulation::printSimulation() {
-    for (auto &s: Gsim){
-        cout<<s<<endl;
-    }
+    simPr.printSimulation();
 }
 
 
