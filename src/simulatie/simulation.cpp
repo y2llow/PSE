@@ -441,20 +441,21 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
                     }
                 }
 
-            // 3.1 ELSE IF verkeerslicht is rood
-            if (isVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
-                // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
-                BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
-                // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
-            } else if (isVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
-                // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
-                eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
-            } else if  (((eerstVoertuigVoorLicht->getPositie() > licht->getPositie() - STOP_AFSTAND / 2) == true) &&
-                ((eerstVoertuigVoorLicht->getPositie() < licht->getPositie()) == true)) {
-                eerstVoertuigVoorLicht->setSnelheid(0);
-                eerstVoertuigVoorLicht->setVersnelling(0);
-            }else {
-                BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
+                // 3.1 ELSE IF verkeerslicht is rood
+                if (isVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
+                    // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand
+                    BerekenSnelheidNaVertraging(eerstVoertuigVoorLicht);
+                    // 3.1.1.1 THEN pas de vertraagfactor toe op het voertuig
+                } else if (isVoertuigInStopZone(eerstVoertuigVoorLicht, licht)) {
+                    // 3.1.2 ELSE IF het eerste voertuig voor het licht bevindt zich in de eerste helft van de stopafstand
+                    eerstVoertuigVoorLicht->UpdateVersnellingVoorStoppen(); // 3.1.1.1 THEN laat het voertuig stoppen
+                } else if  (((eerstVoertuigVoorLicht->getPositie() > licht->getPositie() - STOP_AFSTAND / 2) == true) &&
+                    ((eerstVoertuigVoorLicht->getPositie() < licht->getPositie()) == true)) {
+                    eerstVoertuigVoorLicht->setSnelheid(0);
+                    eerstVoertuigVoorLicht->setVersnelling(0);
+                    }else {
+                        BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
+                    }
             }
         }
     }

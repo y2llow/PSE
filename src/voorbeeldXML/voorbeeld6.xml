@@ -1,0 +1,32 @@
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>50</positie>
+        <type>ziekenwagen</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <type>auto</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+        <type>politiecombi</type>
+    </VOERTUIG>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>100</positie>
+        <cyclus>100</cyclus>
+    </VERKEERSLICHT>
+
+
+</VERKEERSSITUATIE>
