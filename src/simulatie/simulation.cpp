@@ -201,16 +201,15 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
             double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
             double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
-            double newsnelheid = v->getSnelheid() - snelheidVerschil;
-            double newversnelling = 2 * sqrt(v->getVersnelling() * v->getMaxRemfactor());
+            double newsnelheid = v->getSnelheid() * snelheidVerschil;
+            double newversnelling = 2 * sqrt(v->getMaxVersnelling() * v->getMaxRemfactor());
 
             double calculate = v->getSnelheid() + (newsnelheid / newversnelling);
 
             double maxNummer = max(0.0, calculate);
             delta = (v->getMinVolgafstand() + maxNummer) / volgafstand;
 
-            double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
-                                                       pow(delta, 2));
+            double newVersnelling = v->getMaxVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) - pow(delta, 2));
             v->setVersnelling(newVersnelling);
         } else {
             double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
@@ -221,7 +220,6 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
 }
 
 void simulation::updateVoertuig(Voertuig *v, int counter) const {
-
     berekenPositie(v);
     BerekenVersnelling(v, counter);
 }
