@@ -135,8 +135,8 @@ void SimPrinter::updateSimulation() {
         counter++;
     }
 
+    counter = 0;
     for (auto b: verkeerslichtenOpBaanSIM) {
-        counter = 0;
         for (auto vl: b.second) {
             int vlIndex = vtXvlIndex[b.first].second + vl.first;
             if (vl.second->isRood()){
