@@ -19,7 +19,6 @@ private:
     map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
     int simCounter = 0;
-    int HTMLminTAB = 10;
 
 public:
     static void printStatus(Voertuig const* vehicle, double status);

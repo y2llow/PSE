@@ -30,9 +30,6 @@ void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
         if (BN.size()<28){
             int difference = 28 - BN.size();
             bsT = difference/4;
-            if(bsT<HTMLminTAB){
-                HTMLminTAB = bsT;
-            }
             BN = BN+string(bsT,'\t');
         }
         string LT((b->getLengte() / simulatieSchaal), '=');
