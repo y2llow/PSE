@@ -18,7 +18,7 @@ void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
         << "-> snelheid: " << voertuig->getSnelheid() << "\n" <<endl;
 }
 
-void SimPrinter::generateSimulation(int &simulatieschaal, vector<Voertuig *> &voertuigen,
+void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
                                     vector<Verkeerslicht *> &verkeerslichten, vector<Bushalte *> &bushaltes, vector<Baan *> &banen) {
     vector<string> ss;
     bool firstTime = true;

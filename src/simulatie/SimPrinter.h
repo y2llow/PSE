@@ -22,7 +22,7 @@ private:
 public:
     static void printStatus(Voertuig const* vehicle, double status);
     //dit maakt de simulatie string
-    void generateSimulation(int &simulatieschaal, vector<Voertuig *> &voertuigen, vector<Verkeerslicht *> &verkeerslichten,
+    void generateSimulation(vector<Voertuig *> &voertuigen, vector<Verkeerslicht *> &verkeerslichten,
                             vector<Bushalte *> &bushaltes, vector<Baan *> &banen);
 
     //dit zal de simulatie string na elk tijd updaten

@@ -30,8 +30,6 @@ class simulation {
 
     //2.2
     //de simulatie grafisch gegeven (als string)
-    int simulatieSchaal = 5;
-
     // SimPrinter simPrinter;
     SimPrinter simPr;
 
