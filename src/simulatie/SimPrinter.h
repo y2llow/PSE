@@ -18,6 +18,7 @@ private:
     map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
     map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
+    int simCounter = 1;
 
 public:
     static void printStatus(Voertuig const* vehicle, double status);
@@ -30,6 +31,10 @@ public:
 
     //dit zal de simulatie printen
     void printSimulation();
+
+    void generateTXT();
+
+    void updateTXT();
 };
 
 
