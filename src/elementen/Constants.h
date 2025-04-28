@@ -5,6 +5,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+
 inline constexpr double SIMULATIE_TIJD = 0.0166;
 inline constexpr double VERTRAAG_AFSTAND = 50;
 inline constexpr double STOP_AFSTAND = 15;
