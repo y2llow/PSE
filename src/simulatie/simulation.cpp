@@ -196,25 +196,27 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
     size_t vsize = voertuigen.size();
     int sizeVoertuigen = vsize;
 
-    if (sizeVoertuigen > counter + 1) {
-        double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
-        double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
+    if (v->getKvmax() != v->getSnelheid()) {
+        if (sizeVoertuigen > counter + 1) {
+            double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
+            double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
 
-        double newsnelheid = v->getSnelheid() - snelheidVerschil;
-        double newversnelling = 2 * sqrt(v->getVersnelling() * v->getMaxRemfactor());
+            double newsnelheid = v->getSnelheid() - snelheidVerschil;
+            double newversnelling = 2 * sqrt(v->getVersnelling() * v->getMaxRemfactor());
 
-        double calculate = v->getSnelheid() + (newsnelheid / newversnelling);
+            double calculate = v->getSnelheid() + (newsnelheid / newversnelling);
 
-        double maxNummer = max(0.0, calculate);
-        delta = (v->getMinVolgafstand() + maxNummer) / volgafstand;
+            double maxNummer = max(0.0, calculate);
+            delta = (v->getMinVolgafstand() + maxNummer) / volgafstand;
 
-        double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
-                                                   pow(delta, 2));
-        v->setVersnelling(newVersnelling);
-    } else {
-        double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
-                                                   pow(delta, 2));
-        v->setVersnelling(newVersnelling);
+            double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+                                                       pow(delta, 2));
+            v->setVersnelling(newVersnelling);
+        } else {
+            double newVersnelling = v->getVersnelling() * (1 - pow((v->getSnelheid() / v->getKvmax()), 4) -
+                                                       pow(delta, 2));
+            v->setVersnelling(newVersnelling);
+        }
     }
 }
 
