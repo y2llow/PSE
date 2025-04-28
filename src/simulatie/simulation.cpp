@@ -429,7 +429,18 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
             // 2. IF verkeerslicht is groen
             BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
             // 2.1 THEN voertuigen voor het verkeerslicht mag terug versnellen
-        } else if (licht->isRood()) {
+        }if (licht->isRood()) {
+            if (eerstVoertuigVoorLicht->getPrioriteit()) {
+                BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
+                int VoertuigenVoorLichtInt = static_cast<int> (VoertuigenVoorLicht.size());
+
+                for (int i = VoertuigenVoorLichtInt - 2 ; i >= 0; i--) {
+                    if (!VoertuigenVoorLicht[i]->getPrioriteit()) {
+                        eerstVoertuigVoorLicht = VoertuigenVoorLicht[i];
+                        break;
+                    }
+                }
+
             // 3.1 ELSE IF verkeerslicht is rood
             if (isVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
                 // 3.1.1 THEN IF het eerste voertuig voor het licht bevindt zich in de vertraagafstand

@@ -92,6 +92,10 @@ public:
     void UpdateVersnellingVoorStoppen();
 
     void simulateStep();
+
+    bool getPrioriteit() {
+        return typeVoertuig.getPrioriteit();
+    }
 };
 
 #endif //VOERTUIG_H
