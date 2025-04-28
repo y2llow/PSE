@@ -196,7 +196,6 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
     size_t vsize = voertuigen.size();
     int sizeVoertuigen = vsize;
 
-    if (v->getKvmax() != v->getSnelheid()) {
         if (sizeVoertuigen > counter + 1) {
             double volgafstand = voertuigen[counter + 1]->getPositie() - v->getPositie() - v->getLength();
             double snelheidVerschil = v->getSnelheid() - voertuigen[counter + 1]->getSnelheid();
@@ -217,7 +216,7 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
             v->setVersnelling(newVersnelling);
         }
     }
-}
+
 
 void simulation::updateVoertuig(Voertuig *v, int counter) const {
     berekenPositie(v);
