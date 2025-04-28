@@ -88,6 +88,7 @@ void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
     }
     Gsim = ss;
     generateTXT();
+    generateHTML();
 }
 
 void SimPrinter::updateSimulation() {
@@ -125,7 +126,6 @@ void SimPrinter::updateSimulation() {
             }
         }
         counter++;
-        updateTXT();
     }
 
     for (auto b: verkeerslichtenOpBaanSIM) {
@@ -151,6 +151,9 @@ void SimPrinter::updateSimulation() {
         }
         counter++;
     }
+    simCounter++;
+    updateTXT();
+    updateHTML();
 }
 
 void SimPrinter::printSimulation() {
@@ -184,7 +187,120 @@ void SimPrinter::updateTXT() {
 
         // Close the file
         myFile.close();
-        simCounter++;
+    }
+}
+
+void SimPrinter::generateHTML() {
+    ofstream myFile("../src/output/simulatie.html");
+
+    // Write HTML header
+    myFile << "<!DOCTYPE html>" << endl;
+    myFile << "<html lang=\"en\">" << endl;
+    myFile << "<head>" << endl;
+    myFile << "    <meta charset=\"UTF-8\">" << endl;
+    myFile << "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" << endl;
+    myFile << "    <title>Simulation Results</title>" << endl;
+    myFile << "    <style>" << endl;
+    myFile << "        body { font-family: monospace; padding: 20px; }" << endl;
+    myFile << "        .simulation { margin-bottom: 20px; }" << endl;
+    myFile << "        .simulation-title { font-weight: bold; margin-bottom: 5px; }" << endl;
+    myFile << "        pre { margin: 0; }" << endl;
+    myFile << "        .divider { color: #666; margin: 10px 0; }" << endl;
+    myFile << "    </style>" << endl;
+    myFile << "</head>" << endl;
+    myFile << "<body>" << endl;
+
+    // Write first simulation
+    myFile << "<div class=\"simulation\">" << endl;
+    myFile << "    <div class=\"simulation-title\">Simulatie 0:</div>" << endl;
+    myFile << "    <pre>";
+    for (auto s: Gsim){
+        // Check if this is the line with bushaltes
+        if (s.find(">bushaltes") != string::npos) {
+            // Find the position of the last pipe character
+            size_t posBar = s.rfind("|");
+
+            if (posBar != string::npos && posBar > 0) {
+                // Find the last tab before the pipe
+                size_t posLastTab = s.rfind("\t", posBar);
+
+                if (posLastTab != string::npos) {
+                    // Remove the last tab
+                    string fixedLine = s.substr(0, posLastTab) + s.substr(posLastTab + 1);
+                    myFile << fixedLine << "\n";
+                } else {
+                    myFile << s << "\n";
+                }
+            } else {
+                myFile << s << "\n";
+            }
+        } else {
+            myFile << s << "\n";
+        }
+    }
+    myFile << "    </pre>" << endl;
+    myFile << "</div>" << endl;
+
+    // Add divider line using the street length
+    myFile << "<div class=\"divider\">" << string(vtXvlIndex.first, '-') << "</div>" << endl;
+
+    // Write HTML footer
+    myFile << "</body>" << endl;
+    myFile << "</html>" << endl;
+
+    myFile.close();
+}
+
+void SimPrinter::updateHTML() {
+    // Read the existing file content
+    ifstream readFile("../src/output/simulatie.html");
+    string content((istreambuf_iterator<char>(readFile)), istreambuf_iterator<char>());
+    readFile.close();
+
+    // Find the position to insert new content (before the closing </body> tag)
+    size_t insertPos = content.find("</body>");
+    if (insertPos != string::npos) {
+        // Create new simulation content
+        string newSimulation = "<div class=\"simulation\">\n";
+        newSimulation += "    <div class=\"simulation-title\">Simulatie " + to_string(simCounter) + ":</div>\n";
+        newSimulation += "    <pre>";
+        for (auto s: Gsim) {
+            // Check if this is the line with bushaltes
+            if (s.find(">bushaltes") != string::npos) {
+                // Find the position of the last pipe character
+                size_t posBar = s.rfind("|");
+
+                if (posBar != string::npos && posBar > 0) {
+                    // Find the last tab before the pipe
+                    size_t posLastTab = s.rfind("\t", posBar);
+
+                    if (posLastTab != string::npos) {
+                        // Remove the last tab
+                        string fixedLine = s.substr(0, posLastTab) + s.substr(posLastTab + 1);
+                        newSimulation += fixedLine + "\n";
+                    } else {
+                        newSimulation += s + "\n";
+                    }
+                } else {
+                    newSimulation += s + "\n";
+                }
+            } else {
+                newSimulation += s + "\n";
+            }
+        }
+        newSimulation += "    </pre>\n";
+        newSimulation += "</div>\n";
+
+        // Add divider line using the street length
+        newSimulation += "<div class=\"divider\">" + string(vtXvlIndex.first, '-') + "</div>\n";
+
+        // Insert the new content
+        content.insert(insertPos, newSimulation);
+
+        // Write the updated content back to the file
+        ofstream writeFile("../src/output/simulatie.html");
+        writeFile << content;
+        writeFile.close();
     }
 }
 
