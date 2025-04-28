@@ -18,11 +18,12 @@ private:
     map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
     map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
+    int simCounter = 1;
 
 public:
     static void printStatus(Voertuig const* vehicle, double status);
     //dit maakt de simulatie string
-    void generateSimulation(int &simulatieschaal, vector<Voertuig *> &voertuigen, vector<Verkeerslicht *> &verkeerslichten,
+    void generateSimulation(vector<Voertuig *> &voertuigen, vector<Verkeerslicht *> &verkeerslichten,
                             vector<Bushalte *> &bushaltes, vector<Baan *> &banen);
 
     //dit zal de simulatie string na elk tijd updaten
@@ -30,6 +31,10 @@ public:
 
     //dit zal de simulatie printen
     void printSimulation();
+
+    void generateTXT();
+
+    void updateTXT();
 };
 
 

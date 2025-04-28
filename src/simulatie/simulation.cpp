@@ -461,7 +461,7 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
 }
 
 void simulation::generateSimulation() {
-    simPr.generateSimulation(simulatieSchaal,voertuigen,verkeerslichten,bushaltes,banen);
+    simPr.generateSimulation(voertuigen,verkeerslichten,bushaltes,banen);
 }
 
 void simulation::updateSimulation() {

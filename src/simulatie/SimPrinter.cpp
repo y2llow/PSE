@@ -5,6 +5,7 @@
 #include "SimPrinter.h"
 #include <iostream>
 #include <regex>
+#include <fstream>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
         << "-> snelheid: " << voertuig->getSnelheid() << "\n" <<endl;
 }
 
-void SimPrinter::generateSimulation(int &simulatieschaal, vector<Voertuig *> &voertuigen,
+void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
                                     vector<Verkeerslicht *> &verkeerslichten, vector<Bushalte *> &bushaltes, vector<Baan *> &banen) {
     vector<string> ss;
     bool firstTime = true;
@@ -86,6 +87,7 @@ void SimPrinter::generateSimulation(int &simulatieschaal, vector<Voertuig *> &vo
         ss.push_back(s);
     }
     Gsim = ss;
+    generateTXT();
 }
 
 void SimPrinter::updateSimulation() {
@@ -123,6 +125,7 @@ void SimPrinter::updateSimulation() {
             }
         }
         counter++;
+        updateTXT();
     }
 
     for (auto b: verkeerslichtenOpBaanSIM) {
@@ -155,6 +158,37 @@ void SimPrinter::printSimulation() {
         cout<<s<<endl;
     }
 }
+
+void SimPrinter::generateTXT() {
+    ofstream myFile("../src/output/simulatie.txt");
+
+    myFile << "Simulatie 0:" << endl;
+    for (auto s: Gsim){
+        myFile<<s<<endl;
+    }
+    myFile << string(vtXvlIndex.first,'-') << endl;
+    myFile.close();
+}
+
+void SimPrinter::updateTXT() {
+
+    std::ofstream myFile("../src/output/simulatie.txt", std::ios::app);
+
+    // Check if the file is open
+    if (myFile.is_open()) {
+        myFile << "Simulatie " << to_string(simCounter) <<':'<<endl;
+        for (auto s: Gsim){
+            myFile << s << endl;
+        }
+        myFile << string(vtXvlIndex.first,'-') << endl;
+
+        // Close the file
+        myFile.close();
+        simCounter++;
+    }
+}
+
+
 
 // De 2de printstatus geeft meer kenmerken van d auto kan handig zijn voor als je iets will checken
 // !!!! DUS NIET VERWIJDEREN !!!
