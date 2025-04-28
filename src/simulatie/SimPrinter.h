@@ -29,9 +29,6 @@ public:
     //dit zal de simulatie string na elk tijd updaten
     void updateSimulation();
 
-    //dit zal de simulatie printen
-    void printSimulation();
-
     void generateTXT();
 
     void updateTXT();

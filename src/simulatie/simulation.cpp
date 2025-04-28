@@ -469,8 +469,4 @@ void simulation::updateSimulation() {
     simPr.updateSimulation();
 }
 
-void simulation::printSimulation() {
-    simPr.printSimulation();
-}
-
 

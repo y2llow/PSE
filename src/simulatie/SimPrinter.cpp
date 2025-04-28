@@ -156,12 +156,6 @@ void SimPrinter::updateSimulation() {
     updateHTML();
 }
 
-void SimPrinter::printSimulation() {
-    for (auto &s: Gsim){
-        cout<<s<<endl;
-    }
-}
-
 void SimPrinter::generateTXT() {
     ofstream myFile("../src/output/simulatie.txt");
 

@@ -18,12 +18,10 @@ int main() {
     }
 
     sim->generateSimulation();
-    sim->printSimulation();
     for (int i = 0; i<10;i++){
         sim->simulationRun();
         sim->ToString();
         sim->updateSimulation();
-        sim->printSimulation();
     }
 
 
