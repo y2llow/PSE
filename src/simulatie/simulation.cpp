@@ -221,6 +221,7 @@ void simulation::BerekenVersnelling(Voertuig *v, int counter) const {
 }
 
 void simulation::updateVoertuig(Voertuig *v, int counter) const {
+
     berekenPositie(v);
     BerekenVersnelling(v, counter);
 }
@@ -234,9 +235,6 @@ bool simulation::isVoertuigOpBaan(const Voertuig *v) {
 }
 
 void simulation::simulationRun() {
-
-
-
     int counter = 0;
 
     // 3.4. Simulatie met voertuiggenerator
@@ -440,6 +438,7 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
                         break;
                     }
                 }
+            }
 
                 // 3.1 ELSE IF verkeerslicht is rood
                 if (isVoertuigInVertraagZone(eerstVoertuigVoorLicht, licht)) {
@@ -456,7 +455,7 @@ void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, in
                     }else {
                         BerekenSnelheidNaVersnelling(eerstVoertuigVoorLicht);
                     }
-            }
+
         }
     }
 }
