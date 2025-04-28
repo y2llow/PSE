@@ -5,27 +5,27 @@
     </BAAN>
 
     <VERKEERSLICHT>
-    <baan>Middelheimlaan</baan>
-    <positie>100</positie>
-    <cyclus>100</cyclus>
+        <baan>Middelheimlaan</baan>
+        <positie>60</positie>
+        <cyclus>100</cyclus>
     </VERKEERSLICHT>
 
     <VOERTUIG>
     <baan>Middelheimlaan</baan>
     <positie>0</positie>
-    <type>auto</type>
+    <type>politiecombi</type>
     </VOERTUIG>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>30</positie>
+        <positie>40</positie>
         <type>auto</type>
     </VOERTUIG>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>80</positie>
-        <type>auto</type>
+        <positie>50</positie>
+        <type>politiecombi</type>
     </VOERTUIG>
 
 </VERKEERSSITUATIE>
