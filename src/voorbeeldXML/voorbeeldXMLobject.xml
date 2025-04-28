@@ -1,0 +1,44 @@
+
+<!--HIER STAAN ALLE MOGELIJKE OBJECTEN ZODAT JE MAKKELIJK KAN KOPIEREN NIET VERWIJDEREN AUB !-->
+
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>400</positie>
+        <cyclus>1</cyclus>
+    </VERKEERSLICHT>
+
+    <BUSHALTE>
+        <baan>Middelheimlaan</baan>
+        <positie>250</positie>
+        <wachttijd>20</wachttijd>
+    </BUSHALTE>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>80</positie>
+        <type>auto bus brandweerwagen ziekenwagen politiecombi</type>
+    </VOERTUIG>
+
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>5</frequentie>
+        <type>auto bus brandweerwagen ziekenwagen politiecombi</type>
+    </VOERTUIGGENERATOR>
+
+    <KRUISPUNT>
+        <baan positie="250">Middelheimlaan</baan>
+        <baan positie="500">Floralienlaan</baan>
+    </KRUISPUNT>
+
+    <BAAN>
+        <naam>Floralienlaan</naam>
+        <lengte>750</lengte>
+    </BAAN>
+
+</VERKEERSSITUATIE>
