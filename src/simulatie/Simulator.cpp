@@ -11,13 +11,14 @@
 #include <algorithm>
 #include <cmath>
 #include <regex>
+
 #include <filesystem>
 #include <fstream>
+
 
 void Simulator::addBaan(Baan *b) {
     banen.push_back(b);
 }
-
 
 void Simulator::makeGraphicalImpression()
 {
@@ -89,7 +90,7 @@ void Simulator::makeGraphicalImpression()
     }
 }
 
-void Simulator::generateGraphicsFile()
+void Simulator::generateGraphicsFile() const
 {
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
