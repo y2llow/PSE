@@ -11,7 +11,6 @@
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Bushalte.h"
 #include "../../src/elementen/Voertuiggenerator.h"
-#include "../../src/simulatie/SimPrinter.h"
 
 using namespace std;
 
@@ -38,13 +37,6 @@ public:
 
     void simulate(int times);
 
-
-
-    //2.2
-    //de simulatie grafisch gegeven (als string)
-    // SimPrinter simPrinter;
-    SimPrinter simPr;
-
 public:
 //    simulation(SimPrinter*): simPrinter(SimPrinter()) {
 //    };
@@ -53,10 +45,6 @@ public:
     Simulator() = default;
     int getVoertuigLastId()const;
     void increaseVoertuigLastId();
-
-    [[nodiscard]] SimPrinter * getSimPrinter() const;
-
-    void setSimPrinter(SimPrinter * const sim_printer);
 
 
 
@@ -68,8 +56,6 @@ public:
 
     [[nodiscard]] vector<Voertuiggenerator *> getVoertuiggeneratoren() const;
 
-
-    void ToString();
 
     double getSimulationTime() const;
 
