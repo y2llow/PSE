@@ -13,16 +13,15 @@ public:
     Bushalte() = default;
 
     [[nodiscard]] Baan* getBaan() const;
-
     void setBaan(Baan* baan);
 
     [[nodiscard]] double getPositie() const;
-
     void setPositie(double positie);
 
-    double getWachttijd() const;
-
+    [[nodiscard]] double getWachttijd() const;
     void setWachttijd(double cyclus);
+
+    void stopBus() const;
 };
 
 

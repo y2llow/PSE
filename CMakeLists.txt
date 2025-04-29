@@ -24,16 +24,24 @@ set(RELEASE_SOURCE_FILES
         src/elementen/Baan.cpp
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
-        src/simulatie/simulation.cpp
+        src/simulatie/Simulator.cpp
         main.cpp
         src/elementen/Constants.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
-        src/elementen/TypeVoertuig.cpp
-        src/elementen/TypeVoertuig.h
         src/simulatie/SimPrinter.cpp    # Zorg ervoor dat deze is toegevoegd
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
+        src/elementen/voertuigen/Auto.cpp
+        src/elementen/voertuigen/Auto.h
+        src/elementen/voertuigen/Brandweerwagen.cpp
+        src/elementen/voertuigen/Brandweerwagen.h
+        src/elementen/voertuigen/Bus.cpp
+        src/elementen/voertuigen/Bus.h
+        src/elementen/voertuigen/Politiecombi.cpp
+        src/elementen/voertuigen/Politiecombi.h
+        src/elementen/voertuigen/Ziekenwagen.cpp
+        src/elementen/voertuigen/Ziekenwagen.h
 )
 
 # Set source files for DEBUG target
@@ -46,16 +54,24 @@ set(DEBUG_SOURCE_FILES
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
         test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
-        src/simulatie/simulation.cpp
+        src/simulatie/Simulator.cpp
         src/elementen/Constants.h
         src/simulatie/SimPrinter.cpp
         src/simulatie/SimPrinter.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
-        src/elementen/TypeVoertuig.cpp
-        src/elementen/TypeVoertuig.h
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
+        src/elementen/voertuigen/Auto.cpp
+        src/elementen/voertuigen/Auto.h
+        src/elementen/voertuigen/Brandweerwagen.cpp
+        src/elementen/voertuigen/Brandweerwagen.h
+        src/elementen/voertuigen/Bus.cpp
+        src/elementen/voertuigen/Bus.h
+        src/elementen/voertuigen/Politiecombi.cpp
+        src/elementen/voertuigen/Politiecombi.h
+        src/elementen/voertuigen/Ziekenwagen.cpp
+        src/elementen/voertuigen/Ziekenwagen.h
 )
 
 # Create RELEASE target

@@ -1,55 +1,68 @@
 //
-// Created by s0243673@ad.ua.ac.be on 2/27/25.
+// Created by Abdellah on 4/28/2025.
 //
 
 #ifndef BAAN_H
 #define BAAN_H
 #include <string>
+#include <utility>
 #include <vector>
 #include <map>
+
+class Voertuiggenerator;
+class Voertuig;
+using namespace std;
+
 class Verkeerslicht;
 class Bushalte;
 
-class Baan {
-    std::string naam;
+class Baan
+{
+    string naam;
+    int lengte{};
 
-    //de baan moet de verkeerslichten bevatten (dit staat vast aan een baan)
-    std::vector<Verkeerslicht*> verkeerslichten;
+    vector<Bushalte*> bushaltes;
+    vector<Verkeerslicht*> verkeers;
+    vector<Voertuig*> voertuigen;
+    vector<Voertuiggenerator*> voertuiggeneratoren;
 
-    //de baan moet de bushaltes bevatten (dit staat vast aan een baan)
-    std::vector<Bushalte*> bushaltes;
-
-    int lengte;
+    vector<double> bushaltes_positions;
 
 public:
+    map<int, vector<Baan*>> kruispunten;
+
     //eerste int in de pair is voor this->position en 2de int is voor baan->position
-    std::map< Baan* , std::pair<int,int> > kruispunten;
     Baan() = default;
 
-    Baan(const std::string &naam, const int lengte)
-        : naam(naam),
-          lengte(lengte) {
+    Baan(string naam, const int lengte)
+        : naam(move(naam)),
+          lengte(lengte)
+    {
     }
 
-    [[nodiscard]] std::string getNaam() const;
+    [[nodiscard]] string getNaam() const;
+    void setNaam(const string& naam);
 
     [[nodiscard]] int getLengte() const;
+    void setLengte(int lengte);
 
-    void setNaam(const std::string &naam);
 
-    void setLengte(const int lengte);
+    void addBushalte(Bushalte* b);
+    void addVerkeerslicht(Verkeerslicht* v);
+    void addVoertuig(Voertuig* v);
+    void addVoertuiggenerator(Voertuiggenerator* vg);
 
-    void VulVerkeerslichtenVector(Verkeerslicht* VL);
+    void removeVoertuig(Voertuig* v);
 
-    void VulBushaltesVector(Bushalte* BH);
+    const vector<Verkeerslicht *> &getVerkeerslichten() const;
+    const vector<Bushalte *> &getBushaltes() const;
+    const vector<Voertuig *> &getVoertuigen() const;
+    const vector<Voertuiggenerator *> &getVoertuigeneratoren() const;
 
-    const std::vector<Verkeerslicht *> &getVerkeerslichten() const;
-
-    const std::vector<Bushalte *> &getBushaltes() const;
+    void sortVoertuigenByPosition();
 
 
 };
-
 
 
 #endif //BAAN_H

@@ -19,6 +19,7 @@ void SimPrinter::printStatus(Voertuig const* voertuig, double status) {
         << "-> snelheid: " << voertuig->getSnelheid() << "\n" <<endl;
 }
 
+/*
 void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
                                     vector<Verkeerslicht *> &verkeerslichten, vector<Bushalte *> &bushaltes, vector<Baan *> &banen) {
     vector<string> ss;
@@ -186,7 +187,7 @@ void SimPrinter::updateTXT() {
         myFile.close();
     }
 }
-
+*/
 
 
 // De 2de printstatus geeft meer kenmerken van d auto kan handig zijn voor als je iets will checken
