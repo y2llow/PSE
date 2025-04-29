@@ -29,7 +29,7 @@ set(RELEASE_SOURCE_FILES
         src/elementen/Constants.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
-        src/simulatie/SimPrinter.cpp    # Zorg ervoor dat deze is toegevoegd
+        # Zorg ervoor dat deze is toegevoegd
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
         src/elementen/voertuigen/Auto.cpp
@@ -56,8 +56,6 @@ set(DEBUG_SOURCE_FILES
         test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         src/simulatie/Simulator.cpp
         src/elementen/Constants.h
-        src/simulatie/SimPrinter.cpp
-        src/simulatie/SimPrinter.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
         src/elementen/Bushalte.cpp
