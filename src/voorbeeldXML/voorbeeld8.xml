@@ -7,7 +7,7 @@
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
         <positie>400</positie>
-        <cyclus>1</cyclus>
+        <cyclus>10</cyclus>
     </VERKEERSLICHT>
 
     <BUSHALTE>
@@ -18,8 +18,8 @@
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>0</positie>
-        <type>auto</type>
+        <positie>50</positie>
+        <type>bus</type>
     </VOERTUIG>
 
     <VOERTUIGGENERATOR>

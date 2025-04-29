@@ -1,101 +1,101 @@
 #ifndef VOERTUIG_H
 #define VOERTUIG_H
 #include <string>
-#include <vector>
 
 #include "Baan.h"
-#include "TypeVoertuig.h"
 
+class Simulator;
 using namespace std;
 
-class Voertuig {
-    // Hier staan gewoon de standaard waarden dat elke voertuig zal hebben
-    Baan *baan;
-    double positie;
-    double snelheid;
-    int id;
-    double versnelling = 0;
-    double kvmax = 0;
+inline int GENERAL_ID = 1;
 
-    // Nieuw veld voor het type voertuig
-    TypeVoertuig typeVoertuig;
-    VoertuigType type;
+enum class State
+{
+    DRIVING,
+    STOPPING
+};
+
+class Voertuig
+{
+    int id = GENERAL_ID;
+    Baan* baan = nullptr;
+    double l{};
+    double p{};
+    double v = 16.6;
+    double a = 0;
+    double v_max{};
+    double a_max{};
+    double b_max{};
+    double f_min{};
+    double k_v_max{};
+
+    bool is_slowed = false;
+    bool prioriteitsvoertuig = false;
+
+    State voertuig_state = State::DRIVING;
 
 public:
-    Voertuig() = default;
+    virtual ~Voertuig() = default;
 
-    /*
-     zo kan kan je een oject aanlmaken
-        Voertuig auto1(baan, positie, VoertuigType::AUTO);
-        Voertuig bus1(baan, positie, VoertuigType::BUS);
-    */
-
-    // Constructor met het type voertuig
-    Voertuig(Baan *baan, const int positie, VoertuigType type = VoertuigType::AUTO)
-        : baan(baan),
-          positie(positie),
-          type(type) {
-        // Initialiseer het typeVoertuig op basis van het gekozen type
-        typeVoertuig = TypeVoertuig::createVoertuigType(type);
+    Voertuig(const double lengte, const double maximale_snelheid, const double maximale_versnelling, const double maximale_remfactor,
+             const double minimale_volgaftand, const bool prioriteit):
+        l(lengte), v_max(maximale_snelheid), a_max(maximale_versnelling), b_max(maximale_remfactor),
+        f_min(minimale_volgaftand), k_v_max(maximale_snelheid), prioriteitsvoertuig(prioriteit)
+    {
+        id = GENERAL_ID;
+        GENERAL_ID++;
     }
 
-    Baan *getBaan() const;
+    [[nodiscard]] Baan* getBaan() const;
+    void setBaan(Baan* weg);
 
-    void setBaan(Baan *weg);
-
-    double getPositie() const;
-
+    [[nodiscard]] double getPositie() const;
     void setPositie(double positie);
 
-    double getSnelheid() const;
+    [[nodiscard]] double getSnelheid() const;
+    void setSnelheid(double speed);
 
-    void setSnelheid(double snelheid);
-
-    int getId() const;
-
+    [[nodiscard]] int getId() const;
     void setId(int id);
 
-    double getVersnelling() const;
+    [[nodiscard]] double getVersnelling() const;
+    void setVersnelling(double afstand);
 
-    void setVersnelling(double versnelling);
-
-    // Nieuwe methode om de lengte van het voertuig op te halen van het typeVoertuig object
-    double getLength() const {
-        return typeVoertuig.getLengte();
-    }
-
-    // Andere voertuigspecifieke parameters ophalen
-    double getMaxSnelheid() const {
-        return typeVoertuig.getMaxSnelheid();
-    }
-
-    double getMaxVersnelling() const {
-        return typeVoertuig.getMaxVersnelling();
-    }
-
-    double getMaxRemfactor() const {
-        return typeVoertuig.getMaxRemfactor();
-    }
-
-    double getMinVolgafstand() const {
-        return typeVoertuig.getMinVolgafstand();
-    }
-
-    VoertuigType getType() const {
-        return type;
-    }
-
-    double getKvmax() const;
-
+    [[nodiscard]] double getKvmax() const;
     void setKvmax(double kvmax);
 
-    void UpdateVersnellingVoorStoppen();
+    [[nodiscard]] double getLengte() const;
+    void setLengte(double lengte);
 
-    void simulateStep();
+    [[nodiscard]] double getMaximaleSnelheid() const;
+    void setMaximaleSnelheid(double maximale_snelheid);
 
-    bool getPrioriteit() {
-        return typeVoertuig.getPrioriteit();
-    }
+    [[nodiscard]] double getMaximaleVersnelling() const;
+    void setMaximaleVersnelling(double maximale_versnelling);
+
+    [[nodiscard]] double getMaximaleRemfactor() const;
+    void setMaximaleRemfactor(double maximale_remfactor);
+
+    [[nodiscard]] double getMinimaleVolgafstand() const;
+    void setMinimaleVolgafstand(double minimale_volgaftand);
+
+    [[nodiscard]] bool isSlowed() const;
+    void setSlowed(bool is_slowed);
+
+    [[nodiscard]] bool isPrioriteitsVoertuig() const;
+
+    [[nodiscard]] virtual string getType() const;
+
+    void setState(State state);
+
+    void updateVersnellingVoorStoppen();
+
+    static Voertuig* createVoertuig(const string& type);
+
+    virtual void rijd();
+    void slowDown();
+    void accelerate();
+    void stop();
 };
 
 #endif //VOERTUIG_H

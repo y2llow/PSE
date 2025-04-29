@@ -14,7 +14,7 @@ class SimulationTESTS : public testing::Test {
     };
 
 protected:
-    simulation sim;
+    Simulator sim;
 };
 
 TEST_F(SimulationTESTS, EmptyXMLFileTest) {

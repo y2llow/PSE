@@ -15,17 +15,29 @@
 
 using namespace std;
 
-class simulation {
-    // Vectors to store objects created from XML
-    vector<Baan *> banen;
-    vector<Voertuig *> voertuigen;
-    vector<Verkeerslicht *> verkeerslichten;
-    vector<Bushalte *> bushaltes;
-    vector<Voertuiggenerator *> voertuiggeneratoren;
-    double simulationTime = 0;
-    double simulationincreasedTime = 0;
-    double lastGeneretedVoertuigTime = 0;
-    int voertuigLastId = 1;
+class Simulator {
+    double current_time = 0;
+    vector<Baan*> banen;
+
+    string graphical_impression;
+    bool isConsistent = true;
+
+public:
+    void addBaan(Baan* b);
+    [[nodiscard]] const vector<Baan*> getBanen() const;
+
+    void setConsistency(const bool c) { isConsistent = c; }
+    void geldigeTypen(const string& type);
+
+    void simulationRun();
+    void makeGraphicalImpression();
+    void generateGraphicsFile();
+
+    void print();
+    void printStatus(Voertuig const* voertuig) const;
+
+    void simulate(int times);
+
 
 
     //2.2
@@ -36,8 +48,9 @@ class simulation {
 public:
 //    simulation(SimPrinter*): simPrinter(SimPrinter()) {
 //    };
+    bool is_consistent = true;
 
-    simulation();
+    Simulator() = default;
     int getVoertuigLastId()const;
     void increaseVoertuigLastId();
 
@@ -46,7 +59,6 @@ public:
     void setSimPrinter(SimPrinter * const sim_printer);
 
 
-    [[nodiscard]] vector<Baan *> getBanen() const;
 
     [[nodiscard]] vector<Voertuig *> getVoertuigen() const;
 
@@ -56,7 +68,6 @@ public:
 
     [[nodiscard]] vector<Voertuiggenerator *> getVoertuiggeneratoren() const;
 
-    [[nodiscard]] bool isConsistent() const;
 
     void ToString();
 
@@ -68,7 +79,6 @@ public:
 
     double UpdateSimulationTime() const;
 
-    void simulationRun();
 
     void sortVoertuigenByPosition();
 
@@ -99,7 +109,6 @@ public:
     void addVoertuig(Voertuig *v);
     void addVerkeerslicht(Verkeerslicht *v);
     void addBushalte(Bushalte *b);
-    void addBaan(Baan *b);
     void addVoertuiggenerator(Voertuiggenerator *v);
 
     //dit maakt de simulatie string
@@ -110,20 +119,6 @@ public:
 
     void voertuigenGenereren();
 
-    // Removing the created pointers
-    ~simulation() {
-        for (const Baan *b: banen)
-            delete b;
-
-        for (const Voertuig *v: voertuigen)
-            delete v;
-
-        for (const Voertuiggenerator *v: voertuiggeneratoren)
-            delete v;
-
-        for (const Verkeerslicht *v: verkeerslichten)
-            delete v;
-    }
 
 };
 

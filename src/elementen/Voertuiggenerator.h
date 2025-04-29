@@ -5,42 +5,42 @@
 #ifndef VOERTUIGGENERATOR_H
 #define VOERTUIGGENERATOR_H
 #include <string>
+#include <utility>
 
 #include "Baan.h"
-#include "TypeVoertuig.h"
 
 
-class Voertuiggenerator {
-    Baan* baan;
-    double frequentie;
-    // Nieuw veld voor het type voertuig
-    TypeVoertuig typeVoertuig;
-    VoertuigType type;
+class Voertuiggenerator
+{
+    Baan* baan{};
+    double frequentie{};
+    string type;
+
+    double tijd_sinds_laatste_voertuig = 0;
 
 public:
     Voertuiggenerator() = default;
 
-    Voertuiggenerator(Baan* baan, double frequentie, VoertuigType type = VoertuigType::AUTO)
+    Voertuiggenerator(Baan* baan, const double frequentie, string  type)
         : baan(baan),
           frequentie(frequentie),
-          type(type){
-        typeVoertuig = TypeVoertuig::createVoertuigType(type);
+          type(std::move(type))
+    {
     }
 
 
-    Baan* getBaan() const;
-
+    [[nodiscard]] Baan* getBaan() const;
     void setBaan(Baan* b);
 
-    double getFrequentie() const;
+    [[nodiscard]] string getType() const;
 
-    void setFrequentie(const double frequentie);
+    [[nodiscard]] double getFrequentie() const;
+    void setFrequentie(double frequentie);
 
-    VoertuigType getType() const {
-        return type;
-    }
+    [[nodiscard]] string getType();
+
+    void generateVoertuig();
 };
-
 
 
 #endif //VOERTUIGGENERATOR_H

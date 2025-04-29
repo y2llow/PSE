@@ -4,35 +4,80 @@
 
 #include "Baan.h"
 
-std::string Baan::getNaam() const {
+#include <algorithm>
+
+#include "Voertuig.h"
+
+std::string Baan::getNaam() const
+{
     return naam;
 }
 
-int Baan::getLengte() const {
+void Baan::setNaam(const std::string& naam)
+{
+    this->naam = naam;
+}
+
+int Baan::getLengte() const
+{
     return lengte;
 }
 
-void Baan::setNaam(const std::string &name) {
-    this->naam = name;
+void Baan::setLengte(const int lengte)
+{
+    this->lengte = lengte;
 }
 
-void Baan::setLengte(const int length) {
-    this->lengte = length;
+void Baan::addBushalte(Bushalte* b)
+{
+    bushaltes.push_back(b);
 }
 
-void Baan::VulVerkeerslichtenVector(Verkeerslicht * VL) {
-    this->verkeerslichten.push_back(VL);
+void Baan::addVerkeerslicht(Verkeerslicht* v)
+{
+    verkeers.push_back(v);
 }
 
-void Baan::VulBushaltesVector(Bushalte *BH) {
-    this->bushaltes.push_back(BH);
+void Baan::addVoertuig(Voertuig* v)
+{
+    voertuigen.push_back(v);
 }
 
-const std::vector<Verkeerslicht *> &Baan::getVerkeerslichten() const {
-    return verkeerslichten;
+void Baan::addVoertuiggenerator(Voertuiggenerator* vg)
+{
+    voertuiggeneratoren.push_back(vg);
 }
 
-const std::vector<Bushalte *> &Baan::getBushaltes() const {
+void Baan::removeVoertuig(Voertuig* v)
+{
+    voertuigen.erase(remove(voertuigen.begin(), voertuigen.end(), v), voertuigen.end());
+    delete v;
+}
+
+const vector<Verkeerslicht*>& Baan::getVerkeerslichten() const
+{
+    return verkeers;
+}
+
+const vector<Bushalte*>& Baan::getBushaltes() const
+{
     return bushaltes;
 }
 
+const vector<Voertuig*>& Baan::getVoertuigen() const
+{
+    return voertuigen;
+}
+
+const vector<Voertuiggenerator*>& Baan::getVoertuigeneratoren() const
+{
+    return voertuiggeneratoren;
+}
+
+void Baan::sortVoertuigenByPosition()
+{
+    sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b)
+    {
+        return a->getPositie() > b->getPositie();
+    });
+}

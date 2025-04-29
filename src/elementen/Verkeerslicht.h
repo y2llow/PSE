@@ -9,44 +9,34 @@
 #include "Baan.h"
 
 
+class Simulator;
 using namespace std;
 
 class Verkeerslicht {
-    Baan *baan;
-    double positie;
-    double cyclus;
-    bool rood = false;
+    Baan *baan{};
+    double positie{};
+    double cyclus{};
     bool groen = true;
-    double tijdSindsLaatsteVerandering = 0;
+
+    double tijd_sinds_laatste_verandering = 0;
 
 public:
-    Baan* getBaan() const;
-
+    [[nodiscard]] Baan* getBaan() const;
     void setBaan(Baan* baan);
 
     [[nodiscard]] double getPositie() const;
-
     void setPositie(double positie);
 
     [[nodiscard]] double getCyclus() const;
-
     void setCyclus(double cyclus);
 
-    bool isRood() const;
+    [[nodiscard]] bool isGroen() const;
 
-    void setRood(bool rood);
+    void switchColor();
 
-    bool isGroen() const;
+    void updateVerkeerslicht();
 
-    void setGroen(bool groen);
 
-    void updateVerkeersLicht();
-
-    void updateTijdSindsLaatsteVerandering(double tijd);
-
-    void herstartCyclus();
-
-    double getTijdSindsLaatsteVerandering() const;
 };
 
 
