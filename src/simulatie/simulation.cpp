@@ -388,11 +388,26 @@ void simulation::voertuigenGenereren() {
                 sortVoertuigenByPosition();
 
                 lastGeneretedVoertuigTime = simulationTime;
+
+
+                //2.2 voegen aan de simulatiePrinter
+                char c ='X';
+                if (type == VoertuigType::AUTO) {
+                    c ='A';
+                } else if (type == VoertuigType::BUS) {
+                    c ='B';
+                } else if (type == VoertuigType::BRANDWEERWAGEN) {
+                    c ='I';
+                } else if (type == VoertuigType::ZIEKENWAGEN) {
+                    c ='Z';
+                }else if (type == VoertuigType::POLITIECOMBI) {
+                    c ='P';
+                }
+                simPr.addNewGeneratedVoertuigen(baan, c, generated_v);
             }
         }
     }
 }
-
 
 void simulation::updateVoertuigAanVerkeerslichtSituatie(Verkeerslicht *licht, int verkeerslichtCounter) {
     //  1. IF tijd sinds laatste verandering > cyclus

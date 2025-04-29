@@ -15,7 +15,7 @@ class SimPrinter {
 private:
     vector<string> Gsim;
     map<Baan*, pair<int,int>> vtXvlIndex;
-    map<Baan*,map<int,Voertuig*>> voertuigenOpBaanSIM;
+    map<Baan*,map<float,pair<Voertuig*,char>>> voertuigenOpBaanSIM;
     map<Baan*, map<int, Verkeerslicht*>> verkeerslichtenOpBaanSIM;
     int simulatieSchaal = 5;
     int simCounter = 0;
@@ -32,6 +32,8 @@ public:
     void generateTXT();
 
     void updateTXT();
+
+    void addNewGeneratedVoertuigen(Baan* b, char c, Voertuig* v);
 };
 
 

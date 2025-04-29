@@ -49,19 +49,19 @@ void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
                 int voertuigpositie = v->getPositie() / simulatieSchaal;
                 if (v->getType() == VoertuigType::AUTO) {
                     LT[voertuigpositie] = 'A';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
+                    voertuigenOpBaanSIM[b][v->getPositie()] = {v, 'A'};
                 } else if (v->getType() == VoertuigType::BUS) {
                     LT[voertuigpositie] = 'B';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
+                    voertuigenOpBaanSIM[b][v->getPositie()]= {v, 'B'};
                 } else if (v->getType() == VoertuigType::BRANDWEERWAGEN) {
                     LT[voertuigpositie] = 'I';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
+                    voertuigenOpBaanSIM[b][v->getPositie()] = {v, 'I'};
                 } else if (v->getType() == VoertuigType::ZIEKENWAGEN) {
                     LT[voertuigpositie] = 'Z';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
+                    voertuigenOpBaanSIM[b][v->getPositie()] = {v, 'Z'};
                 }else if (v->getType() == VoertuigType::POLITIECOMBI) {
                     LT[voertuigpositie] = 'P';
-                    voertuigenOpBaanSIM[b][voertuigpositie+index1] = v;
+                    voertuigenOpBaanSIM[b][v->getPositie()] = {v, 'P'};
                 }
             }
         }
@@ -95,41 +95,45 @@ void SimPrinter::generateSimulation(vector<Voertuig *> &voertuigen,
     generateTXT();
 }
 
+void SimPrinter::addNewGeneratedVoertuigen(Baan*b, char c, Voertuig *v) {
+    voertuigenOpBaanSIM[b][v->getPositie()]= {v,c};
+}
+
 void SimPrinter::updateSimulation() {
+
     //we behandelen elk baan met zijn voertuigen en verkeerslichten
     int counter = 0;
     for (auto b: voertuigenOpBaanSIM) {
         for (auto v: b.second) {
-            //we berekenen de "nieuwe" index
-            int Vindex = vtXvlIndex[b.first].first + v.second->getPositie() / simulatieSchaal;
+                int Vindex = vtXvlIndex[b.first].first + v.second.first->getPositie() / simulatieSchaal;
+                ////////////////////ik was hier geindigd
+                //we kijken of de voertuig op de baan is
+                if (v.second.first->getPositie() <= b.first->getLengte()) {
+                    //we kijken of de nieuwe index en de oude index het zelfde zijn
+                    if (Gsim[counter][Vindex] == '=') {
+                        //iteratie skippen
+                        continue;
+                    }
+                        //als de nieuwe index groter is
+                    else if (Vindex > v.first) {
+                        //dan gaan we in de simulatie de characters updaten
+                        Gsim[counter][v.first] = '=';
+                        Gsim[counter][Vindex] = v.second.second;
 
-            //we kijken of de voertuig op de baan is
-            if (v.second->getPositie() <= b.first->getLengte()) {
-                //we kijken of de nieuwe index en de oude index het zelfde zijn
-                if (Vindex == v.first) {
-                    //iteratie skippen
-                    continue;
-                }
-                    //als de nieuwe index groter is
-                else if (Vindex > v.first) {
-                    //dan gaan we in de simulatie de characters updaten
-                    char c = Gsim[counter][v.first];
+                        //we moeten dan ook de informatie in de mappen aanpassen aan de nieuwe gegevens
+                        Voertuig *v2 = v.second.first;
+                        char voertuigType = v.second.second;
+                        voertuigenOpBaanSIM[b.first].erase(v.first);
+                        voertuigenOpBaanSIM[b.first][Vindex] = {v2, voertuigType};
+
+                    }
+                    //als de voertuig buiten de baan ligt dan moeten we het uit de baan map verwijderen en uit de simulatie string ook.
+                } else if (v.second.first->getPositie() > b.first->getLengte()) {
                     Gsim[counter][v.first] = '=';
-                    Gsim[counter][Vindex] = c;
-
-                    //we moeten dan ook de informatie in de mappen aanpassen aan de nieuwe gegevens
-                    Voertuig *v2 = v.second;
                     voertuigenOpBaanSIM[b.first].erase(v.first);
-                    voertuigenOpBaanSIM[b.first][Vindex] = v2;
-
                 }
-                //als de voertuig buiten de baan ligt dan moeten we het uit de baan map verwijderen en uit de simulatie string ook.
-            } else if (v.second->getPositie() > b.first->getLengte()) {
-                Gsim[counter][v.first] = '=';
-                voertuigenOpBaanSIM[b.first].erase(v.first);
-            }
+            counter++;
         }
-        counter++;
     }
 
     counter = 0;
@@ -186,6 +190,7 @@ void SimPrinter::updateTXT() {
         myFile.close();
     }
 }
+
 
 
 
