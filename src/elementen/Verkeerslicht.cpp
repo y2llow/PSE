@@ -100,7 +100,7 @@ void Verkeerslicht::updateVerkeerslicht()
         if (eerst_voertuig->isPrioriteitsVoertuig())
         {
             // ======= THEN voertuig hoeft niet te vertragen of te stoppen =======
-            eerst_voertuig->accelerate();
+            // eerst_voertuig->accelerate();
             return;
         }
 
@@ -108,8 +108,7 @@ void Verkeerslicht::updateVerkeerslicht()
             eerst_voertuig->slowDown();
         else if (afstand_van_licht < 1) // afstand_van_licht < STOP_AFSTAND
         {
-            // cout << "De voertuig met ID " << eerst_voertuig->getId() << " moet stoppen." << endl;
-            eerst_voertuig->setState(State::STOPPING);
+            eerst_voertuig->stop();
         }
     }
 }

@@ -75,20 +75,18 @@ void Bushalte::stopBus()
         return;
     }
 
-    if (bus->getState() == State::STOPPING)
-    {
-        bus->setTimeSindsStopped(time + SIMULATIE_TIJD);
-        return;
-    }
-
+    // if (bus->getState() == State::STOPPING)
+    // {
+    //     bus->setTimeSindsStopped(time + SIMULATIE_TIJD);
+    //     return;
+    // }
 
     // Normaal gezien moet de bus beginnen stop als hij in de stopafstand is, maar dan stopt hij 15 m voor de bushalte
     // Daar heb ik hier distance == 0 i.p.v distance > 0 && distance < STOP_AFSTAND
     if (distance < 0.5)
     {
         bus->stop();
-        Simulator::printStatus(bus);
-        cout << "Time: " << time << endl << endl;
+        bus->setTimeSindsStopped(time + SIMULATIE_TIJD);
     }
     else if (distance > 0 && distance < VERTRAAG_AFSTAND && bus->getState() != State::SLOWINGDOWN)
         bus->slowDown();
