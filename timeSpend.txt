@@ -4,10 +4,9 @@ Eray:
 
 
 abdellah:
-20 uren
-Code optimalizeren
-Inheritance gebruiken
-
+Code optimaliseren + Inheritance gebruiken 20 uren
+3.4. gefixt 1 uur
+3.6. Simulatie van bushaltes geïmplementeerd 2 uren
 
 
 yaman:
