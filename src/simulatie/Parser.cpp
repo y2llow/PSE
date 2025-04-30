@@ -261,7 +261,7 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
 {
     Baan* voertuigbaan = nullptr;
     double frequentie = 0;
-    string type;
+    string type = "auto";
 
     bool geldig = true;
 

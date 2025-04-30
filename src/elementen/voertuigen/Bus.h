@@ -7,10 +7,10 @@
 #include "../Voertuig.h"
 
 
-class Bus : public Voertuig
+class Bus final : public Voertuig
 {
-
     double time_sinds_stopped = 0;
+
 public:
     Bus(): Voertuig(12, 11.4, 1.22, 4.29, 12, false)
     {

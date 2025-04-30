@@ -43,6 +43,11 @@ void Voertuig::setSnelheid(const double speed)
     v = speed;
 }
 
+State Voertuig::getState() const
+{
+    return voertuig_state;
+}
+
 int Voertuig::getId() const
 {
     return id;
@@ -124,15 +129,6 @@ void Voertuig::setMinimaleVolgafstand(const double minimale_volgaftand)
     f_min = minimale_volgaftand;
 }
 
-bool Voertuig::isSlowed() const
-{
-    return is_slowed;
-}
-
-void Voertuig::setSlowed(bool is_slowed)
-{
-    this->is_slowed = is_slowed;
-}
 
 bool Voertuig::isPrioriteitsVoertuig() const
 {
@@ -148,7 +144,6 @@ void Voertuig::setState(const State state)
 {
     this->voertuig_state = state;
 }
-
 
 
 Voertuig* Voertuig::createVoertuig(const string& type)
@@ -171,47 +166,48 @@ Voertuig* Voertuig::createVoertuig(const string& type)
 
 void Voertuig::rijd()
 {
-    // ============= 1. Bereken nieuwe snelheid en positie van voertuig =============
-    // ======= Indien v + a∆t kleiner is dan nul =======
-    if (const double new_velocity = v + a * SIMULATIE_TIJD; new_velocity < 0)
+    if (voertuig_state == State::DRIVING || voertuig_state == State::SLOWINGDOWN)
     {
-        // ===== In dit geval passen we de positie aan als volgt =====
-        p = p - pow(v, 2) / (2 * a);
-        // ===== Vervolgens zetten we de snelheid gelijk aan nul =====
-        v = 0;
-    }
-    else
-    {
-        // ===== Indien dit niet het geval is, dan passen we eerst de snelheid aan ====
-        v = new_velocity;
-        // ===== Vervolgens passen we de positie aan =====
-        p = p + v * SIMULATIE_TIJD + a * pow(SIMULATIE_TIJD, 2) / 2;
-    }
+        // ============= 1. Bereken nieuwe snelheid en positie van voertuig =============
+        // ======= Indien v + a∆t kleiner is dan nul =======
+        if (const double new_velocity = v + a * SIMULATIE_TIJD; new_velocity < 0)
+        {
+            // ===== In dit geval passen we de positie aan als volgt =====
+            p = p - pow(v, 2) / (2 * a);
+            // ===== Vervolgens zetten we de snelheid gelijk aan nul =====
+            v = 0;
+        }
+        else
+        {
+            // ===== Indien dit niet het geval is, dan passen we eerst de snelheid aan ====
+            v = new_velocity;
+            // ===== Vervolgens passen we de positie aan =====
+            p = p + v * SIMULATIE_TIJD + a * pow(SIMULATIE_TIJD, 2) / 2;
+        }
 
-    // ============= 2. Bereken nieuwe versnelling van voertuig =============
-    double delta;
+        // ============= 2. Bereken nieuwe versnelling van voertuig =============
+        double delta;
 
-    const Voertuig* front_voertuig = baan->getVoertuigen().front();
-    for (const auto v : baan->getVoertuigen())
-    {
-        if (v == this) break;
-        front_voertuig = v;
-    }
+        const Voertuig* front_voertuig = baan->getVoertuigen().front();
+        for (const auto v : baan->getVoertuigen())
+        {
+            if (v == this) break;
+            front_voertuig = v;
+        }
 
-    if (this == front_voertuig || front_voertuig == nullptr)
-        delta = 0;
-    else
-    {
-        const double volgafstand = front_voertuig->getPositie() - p - front_voertuig->getLengte();
-        const double snelheidsverschil = v - front_voertuig->getSnelheid();
+        if (this == front_voertuig || front_voertuig == nullptr)
+            delta = 0;
+        else
+        {
+            const double volgafstand = front_voertuig->getPositie() - p - front_voertuig->getLengte();
+            const double snelheidsverschil = v - front_voertuig->getSnelheid();
 
-        delta = (f_min + max(0.0, v + v * snelheidsverschil / (2 * sqrt(a_max * b_max)))) / volgafstand;
-    }
+            delta = (f_min + max(0.0, v + v * snelheidsverschil / (2 * sqrt(a_max * b_max)))) / volgafstand;
+        }
 
-    if (voertuig_state == State::DRIVING)
         a = a_max * (1 - pow(v / k_v_max, 4) - pow(delta, 2));
-    else
-        a = -(b_max * v / k_v_max);
+    }
+
 
 
     // ============= 3. IF nieuwe positie valt buiten huidige baan =============
@@ -223,115 +219,17 @@ void Voertuig::rijd()
 void Voertuig::slowDown()
 {
     k_v_max = VERTRAAG_FACTOR * v_max;
-    voertuig_state = State::DRIVING;
-    is_slowed = true;
+    voertuig_state = State::SLOWINGDOWN;
 }
 
 void Voertuig::accelerate()
 {
     k_v_max = v_max;
     voertuig_state = State::DRIVING;
-    is_slowed = false;
 }
 
 void Voertuig::stop()
 {
+    a = -(b_max * v / k_v_max);
     voertuig_state = State::STOPPING;
 }
-
-void Voertuig::updateVersnellingVoorStoppen() {
-    // Gebruik de specifieke maxRemfactor voor dit type voertuig
-    a = (-(b_max * v) / k_v_max);
-
-    // Pas versnelling aan op basis van de simulatie constanten indien nodig
-    // Dit is een voorbeeld en kan aangepast worden naar de exacte logica die je nodig hebt
-    // bijvoorbeeld rekening houdend met VERTRAAG_AFSTAND, STOP_AFSTAND, etc.
-}
-
-/*#include "Voertuig.h"
-
-#include <cmath>
-
-#include "Constants.h"
-
-Baan *Voertuig::getBaan() const {
-    return baan;
-}
-
-void Voertuig::setBaan(Baan *weg) {
-    baan = weg;
-}
-
-double Voertuig::getPositie() const {
-    return positie;
-}
-
-void Voertuig::setPositie(double position) {
-    positie = position;
-}
-
-double Voertuig::getSnelheid() const {
-    return snelheid;
-}
-
-void Voertuig::setSnelheid(double speed) {
-    snelheid = speed;
-}
-
-int Voertuig::getId() const {
-    return id;
-}
-
-void Voertuig::setId(int car_id) {
-    id = car_id;
-}
-
-double Voertuig::getVersnelling() const {
-    return versnelling;
-}
-
-void Voertuig::setVersnelling(double acceleration) {
-    versnelling = acceleration;
-}
-
-double Voertuig::getKvmax() const {
-    return kvmax;
-}
-
-void Voertuig::setKvmax(double kvm) {
-    Voertuig::kvmax = kvm;
-}
-
-void Voertuig::UpdateVersnellingVoorStoppen() {
-    // Gebruik de specifieke maxRemfactor voor dit type voertuig
-    versnelling = (-(getMaxRemfactor() * snelheid) / kvmax);
-
-    // Pas versnelling aan op basis van de simulatie constanten indien nodig
-    // Dit is een voorbeeld en kan aangepast worden naar de exacte logica die je nodig hebt
-    // bijvoorbeeld rekening houdend met VERTRAAG_AFSTAND, STOP_AFSTAND, etc.
-}
-
-
-
-//// Implementatie van de simulateStep methode, gebruik makend van de type-specifieke constanten
-//void Voertuig::simulateStep() {
-//    // Update positie op basis van huidige snelheid en de simulatietijd
-//    positie += snelheid * SIMULATIE_TIJD;
-//
-//    // Update snelheid op basis van versnelling en de simulatietijd
-//    snelheid += versnelling * SIMULATIE_TIJD;
-//
-//    // Zorg ervoor dat de snelheid niet negatief wordt
-//    if (snelheid < 0) {
-//        snelheid = 0;
-//    }
-//
-//    // Zorg ervoor dat de snelheid niet boven de maximale snelheid voor dit type voertuig komt
-//    double maxSnelheid = getMaxSnelheid();
-//    if (snelheid > maxSnelheid) {
-//        snelheid = maxSnelheid;
-//    }
-//
-//    // Hier kan extra logica worden toegevoegd voor voertuiggedrag
-//    // zoals het aanpassen van versnelling op basis van afstand tot voorligger, etc.
-//}*/

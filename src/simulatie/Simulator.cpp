@@ -16,7 +16,8 @@
 #include <fstream>
 
 
-void Simulator::addBaan(Baan *b) {
+void Simulator::addBaan(Baan* b)
+{
     banen.push_back(b);
 }
 
@@ -112,6 +113,12 @@ void Simulator::generateGraphicsFile() const
 
 void Simulator::simulate(const int times)
 {
+    if (int(current_time) == 20)
+    {
+        cout << endl;
+        cout << "Why can't I get to here?";
+    }
+
     for (int i = 0; i < times; i++)
     {
         makeGraphicalImpression();
@@ -129,10 +136,12 @@ void Simulator::geldigeTypen(const string& type)
         "ziekenwagen";
 }
 
-const vector<Baan *> Simulator::getBanen() const {
+const vector<Baan*> Simulator::getBanen() const
+{
     // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
     vector<Baan*> bb;
-    for (auto* b : banen) {
+    for (auto* b : banen)
+    {
         bb.push_back(b);
     }
     return bb;
@@ -140,21 +149,23 @@ const vector<Baan *> Simulator::getBanen() const {
 
 void Simulator::simulationRun()
 {
+
+
     for (const auto b : banen)
     {
+        for (const auto g : b->getVoertuigeneratoren())
+            g->generateVoertuig();
+
         b->sortVoertuigenByPosition();
+
+        for (const auto vl : b->getVerkeerslichten())
+            vl->updateVerkeerslicht();
 
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
         for (const auto v : b->getVoertuigen())
             v->rijd();
-
-        for (const auto vl : b->getVerkeerslichten())
-            vl->updateVerkeerslicht();
-
-        for (const auto g : b->getVoertuigeneratoren())
-            g->generateVoertuig();
     }
 
 
@@ -172,9 +183,9 @@ void Simulator::print()
     cout << endl;
 }
 
-void Simulator::printStatus(Voertuig const* voertuig) const
+void Simulator::printStatus(Voertuig const* voertuig)
 {
-    cout << "Voertuig " << voertuig->getId() << "\n"
+    cout << voertuig->getType() << ": " << voertuig->getId() << "\n"
         << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"
         << "-> positie: " << voertuig->getPositie() << "\n"
         << "-> snelheid: " << voertuig->getSnelheid() << endl;
