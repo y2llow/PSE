@@ -40,22 +40,6 @@ public:
 
     void simulate(int times);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
 
 
