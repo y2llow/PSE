@@ -36,7 +36,7 @@ public:
     void generateGraphicsFile() const;
 
     void print();
-    void printStatus(Voertuig const* voertuig) const;
+    static void printStatus(Voertuig const* voertuig);
 
     void simulate(int times);
 

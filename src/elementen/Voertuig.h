@@ -12,6 +12,7 @@ inline int GENERAL_ID = 1;
 enum class State
 {
     DRIVING,
+    SLOWINGDOWN,
     STOPPING
 };
 
@@ -20,16 +21,15 @@ class Voertuig
     int id = GENERAL_ID;
     Baan* baan = nullptr;
     double l{};
-    double p{};
-    double v = 16.6;
+    double p = 0;
+    double v = 0;
     double a = 0;
     double v_max{};
     double a_max{};
     double b_max{};
     double f_min{};
-    double k_v_max{};
+    double k_v_max = 0;
 
-    bool is_slowed = false;
     bool prioriteitsvoertuig = false;
 
     State voertuig_state = State::DRIVING;
@@ -54,6 +54,8 @@ public:
 
     [[nodiscard]] double getSnelheid() const;
     void setSnelheid(double speed);
+
+    State getState() const;
 
     [[nodiscard]] int getId() const;
     void setId(int id);

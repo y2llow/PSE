@@ -1,13 +1,16 @@
 #ifndef BUSHALTE_H
 #define BUSHALTE_H
-#include <string>
-#include "Baan.h"
+#include <vector>
+
+class Baan;
+class Bus;
 using namespace std;
 
 class Bushalte {
-    Baan *baan;
-    double positie;
-    double wachttijd;
+    vector<Bus*> waited_busses;
+    Baan *baan{};
+    double positie{};
+    double wachttijd{};
 
 public:
     Bushalte() = default;
@@ -21,7 +24,7 @@ public:
     [[nodiscard]] double getWachttijd() const;
     void setWachttijd(double cyclus);
 
-    void stopBus() const;
+    void stopBus();
 };
 
 
