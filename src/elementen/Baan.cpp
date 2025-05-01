@@ -54,6 +54,13 @@ void Baan::removeVoertuig(Voertuig* v)
     delete v;
 }
 
+void Baan::TakeOutVoertuig(Voertuig* v) {
+    auto it = std::find(voertuigen.begin(), voertuigen.end(), v);
+    if (it != voertuigen.end()) {
+        voertuigen.erase(it);  // Removes the pointer from the vector (does NOT delete the object)
+    }
+}
+
 const vector<Verkeerslicht*>& Baan::getVerkeerslichten() const
 {
     return verkeers;
