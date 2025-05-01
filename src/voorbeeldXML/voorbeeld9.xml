@@ -1,12 +1,17 @@
 <VERKEERSSITUATIE>
     <BAAN>
         <naam>Middelheimlaan</naam>
-        <lengte>40</lengte>
+        <lengte>80</lengte>
     </BAAN>
 
     <BAAN>
         <naam>Floralienlaan</naam>
-        <lengte>55</lengte>
+        <lengte>90</lengte>
+    </BAAN>
+
+    <BAAN>
+        <naam>Buerstedelei</naam>
+        <lengte>160</lengte>
     </BAAN>
 
     <VOERTUIG>
@@ -33,11 +38,18 @@
         <wachttijd>20</wachttijd>
     </BUSHALTE>
 
+    <BUSHALTE>
+        <baan>Buerstedelei</baan>
+        <positie>30</positie>
+        <wachttijd>20</wachttijd>
+    </BUSHALTE>
+
 
 
     <KRUISPUNT>
         <baan positie="10">Middelheimlaan</baan>
         <baan positie="20">Floralienlaan</baan>
+        <baan positie="30">Buerstedelei</baan>
     </KRUISPUNT>
 
 
