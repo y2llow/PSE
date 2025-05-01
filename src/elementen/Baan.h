@@ -35,7 +35,7 @@ public:
     Baan() = default;
 
     Baan(string naam, const int lengte)
-        : naam(move(naam)),
+        : naam(std::move(naam)),
           lengte(lengte)
     {
     }
