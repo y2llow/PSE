@@ -1,7 +1,3 @@
-//
-// Created by Abdellah on 4/28/2025.
-//
-
 #ifndef BAAN_H
 #define BAAN_H
 #include <string>
@@ -53,6 +49,7 @@ public:
     void addVoertuiggenerator(Voertuiggenerator* vg);
 
     void removeVoertuig(Voertuig* v);
+    void TakeOutVoertuig(Voertuig* v);
 
     const vector<Verkeerslicht *> &getVerkeerslichten() const;
     const vector<Bushalte *> &getBushaltes() const;
@@ -60,8 +57,6 @@ public:
     const vector<Voertuiggenerator *> &getVoertuigeneratoren() const;
 
     void sortVoertuigenByPosition();
-
-
 };
 
 

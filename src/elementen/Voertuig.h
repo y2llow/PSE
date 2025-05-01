@@ -98,6 +98,10 @@ public:
     void slowDown();
     void accelerate();
     void stop();
+
+    void kruispunt();
+    void checkForKruispunt(double position, double newpostion);
+
 };
 
 #endif //VOERTUIG_H

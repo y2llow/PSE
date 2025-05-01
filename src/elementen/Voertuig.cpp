@@ -53,9 +53,9 @@ int Voertuig::getId() const
     return id;
 }
 
-void Voertuig::setId(const int id)
+void Voertuig::setId(const int ID)
 {
-    this->id = id;
+    this->id = ID;
 }
 
 double Voertuig::getVersnelling() const
@@ -232,4 +232,38 @@ void Voertuig::stop()
 {
     a = -(b_max * v / k_v_max);
     voertuig_state = State::STOPPING;
+}
+
+void Voertuig::kruispunt()
+{
+    Baan* currentBaan = getBaan();
+    auto kruispunten = currentBaan->kruispunten;
+
+    for (auto &k : kruispunten){
+        // randomise the baan als ze op het kruispunt zijn en als het kruispunt niet op het einde ligt van een baan
+        if (std::rand() % 2 == 0) {
+            setBaan(k.second[0]);
+            k.second[0]->addVoertuig(this);
+            currentBaan->TakeOutVoertuig(this);
+
+            // get the position of the kruistpunten to update postion of car on new road
+            auto map = k.second[0]->kruispunten;
+            for (auto &B: map) {
+                p = B.first;
+            }
+        }
+    }
+}
+
+void Voertuig::checkForKruispunt(double position, double newposition) {
+    Baan* currentBaan = getBaan();
+    auto kruispunten = currentBaan->kruispunten;
+
+    for (const auto &k : kruispunten)
+    {
+        auto KruispuntPosition = k.first;
+        // als de auto over het kruispunt is gereden dan chekken we voor een baanwisseling
+        if (KruispuntPosition >= position && KruispuntPosition <= newposition)
+            kruispunt();
+    }
 }
