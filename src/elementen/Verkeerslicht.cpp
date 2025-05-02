@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
+#include "../DesignByContract.h"
 
 
 Baan* Verkeerslicht::getBaan() const

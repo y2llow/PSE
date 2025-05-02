@@ -165,15 +165,15 @@ void Simulator::simulationRun()
             bushalte->stopBus();
 
         for (const auto v : b->getVoertuigen()){
-/* ==========Voor 2 banen aan een kruispunt=========
+// /* ==========Voor 2 banen aan een kruispunt=========
             double position = v->getPositie();
             v->rijd();
-            volatile double newposition = v->getPositie();
+            double newposition = v->getPositie();
           v->checkForKruispunt(position, newposition);
-*/
+// */
 
 // =========Voor meerderen banen aan een kruispunten=========
-            v->Kruispunt();
+//            v->Kruispunt();
         }
     }
 

@@ -35,8 +35,6 @@ public:
     void switchColor();
 
     void updateVerkeerslicht();
-
-
 };
 
 
