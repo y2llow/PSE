@@ -9,6 +9,7 @@
 #include "../elementen/Verkeerslicht.h"
 #include "../elementen/Bushalte.h"
 #include "../elementen/Baan.h"
+#include "../DesignByContract.h"
 
 #include <iostream>
 
@@ -478,7 +479,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         else if (elementType == "KRUISPUNT")
             parseKruisPunten(ti_xml_element, sim);
     }
-
+    VerkeerslichtenOpKruispunten();
 
     // Parse alle elementen in aparte functies
     // sim->sortVoertuigenByPosition();
@@ -491,3 +492,50 @@ void Parser::exceptionFound(bool& geldig, const string& message)
     cerr << message << endl;
     geldig = false;
 }
+
+void Parser::VerkeerslichtenOpKruispunten() {
+    for (auto& banenPair : banenMap){
+        Baan* currentbaan = banenPair.second;
+
+        Verkeerslicht *verkeerslichtKP1 = nullptr;
+        Verkeerslicht *verkeerslichtKP2 = nullptr;
+
+        REQUIRE(!currentbaan->getVerkeerslichten().empty(), "geen verkeerslichten");
+        REQUIRE(!currentbaan->kruispunten.empty(), "geen kruispunt");
+
+        auto kruispunten = currentbaan->kruispunten;
+
+        for (auto &KP1: kruispunten) {
+            // Zoek verkeerslicht op currentbaan dat matcht met KP1
+            for (Verkeerslicht *licht: currentbaan->getVerkeerslichten()) {
+                if ((licht->getPositie() == KP1.first))
+                {
+                    verkeerslichtKP1 = licht;
+                    break; // Stop na eerste match
+                }
+            }
+
+            if (!verkeerslichtKP1) continue;
+
+            for (auto &KP2: KP1.second[0]->kruispunten) {
+                // Zoek verkeerslicht op de verbonden baan dat matcht met KP2
+                for (Verkeerslicht *licht2: KP1.second[0]->getVerkeerslichten()) {
+                    if (licht2->getPositie() == KP2.first)
+                    {
+                        verkeerslichtKP2 = licht2;
+                        break; // Stop na eerste match
+                    }
+                }
+
+                // Als beide lichten gevonden zijn en verschillend zijn verander kleur en cyclus
+                if (verkeerslichtKP2 != nullptr && verkeerslichtKP1 != verkeerslichtKP2)
+                {
+                    verkeerslichtKP2->setCyclus(verkeerslichtKP1->getCyclus());
+
+                    if (verkeerslichtKP1->isGroen() == verkeerslichtKP2->isGroen()){ verkeerslichtKP2->switchColor(); }
+                }
+            }
+        }
+    }
+}
+
