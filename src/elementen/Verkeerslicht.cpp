@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
+#include "../DesignByContract.h"
 
 
 Baan* Verkeerslicht::getBaan() const
@@ -56,6 +57,8 @@ void Verkeerslicht::switchColor()
 void Verkeerslicht::updateVerkeerslicht()
 {
     tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
+
+    VerkeerslichtenOpKruispunten();
 
     if (tijd_sinds_laatste_verandering > cyclus)
     {
@@ -110,5 +113,95 @@ void Verkeerslicht::updateVerkeerslicht()
         {
             eerst_voertuig->stop();
         }
+    }
+}
+
+void Verkeerslicht::VerkeerslichtenOpKruispunten() {
+    Baan *currentbaan = getBaan();
+
+    Verkeerslicht *verkeerslichtKP1 = nullptr;
+    Verkeerslicht *verkeerslichtKP2 = nullptr;
+
+    REQUIRE(!currentbaan->getVerkeerslichten().empty(), "geen verkeerslichten");
+    REQUIRE(!currentbaan->kruispunten.empty(), "geen kruispunt");
+
+    auto kruispunten = currentbaan->kruispunten;
+//    for (auto &KP1: kruispunten) {
+//        for (auto &KP2: KP1.second[0]->kruispunten) {
+//            for (Verkeerslicht* licht : currentbaan->getVerkeerslichten()) {
+//                for (Verkeerslicht *licht2: KP1.second[0]->getVerkeerslichten()) {
+//                    double lichtPositie = licht->getPositie();
+//                    double licht2Positie = licht2->getPositie();
+//
+//
+//                    if (lichtPositie == KP1.first) { verkeerslichtKP1 = licht; }
+//                    else if (lichtPositie == KP2.first) { verkeerslichtKP2 = licht; }
+//                    if (verkeerslichtKP1 && verkeerslichtKP2) { break; }
+//                }
+//
+//                if (verkeerslichtKP1 && verkeerslichtKP2 && verkeerslichtKP1 != verkeerslichtKP2) {
+//                    VerkeerslichtenTegenstellen(verkeerslichtKP1, verkeerslichtKP2);
+//                }
+//            }
+//        }
+//    }
+
+    for (auto &KP1: kruispunten) {
+        // Zoek verkeerslicht op currentbaan dat matcht met KP1
+        for (Verkeerslicht *licht: currentbaan->getVerkeerslichten()) {
+            if ((licht->getPositie() == KP1.first)) {
+                verkeerslichtKP1 = licht;
+                break; // Stop na eerste match
+            }
+        }
+
+        if (!verkeerslichtKP1) continue;
+
+        for (auto &KP2: KP1.second[0]->kruispunten) {
+            // Zoek verkeerslicht op de verbonden baan dat matcht met KP2
+            for (Verkeerslicht *licht2: KP1.second[0]->getVerkeerslichten()) {
+                if (licht2->getPositie() == KP2.first) {
+                    verkeerslichtKP2 = licht2;
+                    break; // Stop na eerste match
+                }
+            }
+
+            // Als beide lichten gevonden zijn en verschillend zijn verander kleur en cyclus
+            if (verkeerslichtKP2 != nullptr && verkeerslichtKP1 != verkeerslichtKP2) {
+                VerkeerslichtenTegenstellen(verkeerslichtKP1, verkeerslichtKP2);
+            }
+        }
+    }
+
+
+//
+//    for (auto &KP1: kruispunten) {
+//        for (Verkeerslicht* licht : currentbaan->getVerkeerslichten()) {
+//            double lichtPositie = licht->getPositie();
+//
+//            if(KP1.first == lichtPositie)
+//            {
+//                verkeerslichtKP1 = licht;
+//            }
+//        }
+//    }
+//    for (auto &KP2: KP1.second[0]->kruispunten) {
+//        for (Verkeerslicht *licht2: KP1.second[0]->getVerkeerslichten()) {
+//            double licht2Positie = licht2->getPositie();
+//            if (licht2Positie == KP2.first) { verkeerslichtKP2 = licht2; }
+//                }
+//
+//                if (verkeerslichtKP1 && verkeerslichtKP2 && verkeerslichtKP1 != verkeerslichtKP2) {
+//                    VerkeerslichtenTegenstellen(verkeerslichtKP1, verkeerslichtKP2);
+//                }
+//            }
+}
+
+void Verkeerslicht::VerkeerslichtenTegenstellen(Verkeerslicht* VK1, Verkeerslicht* VK2)
+{
+    VK2->setCyclus(VK1->getCyclus());
+    if (VK1->isGroen() == VK2->isGroen())
+    {
+        VK2->switchColor();
     }
 }

@@ -36,7 +36,9 @@ public:
 
     void updateVerkeerslicht();
 
+    void VerkeerslichtenOpKruispunten();
 
+    void VerkeerslichtenTegenstellen(Verkeerslicht *VK1, Verkeerslicht *VK2);
 };
 
 
