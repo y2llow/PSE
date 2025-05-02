@@ -8,8 +8,14 @@
 
 #include <assert.h>
 
-#define REQUIRE(assertion, what) \
-if (!(assertion)) __assert (what, __FILE__, __LINE__)
+//#define REQUIRE(assertion, what) \
+//if (!(assertion)) __assert (what, __FILE__, __LINE__)
+//
+//#define ENSURE(assertion, what) \
+//if (!(assertion)) __assert (what, __FILE__, __LINE__)
 
-#define ENSURE(assertion, what) \
-if (!(assertion)) __assert (what, __FILE__, __LINE__)
+#define REQUIRE(condition, message) \
+if (!(condition)) throw std::invalid_argument(message)
+
+#define ENSURE(condition, message) \
+if (!(condition)) throw std::logic_error(message)
