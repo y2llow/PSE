@@ -166,7 +166,7 @@ void Simulator::simulationRun()
             */
 
             // =========Voor meerderen banen aan een kruispunten=========
-            v->Kruispunt();
+            v->kruispunt();
         }
     }
 

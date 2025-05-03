@@ -14,11 +14,13 @@ int main() {
     //     return 1;
     // }
 
-    auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld10.xml", sim))
+    const auto sim = new Simulator();
+    if (Parser::parseElements("../tests/voorbeeld/invoer_inlezen.xml", sim))
     {
-        sim->simulate(10);
+        sim->simulate(10000);
     }
+
+
 
 
     return 0;

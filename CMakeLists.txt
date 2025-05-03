@@ -14,6 +14,10 @@ include_directories(./gtest/include)
 # Set Library dir
 link_directories(./gtest/lib)
 
+# Stel het pad naar SFML in
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/sfml-files/lib/cmake/SFML")
+find_package(SFML 2.5 REQUIRED graphics window system)
+
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
 # Only add files with functionality here, no test files!
