@@ -29,6 +29,7 @@ void Simulator::makeGraphicalImpression()
         string baan(b->getLengte(), '=');
         string verkeerslichten(b->getLengte(), ' ');
         string bushaltes(b->getLengte(), ' ');
+        string second_line(b->getLengte(), ' ');
 
         // =========== Set the voertuigen in the baan ============
         for (const auto v : b->getVoertuigen())
@@ -71,12 +72,14 @@ void Simulator::makeGraphicalImpression()
             const int p = round(bushalte->getPositie());
             verkeerslichten[p] = '|';
             bushaltes[p] = 'B';
+            second_line[p] = '|';
         }
 
         for (const auto v : b->getVerkeerslichten())
         {
             const int p = round(v->getPositie());
             verkeerslichten[p] = v->isGroen() ? 'G' : 'R';
+            second_line[p] = v->isGroen() ? 'G' : 'R';
         }
 
         // ============ Print the baan and the voertuigen =============
@@ -88,6 +91,7 @@ void Simulator::makeGraphicalImpression()
         output_string.append(bushaltes_text + bushaltes + "\n\n");
 
         graphical_impression += output_string;
+        banen_3d_content[b->getNaam()] += baan + second_line + '\n';
     }
 }
 
@@ -122,6 +126,9 @@ void Simulator::simulate(const int times)
     }
 
     generateGraphicsFile();
+
+    for (const auto b :banen)
+        generate3dfile(b->getNaam());
 }
 
 void Simulator::geldigeTypen(const string& type)
@@ -173,6 +180,28 @@ void Simulator::simulationRun()
 
     current_time += SIMULATIE_TIJD;
 }
+
+void Simulator::generate3dfile(const string& baan)
+{
+    // Make sure "output" folder exists
+    if (!filesystem::exists("../output"))
+    {
+        filesystem::create_directory("../output");
+    }
+    // Create an output directory first (manually or automatically)
+    ofstream file("../output/baan_" + baan + ".txt"); // Write to file inside 'output' folder
+
+    if (file.is_open())
+    {
+        file << banen_3d_content[baan]; // Write the string into the file
+        file.close(); // Always close the file
+    }
+    else
+    {
+        std::cerr << "Failed to open file!" << std::endl;
+    }
+}
+
 
 void Simulator::print()
 {

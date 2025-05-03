@@ -47,8 +47,8 @@ set(RELEASE_SOURCE_FILES
         src/elementen/voertuigen/Politiecombi.h
         src/elementen/voertuigen/Ziekenwagen.cpp
         src/elementen/voertuigen/Ziekenwagen.h
-#        utils/Game.cpp
-#        utils/Game.h
+        utils/Game.cpp
+        utils/Game.h
 )
 
 # Set source files for DEBUG target

@@ -1,12 +1,12 @@
 <VERKEERSSITUATIE>
     <BAAN>
         <naam>Middelheimlaan</naam>
-        <lengte>100</lengte>
+        <lengte>200</lengte>
     </BAAN>
 
     <BAAN>
         <naam>Floralienlaan</naam>
-        <lengte>110</lengte>
+        <lengte>220</lengte>
     </BAAN>
 
     <VERKEERSLICHT>
