@@ -49,33 +49,33 @@ void Game::loadMap(const string& filename)
         return;
     }
 
-    sf::Texture baan_texture;
-    if (!baan_texture.loadFromFile("../resources/lane.png"))
+    sf::Texture* baan_texture = new sf::Texture();
+    if (!baan_texture->loadFromFile("../resources/lane.png"))
         cerr << "COULDN'T LOAD MAP FILE" << endl;
 
-    sf::Texture auto_texture;
-    auto_texture.loadFromFile("../resources/auto.png");
+    sf::Texture* auto_texture= new sf::Texture();
+    auto_texture->loadFromFile("../resources/auto.png");
 
-    sf::Texture bus_texture;
-    bus_texture.loadFromFile("../resources/bus.png");
+    sf::Texture* bus_texture= new sf::Texture();
+    bus_texture->loadFromFile("../resources/bus.png");
 
-    sf::Texture firetruck_texture;
-    firetruck_texture.loadFromFile("../resources/firetruck.png");
+    sf::Texture* firetruck_texture= new sf::Texture();
+    firetruck_texture->loadFromFile("../resources/firetruck.png");
 
-    sf::Texture ziekenwagen_texture;
-    ziekenwagen_texture.loadFromFile("../resources/ambulance.png");
+    sf::Texture* ziekenwagen_texture= new sf::Texture();
+    ziekenwagen_texture->loadFromFile("../resources/ambulance.png");
 
-    sf::Texture red_texture;
-    red_texture.loadFromFile("../resources/red-light.png");
+    sf::Texture* red_texture= new sf::Texture();
+    red_texture->loadFromFile("../resources/red-light.png");
 
-    sf::Texture green_texture;
-    green_texture.loadFromFile("../resources/green-light.png");
+    sf::Texture* green_texture= new sf::Texture();
+    green_texture->loadFromFile("../resources/green-light.png");
 
-    sf::Texture bushalte_texture;
-    bushalte_texture.loadFromFile("../resources/bushalte.png");
+    sf::Texture* bushalte_texture= new sf::Texture();
+    bushalte_texture->loadFromFile("../resources/bushalte.png");
 
-    sf::Texture police_texture;
-    police_texture.loadFromFile("../resources/police.png");
+    sf::Texture* police_texture= new sf::Texture();
+    police_texture->loadFromFile("../resources/police.png");
 
 
     // The lines of the file resources/map.txt will be saved in this variable
@@ -113,7 +113,7 @@ void Game::loadMap(const string& filename)
 
         for (int i = first_vehicle - 20; i < first_vehicle + 20; i++)
         {
-            vector<sf::Texture> texture;
+            vector<sf::Texture*> texture;
 
             switch (lights_bushaltes[i])
             {
@@ -148,7 +148,6 @@ void Game::loadMap(const string& filename)
                 texture.push_back(police_texture);
                 break;
             default:
-                sprite_size = 50;
                 texture.push_back(baan_texture);
                 break;
             }
@@ -156,9 +155,8 @@ void Game::loadMap(const string& filename)
 
             for (auto& t : texture)
             {
-
                 sf::RectangleShape sprite(sf::Vector2f(sprite_size, sprite_size));
-                sprite.setTexture(&t);
+                sprite.setTexture(t);
                 sprite.setPosition(i * sprite_size, 50.f); // (x, y) position on screen
                 window->draw(sprite);
             }
