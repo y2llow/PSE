@@ -27,6 +27,8 @@ public:
     static void parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim);
 
     static void exceptionFound(bool& geldig, const string& message);
+
+    static void VerkeerslichtenOpKruispunten();
 };
 
 

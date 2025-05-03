@@ -99,10 +99,10 @@ public:
     void accelerate();
     void stop();
 
-//    void kruispunt();
-//    void checkForKruispunt(double position, double newpostion);
+    void kruispunt();
+    void checkForKruispunt(double position, double newpostion);
 
-    void Kruispunt();
+//    void Kruispunt();
 
 };
 
