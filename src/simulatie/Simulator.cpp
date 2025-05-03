@@ -34,7 +34,7 @@ void Simulator::makeGraphicalImpression()
         for (const auto v : b->getVoertuigen())
         {
             const int p = round(v->getPositie());
-            baan[p] = v->getType()[0];
+            baan[p] = v->getType() == "Brandweerwagen" ? 'I' : v->getType()[0];
         }
 
         // =========== Get the right length of the texts in the first column ===========
@@ -113,12 +113,6 @@ void Simulator::generateGraphicsFile() const
 
 void Simulator::simulate(const int times)
 {
-    if (int(current_time) == 20)
-    {
-        cout << endl;
-        cout << "Why can't I get to here?";
-    }
-
     for (int i = 0; i < times; i++)
     {
         makeGraphicalImpression();
@@ -149,8 +143,6 @@ const vector<Baan*> Simulator::getBanen() const
 
 void Simulator::simulationRun()
 {
-
-
     for (const auto b : banen)
     {
         for (const auto g : b->getVoertuigeneratoren())
@@ -164,15 +156,16 @@ void Simulator::simulationRun()
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
-        for (const auto v : b->getVoertuigen()){
-/* ==========Voor 2 banen aan een kruispunt=========
-            double position = v->getPositie();
-            v->rijd();
-            volatile double newposition = v->getPositie();
-          v->checkForKruispunt(position, newposition);
-*/
+        for (const auto v : b->getVoertuigen())
+        {
+            /* ==========Voor 2 banen aan een kruispunt=========
+                        double position = v->getPositie();
+                        v->rijd();
+                        volatile double newposition = v->getPositie();
+                      v->checkForKruispunt(position, newposition);
+            */
 
-// =========Voor meerderen banen aan een kruispunten=========
+            // =========Voor meerderen banen aan een kruispunten=========
             v->Kruispunt();
         }
     }
