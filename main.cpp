@@ -16,9 +16,9 @@ int main() {
     // }
 
     auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld10.xml", sim))
+    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld2.xml", sim))
     {
-        sim->simulate(100);
+        sim->simulate(10000);
     }
 
     for (const auto b : sim->getBanen())

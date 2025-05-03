@@ -74,6 +74,9 @@ void Game::loadMap(const string& filename)
     sf::Texture bushalte_texture;
     bushalte_texture.loadFromFile("../resources/bushalte.png");
 
+    sf::Texture police_texture;
+    police_texture.loadFromFile("../resources/police.png");
+
 
     // The lines of the file resources/map.txt will be saved in this variable
     string line;
@@ -141,14 +144,19 @@ void Game::loadMap(const string& filename)
             case 'I':
                 texture.push_back(firetruck_texture);
                 break;
+            case 'P':
+                texture.push_back(police_texture);
+                break;
             default:
+                sprite_size = 50;
                 texture.push_back(baan_texture);
                 break;
             }
 
 
-            for (const auto& t : texture)
+            for (auto& t : texture)
             {
+
                 sf::RectangleShape sprite(sf::Vector2f(sprite_size, sprite_size));
                 sprite.setTexture(&t);
                 sprite.setPosition(i * sprite_size, 50.f); // (x, y) position on screen
