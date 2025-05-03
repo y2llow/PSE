@@ -29,12 +29,13 @@ void Simulator::makeGraphicalImpression()
         string baan(b->getLengte(), '=');
         string verkeerslichten(b->getLengte(), ' ');
         string bushaltes(b->getLengte(), ' ');
+        string second_line(b->getLengte(), ' ');
 
         // =========== Set the voertuigen in the baan ============
         for (const auto v : b->getVoertuigen())
         {
             const int p = round(v->getPositie());
-            baan[p] = v->getType()[0];
+            baan[p] = v->getType() == "Brandweerwagen" ? 'I' : v->getType()[0];
         }
 
         // =========== Get the right length of the texts in the first column ===========
@@ -71,12 +72,14 @@ void Simulator::makeGraphicalImpression()
             const int p = round(bushalte->getPositie());
             verkeerslichten[p] = '|';
             bushaltes[p] = 'B';
+            second_line[p] = '|';
         }
 
         for (const auto v : b->getVerkeerslichten())
         {
             const int p = round(v->getPositie());
             verkeerslichten[p] = v->isGroen() ? 'G' : 'R';
+            second_line[p] = v->isGroen() ? 'G' : 'R';
         }
 
         // ============ Print the baan and the voertuigen =============
@@ -88,6 +91,7 @@ void Simulator::makeGraphicalImpression()
         output_string.append(bushaltes_text + bushaltes + "\n\n");
 
         graphical_impression += output_string;
+        banen_3d_content[b->getNaam()] += baan + second_line + '\n';
     }
 }
 
@@ -113,12 +117,6 @@ void Simulator::generateGraphicsFile() const
 
 void Simulator::simulate(const int times)
 {
-    if (int(current_time) == 20)
-    {
-        cout << endl;
-        cout << "Why can't I get to here?";
-    }
-
     for (int i = 0; i < times; i++)
     {
         makeGraphicalImpression();
@@ -128,6 +126,9 @@ void Simulator::simulate(const int times)
     }
 
     generateGraphicsFile();
+
+    for (const auto b :banen)
+        generate3dfile(b->getNaam());
 }
 
 void Simulator::geldigeTypen(const string& type)
@@ -149,8 +150,6 @@ const vector<Baan*> Simulator::getBanen() const
 
 void Simulator::simulationRun()
 {
-
-
     for (const auto b : banen)
     {
         for (const auto g : b->getVoertuigeneratoren())
@@ -164,22 +163,51 @@ void Simulator::simulationRun()
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
-        for (const auto v : b->getVoertuigen()){
-// /* ==========Voor 2 banen aan een kruispunt=========
-            double position = v->getPositie();
-            v->rijd();
-            double newposition = v->getPositie();
-          v->checkForKruispunt(position, newposition);
-// */
+        for (const auto v : b->getVoertuigen())
+                v->rijd();
 
-// =========Voor meerderen banen aan een kruispunten=========
-//            v->Kruispunt();
+        if (!b->kruispunten.empty())
+        {
+            for (const auto v : b->getVoertuigen())
+            {
+                /* ==========Voor 2 banen aan een kruispunt=========
+                            double position = v->getPositie();
+                            v->rijd();
+                            volatile double newposition = v->getPositie();
+                          v->checkForKruispunt(position, newposition);
+                */
+
+                // =========Voor meerderen banen aan een kruispunten=========
+                v->kruispunt();
+            }
         }
     }
 
 
     current_time += SIMULATIE_TIJD;
 }
+
+void Simulator::generate3dfile(const string& baan)
+{
+    // Make sure "output" folder exists
+    if (!filesystem::exists("../output"))
+    {
+        filesystem::create_directory("../output");
+    }
+    // Create an output directory first (manually or automatically)
+    ofstream file("../output/baan_" + baan + ".txt"); // Write to file inside 'output' folder
+
+    if (file.is_open())
+    {
+        file << banen_3d_content[baan]; // Write the string into the file
+        file.close(); // Always close the file
+    }
+    else
+    {
+        std::cerr << "Failed to open file!" << std::endl;
+    }
+}
+
 
 void Simulator::print()
 {

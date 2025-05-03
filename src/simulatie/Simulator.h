@@ -19,6 +19,8 @@ class Simulator {
     vector<Baan*> banen;
 
     string graphical_impression;
+    map<string, string> banen_3d_content;
+
 
 public:
     Simulator() = default;
@@ -39,6 +41,23 @@ public:
     static void printStatus(Voertuig const* voertuig);
 
     void simulate(int times);
+
+
+    void generate3dfile(const string& baan);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 };
 

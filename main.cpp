@@ -2,6 +2,7 @@
 
 #include "src/simulatie/Parser.h"
 #include "src/simulatie/Simulator.h"
+#include "utils/Game.h"
 
 using namespace std;
 
@@ -15,11 +16,20 @@ int main() {
     // }
 
     auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld10.xml", sim))
+    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld2.xml", sim))
     {
-        sim->simulate(1000);
+        sim->simulate(10000);
     }
 
+    for (const auto b : sim->getBanen())
+    {
+        b->sortVoertuigenByPosition();
+
+        sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, 200), b->getNaam(),
+                                sf::Style::Close);
+        Game game = Game(&window);
+        game.loadMap("../output/baan_" + b->getNaam() + ".txt");
+    }
 
     return 0;
 }
