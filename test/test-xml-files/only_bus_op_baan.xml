@@ -1,0 +1,12 @@
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+        <snelheid>0</snelheid>
+        <type>bus</type>
+    </VOERTUIG>
+</VERKEERSSITUATIE>

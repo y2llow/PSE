@@ -386,7 +386,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         else if (elementType == "KRUISPUNT")
             parseKruisPunten(ti_xml_element, sim);
     }
-    VerkeerslichtenOpKruispunten();
+    // VerkeerslichtenOpKruispunten();
 
 
     // Checking the consistency of verkeerslichten
@@ -405,11 +405,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
     return true;
 }
 
-void Parser::exceptionFound(bool& geldig, const string& message)
-{
-    cerr << message << endl;
-    geldig = false;
-}
+
 
 void Parser::VerkeerslichtenOpKruispunten()
 {

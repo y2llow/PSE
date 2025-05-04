@@ -60,7 +60,6 @@ set(DEBUG_SOURCE_FILES
         src/elementen/Baan.cpp
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
-        test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         src/simulatie/Simulator.cpp
         src/elementen/Constants.h
         src/simulatie/Parser.cpp
@@ -77,6 +76,9 @@ set(DEBUG_SOURCE_FILES
         src/elementen/voertuigen/Politiecombi.h
         src/elementen/voertuigen/Ziekenwagen.cpp
         src/elementen/voertuigen/Ziekenwagen.h
+#        test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
+        test/VoertuigTest.cpp
+#        test/ParserTest.cpp
 )
 
 # Create RELEASE target
@@ -92,11 +94,5 @@ add_test(
         COMMAND debug_target
 )
 
-#target_link_libraries(release_target
-#        ${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/libsfml-graphics.a
-#        ${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/libsfml-window.a
-#        ${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/libsfml-system.a
-#        -lopengl32 -lgdi32 -lwinmm
-#)
 
 target_link_libraries(release_target sfml-graphics sfml-window sfml-system)
