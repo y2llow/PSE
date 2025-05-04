@@ -36,13 +36,13 @@
 
     <BUSHALTE>
         <baan>Middelheimlaan</baan>
-        <positie>250</positie>
+        <positie>300</positie>
         <wachttijd>20</wachttijd>
     </BUSHALTE>
 
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
-        <positie>200</positie>
+        <positie>250</positie>
         <cyclus>30</cyclus>
     </VERKEERSLICHT>
 
@@ -61,12 +61,12 @@
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>80</positie>
-        <type>ziekenwagen</type>
+        <type>bus</type>
     </VOERTUIG>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
-        <positie>100</positie>
+        <positie>0</positie>
         <type>bus</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>

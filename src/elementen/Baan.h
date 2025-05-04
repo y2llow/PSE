@@ -57,6 +57,8 @@ public:
     const vector<Voertuiggenerator *> &getVoertuigeneratoren() const;
 
     void sortVoertuigenByPosition();
+    void sortVerkeerslichtenByPosition();
+
 };
 
 

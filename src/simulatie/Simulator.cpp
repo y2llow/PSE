@@ -3,6 +3,11 @@
 //
 
 #include "Simulator.h"
+
+
+#include "../../src/elementen/Verkeerslicht.h"
+#include "../../src/elementen/Bushalte.h"
+#include "../../src/elementen/Voertuiggenerator.h"
 #include "../elementen/Constants.h"
 #include <iostream>
 #include <map>
@@ -127,15 +132,10 @@ void Simulator::simulate(const int times)
 
     generateGraphicsFile();
 
-    for (const auto b :banen)
+    for (const auto b : banen)
         generate3dfile(b->getNaam());
 }
 
-void Simulator::geldigeTypen(const string& type)
-{
-    is_consistent = type == "auto" || type == "bus" || type == "brandwagen" || type == "politiecombi" || type ==
-        "ziekenwagen";
-}
 
 const vector<Baan*> Simulator::getBanen() const
 {
@@ -164,7 +164,7 @@ void Simulator::simulationRun()
             bushalte->stopBus();
 
         for (const auto v : b->getVoertuigen())
-                v->rijd();
+            v->rijd();
 
         if (!b->kruispunten.empty())
         {
@@ -207,6 +207,8 @@ void Simulator::generate3dfile(const string& baan)
         std::cerr << "Failed to open file!" << std::endl;
     }
 }
+
+
 
 
 void Simulator::print()

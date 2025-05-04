@@ -8,9 +8,6 @@
 #include <vector>
 #include "../../src/elementen/Baan.h"
 #include "../../src/elementen/Voertuig.h"
-#include "../../src/elementen/Verkeerslicht.h"
-#include "../../src/elementen/Bushalte.h"
-#include "../../src/elementen/Voertuiggenerator.h"
 
 using namespace std;
 
@@ -31,7 +28,6 @@ public:
     [[nodiscard]] const vector<Baan*> getBanen() const;
 
     void setConsistency(const bool c) { is_consistent = c; }
-    void geldigeTypen(const string& type);
 
     void simulationRun();
     void makeGraphicalImpression();
@@ -42,20 +38,7 @@ public:
 
     void simulate(int times);
 
-
     void generate3dfile(const string& baan);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
