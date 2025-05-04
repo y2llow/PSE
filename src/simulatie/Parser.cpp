@@ -195,6 +195,7 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
     auto* verkeerslicht = new Verkeerslicht();
     verkeerslicht->setBaan(banenMap[baan]);
     verkeerslicht->setCyclus(cyclus);
+    verkeerslicht->setOranjeCyclus(cyclus*0.1);
     verkeerslicht->setPositie(positie);
 
     banenMap[baan]->addVerkeerslicht(verkeerslicht);

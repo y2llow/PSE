@@ -15,6 +15,7 @@ Verkeerssituatie consistency - 3u
 yaman:
 1.5 Kruispunten inlezen - 2u
 2.2 Grafische impressie - 10u
+3.9 slime verkeerslichten - 2u
 
 
 

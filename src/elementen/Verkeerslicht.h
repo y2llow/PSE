@@ -16,6 +16,8 @@ class Verkeerslicht {
     Baan *baan{};
     double positie{};
     double cyclus{};
+    pair<double,double> oranjecyclus;
+    bool oranje = false;
     bool verkeerslichtOpKruispunt = false;
     pair<Verkeerslicht*,Verkeerslicht*> verkeerlichtenOpKruispuntPair;
     bool groen = true;
@@ -41,6 +43,8 @@ public:
     void OpKruisPunt();
 
     void KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2);
+
+    void setOranjeCyclus(double c);
 };
 
 
