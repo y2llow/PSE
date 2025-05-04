@@ -386,7 +386,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         else if (elementType == "KRUISPUNT")
             parseKruisPunten(ti_xml_element, sim);
     }
-    // VerkeerslichtenOpKruispunten();
+    VerkeerslichtenOpKruispunten();
 
 
     // Checking the consistency of verkeerslichten
@@ -416,8 +416,8 @@ void Parser::VerkeerslichtenOpKruispunten()
         Verkeerslicht* verkeerslichtKP1 = nullptr;
         Verkeerslicht* verkeerslichtKP2 = nullptr;
 
-        REQUIRE(!currentbaan->getVerkeerslichten().empty(), "geen verkeerslichten");
-        REQUIRE(!currentbaan->getKruispunten().empty(), "geen kruispunt");
+        if (currentbaan->getVerkeerslichten().empty() || currentbaan->getKruispunten().empty())
+            break;
 
         auto kruispunten = currentbaan->getKruispunten();
 
