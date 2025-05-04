@@ -235,12 +235,12 @@ void Voertuig::stop()
     voertuig_state = State::STOPPING;
 }
 
-void Voertuig::kruispunt()
+void Voertuig::kruispunt(const pair<const int, vector<Baan*>> & k)
 {
     Baan* currentBaan = getBaan();
     const auto kruispunten = currentBaan->getKruispunten();
 
-    for (auto &k : kruispunten){
+//    for (auto &k : kruispunten){
         // randomise the baan als ze op het kruispunt zijn en als het kruispunt niet op het einde ligt van een baan
         if (std::rand() % 2 == 0) {
             setBaan(k.second[0]);
@@ -253,7 +253,7 @@ void Voertuig::kruispunt()
                 p = B.first;
             }
         }
-    }
+//    }
 }
 
 void Voertuig::checkForKruispunt(double position, double newposition) {
@@ -265,7 +265,7 @@ void Voertuig::checkForKruispunt(double position, double newposition) {
         auto KruispuntPosition = k.first;
         // als de auto over het kruispunt is gereden dan chekken we voor een baanwisseling
         if (KruispuntPosition >= position && KruispuntPosition <= newposition)
-            kruispunt();
+            kruispunt(k);
     }
 }
 
