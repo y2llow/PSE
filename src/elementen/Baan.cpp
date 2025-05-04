@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "Verkeerslicht.h"
 #include "Voertuig.h"
 
 std::string Baan::getNaam() const
@@ -54,10 +55,12 @@ void Baan::removeVoertuig(Voertuig* v)
     delete v;
 }
 
-void Baan::TakeOutVoertuig(Voertuig* v) {
+void Baan::TakeOutVoertuig(Voertuig* v)
+{
     auto it = std::find(voertuigen.begin(), voertuigen.end(), v);
-    if (it != voertuigen.end()) {
-        voertuigen.erase(it);  // Removes the pointer from the vector (does NOT delete the object)
+    if (it != voertuigen.end())
+    {
+        voertuigen.erase(it); // Removes the pointer from the vector (does NOT delete the object)
     }
 }
 
@@ -86,5 +89,13 @@ void Baan::sortVoertuigenByPosition()
     sort(voertuigen.begin(), voertuigen.end(), [](const Voertuig* a, const Voertuig* b)
     {
         return a->getPositie() > b->getPositie();
+    });
+}
+
+void Baan::sortVerkeerslichtenByPosition()
+{
+    sort(verkeers.begin(), verkeers.end(), [](const Verkeerslicht* a, const Verkeerslicht* b)
+    {
+        return a->getPositie() < b->getPositie();
     });
 }

@@ -8,6 +8,7 @@ Code optimaliseren + Inheritance gebruiken - 20u
 3.4. gefixt - 1u
 3.6. Simulatie van bushaltes geïmplementeerd - 2u
 2.3 Integratie met graphics - 10u
+Verkeerssituatie consistency - 3u
 
 yaman:
 1.5 Kruispunten inlezen - 2u

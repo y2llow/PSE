@@ -29,6 +29,9 @@ public:
     static void exceptionFound(bool& geldig, const string& message);
 
     static void VerkeerslichtenOpKruispunten();
+
+    static bool geldigeTypen(const string& type);
+
 };
 
 
