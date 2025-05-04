@@ -58,11 +58,41 @@ void Verkeerslicht::updateVerkeerslicht()
 {
     tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
 
-    if (tijd_sinds_laatste_verandering > cyclus)
-    {
+
+    //als de tijd sinds laatste verandering 60 seconden is, veranderd de verkeerslichts kleur
+    if (tijd_sinds_laatste_verandering >= 60){
         switchColor();
         tijd_sinds_laatste_verandering = 0;
     }
+    //of als de tijd sinds laatste verandering tussen 10 en 60 seconden is
+    else if (tijd_sinds_laatste_verandering >= 10 && tijd_sinds_laatste_verandering < 60){
+        //als verkeerslicht rood is
+        if (!groen){
+           //als voertuig binnen de 50 meter van het verkeerslicht is
+           for (const auto v : baan->getVoertuigen()){
+               //licht groen maken, tijd sinds laatste verandering =0
+               if (positie - v->getPositie() > 0 && positie - v->getPositie() <= 50){
+                   switchColor();
+                   tijd_sinds_laatste_verandering = 0;
+
+                   //kijken als dit op een kruispunt staat
+                   if(this->verkeerslichtOpKruispunt){
+                       this->verkeerlichtenOpKruispuntPair.second->switchColor();
+                       this->verkeerlichtenOpKruispuntPair.second->tijd_sinds_laatste_verandering = 0;
+                   }
+
+                   break;
+               }
+           }
+        }
+    }
+
+
+//    if (tijd_sinds_laatste_verandering > cyclus)
+//    {
+//        switchColor();
+//        tijd_sinds_laatste_verandering = 0;
+//    }
 
     // assert(baan != nullptr);
 
@@ -112,4 +142,12 @@ void Verkeerslicht::updateVerkeerslicht()
             eerst_voertuig->stop();
         }
     }
+}
+
+void Verkeerslicht::OpKruisPunt() {
+    this->verkeerslichtOpKruispunt = true;
+}
+
+void Verkeerslicht::KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2) {
+    this->verkeerlichtenOpKruispuntPair  = {v1,v2};
 }
