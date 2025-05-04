@@ -3,12 +3,14 @@ Eray:
 1.4  Bushaltes inlezen - start
 
 
-abdellah:
+Abdellah:
 Code optimaliseren + Inheritance gebruiken - 20u
 3.4. gefixt - 1u
 3.6. Simulatie van bushaltes geïmplementeerd - 2u
 2.3 Integratie met graphics - 10u
 Verkeerssituatie consistency - 3u
+4.1. GUI voor simulatie - 1u
+
 
 yaman:
 1.5 Kruispunten inlezen - 2u

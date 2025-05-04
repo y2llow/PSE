@@ -49,32 +49,32 @@ void Game::loadMap(const string& filename)
         return;
     }
 
-    sf::Texture* baan_texture = new sf::Texture();
+    auto baan_texture = new sf::Texture();
     if (!baan_texture->loadFromFile("../resources/lane.png"))
         cerr << "COULDN'T LOAD MAP FILE" << endl;
 
-    sf::Texture* auto_texture= new sf::Texture();
+    auto auto_texture= new sf::Texture();
     auto_texture->loadFromFile("../resources/auto.png");
 
-    sf::Texture* bus_texture= new sf::Texture();
+    auto bus_texture= new sf::Texture();
     bus_texture->loadFromFile("../resources/bus.png");
 
-    sf::Texture* firetruck_texture= new sf::Texture();
+    auto firetruck_texture= new sf::Texture();
     firetruck_texture->loadFromFile("../resources/firetruck.png");
 
-    sf::Texture* ziekenwagen_texture= new sf::Texture();
+    auto ziekenwagen_texture= new sf::Texture();
     ziekenwagen_texture->loadFromFile("../resources/ambulance.png");
 
-    sf::Texture* red_texture= new sf::Texture();
+    auto red_texture= new sf::Texture();
     red_texture->loadFromFile("../resources/red-light.png");
 
-    sf::Texture* green_texture= new sf::Texture();
+    auto green_texture= new sf::Texture();
     green_texture->loadFromFile("../resources/green-light.png");
 
-    sf::Texture* bushalte_texture= new sf::Texture();
+    auto bushalte_texture= new sf::Texture();
     bushalte_texture->loadFromFile("../resources/bushalte.png");
 
-    sf::Texture* police_texture= new sf::Texture();
+    auto police_texture= new sf::Texture();
     police_texture->loadFromFile("../resources/police.png");
 
 
@@ -85,14 +85,14 @@ void Game::loadMap(const string& filename)
 
     window->clear(sf::Color::Cyan);
 
-    float sprite_size = 100.f;
+    float sprite_size = 30.f;
 
     sf::View view;
     view.setSize(sf::VideoMode::getDesktopMode().width, 200);
     view.setCenter(90 * sprite_size, 50);
     window->setView(view); // Apply the view to the window
 
-    while (getline(contents, line))
+    while (getline(contents, line) && !paused)
     {
         int first_vehicle = line.length();
         for (int i = line.length() / 2 - 1; i >= 0; i--)
@@ -111,7 +111,7 @@ void Game::loadMap(const string& filename)
 
         string lights_bushaltes(line.substr(line.length() / 2));
 
-        for (int i = first_vehicle - 20; i < first_vehicle + 20; i++)
+        for (int i = first_vehicle - 40; i < first_vehicle + 40; i++)
         {
             vector<sf::Texture*> texture;
 
@@ -172,11 +172,20 @@ void Game::loadMap(const string& filename)
             }
         }
 
-
         window->display();
         window->clear(sf::Color::Cyan);
     }
 
 
     window->close();
+}
+
+void Game::setPaused(const bool paused)
+{
+    this->paused = paused;
+}
+
+bool Game::getPaused() const
+{
+    return paused;
 }

@@ -25,7 +25,7 @@
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>40</positie>
-        <type>bus</type>
+        <type>auto</type>
     </VOERTUIG>
 
     <VOERTUIG>
@@ -61,7 +61,7 @@
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>80</positie>
-        <type>bus</type>
+        <type>auto</type>
     </VOERTUIG>
 
     <VOERTUIG>

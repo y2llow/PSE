@@ -24,9 +24,9 @@ class Baan
 
     vector<double> bushaltes_positions;
 
-public:
     map<int, vector<Baan*>> kruispunten;
 
+public:
     //eerste int in de pair is voor this->position en 2de int is voor baan->position
     Baan() = default;
 
@@ -47,18 +47,19 @@ public:
     void addVerkeerslicht(Verkeerslicht* v);
     void addVoertuig(Voertuig* v);
     void addVoertuiggenerator(Voertuiggenerator* vg);
+    void addKruispunt(int key, Baan* value);
 
     void removeVoertuig(Voertuig* v);
     void TakeOutVoertuig(Voertuig* v);
 
-    const vector<Verkeerslicht *> &getVerkeerslichten() const;
-    const vector<Bushalte *> &getBushaltes() const;
-    const vector<Voertuig *> &getVoertuigen() const;
-    const vector<Voertuiggenerator *> &getVoertuigeneratoren() const;
+    const vector<Verkeerslicht*>& getVerkeerslichten() const;
+    const vector<Bushalte*>& getBushaltes() const;
+    const vector<Voertuig*>& getVoertuigen() const;
+    const vector<Voertuiggenerator*>& getVoertuigeneratoren() const;
+    const map<int, vector<Baan*>>& getKruispunten() const;
 
     void sortVoertuigenByPosition();
     void sortVerkeerslichtenByPosition();
-
 };
 
 

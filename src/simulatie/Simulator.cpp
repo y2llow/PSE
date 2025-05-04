@@ -30,6 +30,8 @@ void Simulator::makeGraphicalImpression()
 {
     for (const auto b : banen)
     {
+        string output_string;
+
         // ========== Fill the baan array with '=' ============
         string baan(b->getLengte(), '=');
         string verkeerslichten(b->getLengte(), ' ');
@@ -90,7 +92,7 @@ void Simulator::makeGraphicalImpression()
         // ============ Print the baan and the voertuigen =============
         // ============ Then print the verkeerslichten ==============
         // ============ Then print the bushaltes ==============
-        string output_string = "Tijd: " + to_string(current_time) + "\n";
+        if (b == banen.front()) output_string = "Tijd: " + to_string(current_time) + "\n";
         output_string.append(baan_text + baan + "\n");
         output_string.append(verkeerslichten_text + verkeerslichten + "\n");
         output_string.append(bushaltes_text + bushaltes + "\n\n");
@@ -163,22 +165,16 @@ void Simulator::simulationRun()
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
-        for (const auto v : b->getVoertuigen())
+        for (const auto v : b->getVoertuigen()) {
+            double positie = v->getPositie();
             v->rijd();
+            double newpositie = v->getPositie();
 
-        if (!b->kruispunten.empty())
-        {
-            for (const auto v : b->getVoertuigen())
-            {
-                /* ==========Voor 2 banen aan een kruispunt=========
-                            double position = v->getPositie();
-                            v->rijd();
-                            volatile double newposition = v->getPositie();
-                          v->checkForKruispunt(position, newposition);
-                */
 
+            if (!b->getKruispunten().empty()) {
                 // =========Voor meerderen banen aan een kruispunten=========
-                v->kruispunt();
+                v->checkForKruispunt(positie,newpositie);
+
             }
         }
     }
@@ -207,8 +203,6 @@ void Simulator::generate3dfile(const string& baan)
         std::cerr << "Failed to open file!" << std::endl;
     }
 }
-
-
 
 
 void Simulator::print()

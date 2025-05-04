@@ -49,6 +49,11 @@ void Baan::addVoertuiggenerator(Voertuiggenerator* vg)
     voertuiggeneratoren.push_back(vg);
 }
 
+void Baan::addKruispunt(const int key, Baan* value)
+{
+    kruispunten[key].push_back(value);
+}
+
 void Baan::removeVoertuig(Voertuig* v)
 {
     voertuigen.erase(remove(voertuigen.begin(), voertuigen.end(), v), voertuigen.end());
@@ -82,6 +87,11 @@ const vector<Voertuig*>& Baan::getVoertuigen() const
 const vector<Voertuiggenerator*>& Baan::getVoertuigeneratoren() const
 {
     return voertuiggeneratoren;
+}
+
+const map<int, vector<Baan*>>& Baan::getKruispunten() const
+{
+    return kruispunten;
 }
 
 void Baan::sortVoertuigenByPosition()
