@@ -479,8 +479,6 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         else if (elementType == "KRUISPUNT")
             parseKruisPunten(ti_xml_element, sim);
     }
-    VerkeerslichtenOpKruispunten();
-
     // Parse alle elementen in aparte functies
     // sim->sortVoertuigenByPosition();
     // sim->sortVerkeersLichtByPosition();
