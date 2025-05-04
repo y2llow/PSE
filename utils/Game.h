@@ -12,7 +12,7 @@
 class Game
 {
     sf::RenderWindow* window;
-    sf::View view;
+    bool paused = false;
 
 public:
     Game(sf::RenderWindow* window);
@@ -22,6 +22,9 @@ public:
     static string correctImage(char c);
 
     void loadMap(const string& filename);
+
+    void setPaused(bool paused);
+    bool getPaused() const;
 };
 
 

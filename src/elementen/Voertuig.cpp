@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <ostream>
+#include <random>
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
@@ -237,7 +238,7 @@ void Voertuig::stop()
 void Voertuig::kruispunt()
 {
     Baan* currentBaan = getBaan();
-    auto kruispunten = currentBaan->kruispunten;
+    const auto kruispunten = currentBaan->getKruispunten();
 
     for (auto &k : kruispunten){
         // randomise the baan als ze op het kruispunt zijn en als het kruispunt niet op het einde ligt van een baan
@@ -247,7 +248,7 @@ void Voertuig::kruispunt()
             currentBaan->TakeOutVoertuig(this);
 
             // get the position of the kruistpunten to update postion of car on new road
-            auto map = k.second[0]->kruispunten;
+            auto map = k.second[0]->getKruispunten();
             for (auto &B: map) {
                 p = B.first;
             }
@@ -257,7 +258,7 @@ void Voertuig::kruispunt()
 
 void Voertuig::checkForKruispunt(double position, double newposition) {
     Baan* currentBaan = getBaan();
-    auto kruispunten = currentBaan->kruispunten;
+    auto kruispunten = currentBaan->getKruispunten();
 
     for (const auto &k : kruispunten)
     {
@@ -267,48 +268,3 @@ void Voertuig::checkForKruispunt(double position, double newposition) {
             kruispunt();
     }
 }
-
-//void Voertuig::Kruispunt() {
-//    Baan* currentBaan = getBaan();
-//    if (!currentBaan) return;
-//
-//    double positie = getPositie();
-//    rijd();
-//    double newpositie = getPositie();
-//
-//    for (auto& k : currentBaan->kruispunten)
-//    {
-//        double kruistpunt_pos = k.first;
-//
-//        // Kijk ofdat we over het krijspunt zijn gegaan tijdens de update
-//        if ((positie < kruistpunt_pos && newpositie >= kruistpunt_pos) ||
-//            (positie > kruistpunt_pos && newpositie <= kruistpunt_pos))
-//        {
-//
-//            // check voor kruispunten
-//            if (!k.second.empty())
-//            {
-//                std::vector<Baan*> alle_opties = k.second;
-//                alle_opties.push_back(currentBaan);
-//
-//                int random_index = std::rand() % alle_opties.size();
-//                Baan* selected_road = alle_opties[random_index];
-//
-//                if (selected_road == nullptr){break;}
-//
-//                // Update position
-//                if (selected_road != currentBaan)
-//                {
-//                    // verander de positie correct
-//                    for (auto& intersection : selected_road->kruispunten) { p = intersection.first; }
-//
-//                    // verander baan
-//                    selected_road->addVoertuig(this);
-//                    currentBaan->TakeOutVoertuig(this);
-//                    setBaan(selected_road);
-//                }
-//            }
-//            break;
-//        }
-//    }
-//}

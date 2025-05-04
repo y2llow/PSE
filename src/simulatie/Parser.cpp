@@ -338,7 +338,7 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
         for (auto [position_2, baan_2] : kruisPunten)
         {
             if (baan_2 != baan)
-                baan->kruispunten[position].push_back(baan_2);
+                baan->addKruispunt(position, baan_2);
         }
     }
 }
@@ -386,7 +386,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         else if (elementType == "KRUISPUNT")
             parseKruisPunten(ti_xml_element, sim);
     }
-    // VerkeerslichtenOpKruispunten();
+    VerkeerslichtenOpKruispunten();
 
 
     // Checking the consistency of verkeerslichten
@@ -421,9 +421,9 @@ void Parser::VerkeerslichtenOpKruispunten()
         Verkeerslicht* verkeerslichtKP2 = nullptr;
 
         REQUIRE(!currentbaan->getVerkeerslichten().empty(), "geen verkeerslichten");
-        REQUIRE(!currentbaan->kruispunten.empty(), "geen kruispunt");
+        REQUIRE(!currentbaan->getKruispunten().empty(), "geen kruispunt");
 
-        auto kruispunten = currentbaan->kruispunten;
+        auto kruispunten = currentbaan->getKruispunten();
 
         for (auto& KP1 : kruispunten)
         {
@@ -439,7 +439,7 @@ void Parser::VerkeerslichtenOpKruispunten()
 
             if (!verkeerslichtKP1) continue;
 
-            for (auto& KP2 : KP1.second[0]->kruispunten)
+            for (auto& KP2 : KP1.second[0]->getKruispunten())
             {
                 // Zoek verkeerslicht op de verbonden baan dat matcht met KP2
                 for (Verkeerslicht* licht2 : KP1.second[0]->getVerkeerslichten())

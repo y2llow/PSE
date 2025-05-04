@@ -92,7 +92,7 @@ void Game::loadMap(const string& filename)
     view.setCenter(90 * sprite_size, 50);
     window->setView(view); // Apply the view to the window
 
-    while (getline(contents, line))
+    while (getline(contents, line) && !paused)
     {
         int first_vehicle = line.length();
         for (int i = line.length() / 2 - 1; i >= 0; i--)
@@ -172,11 +172,20 @@ void Game::loadMap(const string& filename)
             }
         }
 
-
         window->display();
         window->clear(sf::Color::Cyan);
     }
 
 
     window->close();
+}
+
+void Game::setPaused(const bool paused)
+{
+    this->paused = paused;
+}
+
+bool Game::getPaused() const
+{
+    return paused;
 }
