@@ -147,10 +147,13 @@ void Verkeerslicht::updateVerkeerslicht()
 
                 //rood
             else if (!groen && !oranje) {
+                tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
                 //als er een voertuig is in de volgende 50 meter dan naar groen omzetten als kan
                 for (const auto v: baan->getVoertuigen()) {
                     if (positie - v->getPositie() <= 50) {
-
+                        opKruispuntPair.second->oranjecyclus.second+=SIMULATIE_TIJD;
+                        opKruispuntPair.second->oranje = true;
+                        break;
                     }
                 }
             }
@@ -162,7 +165,67 @@ void Verkeerslicht::updateVerkeerslicht()
         }
     }
     else{
+        if(tijd_sinds_laatste_verandering>= 60 - oranjecyclus.first){
+            if (groen){
+                oranjecyclus.second+=SIMULATIE_TIJD;
+                tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
 
+                oranje = true;
+
+                switchColor();
+            }
+            else if (!groen && oranje){
+                oranjecyclus.second+=SIMULATIE_TIJD;
+                tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
+
+                if (oranjecyclus.second >=oranjecyclus.first){
+                    oranjecyclus.second = 0;
+                    tijd_sinds_laatste_verandering = 0;
+                    oranje = false;
+                }
+            }
+            else if(!groen && ! oranje){
+                switchColor();
+                tijd_sinds_laatste_verandering =0;
+            }
+        }
+        else if(tijd_sinds_laatste_verandering>=10 && tijd_sinds_laatste_verandering<=60-oranjecyclus.first){
+            if (groen){
+                tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
+
+                for (auto const v: baan->getVoertuigen()){
+                    if(positie - v->getPositie() <=300){
+                        switchColor();
+                        oranje = true;
+                        oranjecyclus.second+=SIMULATIE_TIJD;
+                    }
+                }
+            }
+            else if(!groen && oranje){
+                tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
+
+                oranjecyclus.second+=SIMULATIE_TIJD;
+
+                if(oranjecyclus.second>=oranjecyclus.first){
+                    oranje = false;
+                    tijd_sinds_laatste_verandering = 0;
+                    oranjecyclus.second = 0;
+                }
+            }
+            else if(!groen && !oranje){
+                tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
+
+                for (auto const v: baan->getVoertuigen()){
+                    if (positie - v->getPositie()<=50){
+                        switchColor();
+                        tijd_sinds_laatste_verandering = 0;
+                    }
+                }
+            }
+            else{
+                tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
+            }
+        }
     }
 
 //    //als de tijd sinds laatste verandering 60 seconden is, veranderd de verkeerslichts kleur
