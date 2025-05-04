@@ -16,10 +16,12 @@ class Verkeerslicht {
     Baan *baan{};
     double positie{};
     double cyclus{};
+
+    //eerste double is 10%van de cyclus, 2de is de tijd na groen verandering naar rood
     pair<double,double> oranjecyclus;
     bool oranje = false;
-    bool verkeerslichtOpKruispunt = false;
-    pair<Verkeerslicht*,Verkeerslicht*> verkeerlichtenOpKruispuntPair;
+    bool opKruispunt = false;
+    pair<Verkeerslicht*,Verkeerslicht*> opKruispuntPair;
     bool groen = true;
 
     double tijd_sinds_laatste_verandering = 0;
