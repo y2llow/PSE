@@ -45,7 +45,7 @@ public:
     }
 };
 
-// ====== If the baan is empty and there are no voertuigen in from of a voertuig, it should get to the max speed =====
+// ====== If the baan is empty and there are no voertuigen in front of a voertuig, it should get to the max speed =====
 TEST_F(VoertuigTest, VoertuigMaximumSnelheid)
 {
     Parser::parseElements(randomElement(only_one_voertuig_op_baan), sim);
