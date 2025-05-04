@@ -453,6 +453,12 @@ void Parser::VerkeerslichtenOpKruispunten()
                     verkeerslichtKP2->setCyclus(verkeerslichtKP1->getCyclus());
 
                     if (verkeerslichtKP1->isGroen() == verkeerslichtKP2->isGroen()) { verkeerslichtKP2->switchColor(); }
+
+                    verkeerslichtKP2->OpKruisPunt();
+                    verkeerslichtKP1->OpKruisPunt();
+
+                    verkeerslichtKP2->KruispuntPair(verkeerslichtKP2,verkeerslichtKP1);
+                    verkeerslichtKP1->KruispuntPair(verkeerslichtKP1,verkeerslichtKP2);
                 }
             }
         }

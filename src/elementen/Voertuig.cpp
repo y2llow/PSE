@@ -246,7 +246,7 @@ void Voertuig::kruispunt(const pair<const int, vector<Baan*>> & k)
             setBaan(k.second[0]);
             k.second[0]->addVoertuig(this);
             currentBaan->TakeOutVoertuig(this);
-
+            
             // get the position of the kruistpunten to update postion of car on new road
             auto map = k.second[0]->getKruispunten();
             for (auto &B: map) {
