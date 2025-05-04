@@ -61,8 +61,27 @@ void Verkeerslicht::updateVerkeerslicht()
 
     //als de tijd sinds laatste verandering 60 seconden is, veranderd de verkeerslichts kleur
     if (tijd_sinds_laatste_verandering >= 60){
-        switchColor();
-        tijd_sinds_laatste_verandering = 0;
+        //als de verkeerslicht groen is
+        if(groen){
+            switchColor();
+            oranje = true;
+        }
+
+        if (!groen && oranje){
+            oranjecyclus.second+=SIMULATIE_TIJD;
+
+            if(oranjecyclus.second>=oranjecyclus.first){
+                tijd_sinds_laatste_verandering=0;
+                oranjecyclus.second = 0;
+                oranje = false;
+            }
+
+        }
+
+        if(!groen && !oranje){
+            switchColor();
+            tijd_sinds_laatste_verandering = 0;
+        }
     }
     //of als de tijd sinds laatste verandering tussen 10 en 60 seconden is
     else if (tijd_sinds_laatste_verandering >= 10 && tijd_sinds_laatste_verandering < 60){
@@ -150,4 +169,9 @@ void Verkeerslicht::OpKruisPunt() {
 
 void Verkeerslicht::KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2) {
     this->verkeerlichtenOpKruispuntPair  = {v1,v2};
+}
+
+void Verkeerslicht::setOranjeCyclus(double c) {
+    oranjecyclus.first = c;
+    oranjecyclus.second = 0;
 }
