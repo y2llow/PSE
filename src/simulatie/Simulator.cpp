@@ -165,15 +165,16 @@ void Simulator::simulationRun()
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
-        for (const auto v : b->getVoertuigen())
+        for (const auto v : b->getVoertuigen()) {
+            double positie = v->getPositie();
             v->rijd();
+            double newpositie = v->getPositie();
 
-        if (!b->getKruispunten().empty())
-        {
-            for (const auto v : b->getVoertuigen())
-            {
+
+            if (!b->getKruispunten().empty()) {
                 // =========Voor meerderen banen aan een kruispunten=========
-                v->kruispunt();
+                v->checkForKruispunt(positie,newpositie);
+
             }
         }
     }

@@ -101,6 +101,7 @@ public:
 
     void kruispunt();
     void checkForKruispunt(double position, double newpostion);
+    void Kruispunt();
 
 //    void Kruispunt();
 

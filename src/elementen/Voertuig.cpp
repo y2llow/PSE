@@ -268,3 +268,48 @@ void Voertuig::checkForKruispunt(double position, double newposition) {
             kruispunt();
     }
 }
+
+void Voertuig::Kruispunt() {
+    Baan* currentBaan = getBaan();
+    if (!currentBaan) return;
+
+    double positie = getPositie();
+    rijd();
+    double newpositie = getPositie();
+
+    for (auto& k : currentBaan->getKruispunten())
+    {
+        double kruistpunt_pos = k.first;
+
+        // Kijk ofdat we over het krijspunt zijn gegaan tijdens de update
+        if ((positie < kruistpunt_pos && newpositie >= kruistpunt_pos) ||
+            (positie > kruistpunt_pos && newpositie <= kruistpunt_pos))
+        {
+
+            // check voor kruispunten
+            if (!k.second.empty())
+            {
+                std::vector<Baan*> alle_opties = k.second;
+                alle_opties.push_back(currentBaan);
+
+                int random_index = std::rand() % alle_opties.size();
+                Baan* selected_road = alle_opties[random_index];
+
+                if (selected_road == nullptr){break;}
+
+                // Update position
+                if (selected_road != currentBaan)
+                {
+                    // verander de positie correct
+                    for (auto& intersection : selected_road->getKruispunten()) { p = intersection.first; }
+
+                    // verander baan
+                    selected_road->addVoertuig(this);
+                    currentBaan->TakeOutVoertuig(this);
+                    setBaan(selected_road);
+                }
+            }
+            break;
+        }
+    }
+}
