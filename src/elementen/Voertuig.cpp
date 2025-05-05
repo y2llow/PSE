@@ -160,7 +160,7 @@ Voertuig* Voertuig::createVoertuig(const string& type)
     if (type == "politiecombi")
         return new Politiecombi();
 
-    cerr << "Onbekend voertuigtype: " << type << ". Type AUTO wordt gebruikt." << endl;
+    //cerr << "Onbekend voertuigtype: " << type << ". Type AUTO wordt gebruikt." << endl;
     return new Auto();
 }
 

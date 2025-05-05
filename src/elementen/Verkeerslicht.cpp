@@ -349,3 +349,19 @@ void Verkeerslicht::setOranjeCyclus(double c) {
     oranjecyclus.first = c;
     oranjecyclus.second = 0;
 }
+
+bool Verkeerslicht::isOpKruispunt() const {
+    return opKruispunt;
+}
+
+void Verkeerslicht::setOpKruispunt(bool OpKruispunt) {
+    Verkeerslicht::opKruispunt = OpKruispunt;
+}
+
+bool Verkeerslicht::isOranje() const {
+    return oranje;
+}
+
+void Verkeerslicht::setOranje(bool Oranje) {
+    Verkeerslicht::oranje = Oranje;
+}

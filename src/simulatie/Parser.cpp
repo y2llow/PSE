@@ -130,7 +130,7 @@ void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
 
     if (voertuig_snelheid < 0)
     {
-        cout << "De snelheid van een auto kan niet negatief zijn! New Value=0" << endl;
+        //cout << "De snelheid van een auto kan niet negatief zijn! New Value=0" << endl;
         voertuig_snelheid = 0;
     }
 
@@ -358,7 +358,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
     TiXmlElement* root = doc.FirstChildElement();
     if (!root)
     {
-        cerr << "Failed to load file: No root element." << endl;
+//        cerr << "Failed to load file: No root element." << endl;
         return false;
     }
 

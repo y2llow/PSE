@@ -1,0 +1,71 @@
+<ROOT>
+    <!-- 1. Leeg baan element - test "Er is een baan zonder naam!" en "Er is een baan zonder lengte!" -->
+    <BAAN>
+        <!-- Opzettelijk geen naam of lengte -->
+    </BAAN>
+
+    <!-- 2. Baan met ongeldige lengte - test "De lengte van een baan is geen integer!" -->
+    <BAAN>
+        <naam>OngeldigeLengteBaan</naam>
+        <lengte>honderd</lengte> <!-- Geen integer -->
+    </BAAN>
+
+    <!-- 3. Voertuig met ongeldige snelheid - test "De snelheid van een voertuig is geen double!" -->
+    <BAAN>
+        <naam>BaanVoorVoertuig</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>BaanVoorVoertuig</baan>
+        <positie>50</positie>
+        <type>auto</type>
+        <snelheid>snel</snelheid> <!-- Geen double -->
+    </VOERTUIG>
+
+    <!-- 4. Verkeerslicht met ongeldige cyclus - test "Er is een verkeerslicht waarvan de cyclus geen integer is!" -->
+    <BAAN>
+        <naam>BaanVoorVerkeerslicht</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VERKEERSLICHT>
+        <baan>BaanVoorVerkeerslicht</baan>
+        <positie>50</positie>
+        <cyclus>tien</cyclus> <!-- Geen integer -->
+    </VERKEERSLICHT>
+
+    <!-- 5. Bushalte met ongeldige wachttijd - test "Er is een bushalte waarvan de wachttijd geen integer is!" -->
+    <BAAN>
+        <naam>BaanVoorBushalte</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <BUSHALTE>
+        <baan>BaanVoorBushalte</baan>
+        <positie>50</positie>
+        <wachttijd>vijf</wachttijd> <!-- Geen integer -->
+    </BUSHALTE>
+
+    <!-- 6. Voertuiggenerator met ongeldige frequentie - test "De frequentie van een voertuiggenerator is geen getal!" -->
+    <BAAN>
+        <naam>BaanVoorGenerator</naam>
+        <lengte>100</lengte>
+    </BAAN>
+
+
+    <!-- 7. Test "Er is een baan met een ongeldige lengte of naam!" -->
+    <BAAN>
+        <naam></naam> <!-- Lege naam -->
+        <lengte>0</lengte> <!-- Ongeldige lengte -->
+    </BAAN>
+
+    <!-- 8. Test "De snelheid van een auto kan niet negatief zijn! New Value=0" -->
+    <BAAN>
+        <naam>BaanVoorNegatieveSnelheid</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>BaanVoorNegatieveSnelheid</baan>
+        <positie>50</positie>
+        <type>auto</type>
+        <snelheid>-10</snelheid> <!-- Negatieve snelheid -->
+    </VOERTUIG>
+</ROOT>

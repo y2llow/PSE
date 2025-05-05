@@ -1,29 +1,27 @@
-//
-// //
-// // Created by AbEms on 3/12/2025.
-// //
-//
 // #include <cmath>
 // #include <fstream>
 // #include <gtest/gtest.h>
 //
-// #include "../../src/simulatie/simulation.h"
+// #include "../../../src/simulatie/Simulator.h"
+// #include "../../../src/simulatie/Parser.h"
 //
-// class SimulationTESTS : public testing::Test {
-//     void SetUp() override {
-//     };
-//
+// class SimulationTestingParser : public testing::Test {
 // protected:
-//     Simulator sim;
+//     virtual void SetUp() {}
+//     virtual void TearDown() {}
+//     Simulator* sim;
 // };
 //
-// TEST_F(SimulationTESTS, EmptyXMLFileTest) {
-//     EXPECT_FALSE(sim.parseXMLAndCreateObjects("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml"));
+// TEST_F(SimulationTestingParser, EmptyXMLFileTest) {
+//     EXPECT_FALSE(Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml", sim));
 //
-//     EXPECT_EQ(int(sim.getBanen().size()), 0);
-//     EXPECT_EQ(int(sim.getVoertuigen().size()), 0);
-//     EXPECT_EQ(int(sim.getVerkeerslichten().size()), 0);
-//     EXPECT_EQ(int(sim.getVoertuiggeneratoren().size()), 0);
+//     EXPECT_EQ(int(sim->getBanen().size()), 0);
+//     for (auto &v : sim->getBanen()){
+//         EXPECT_EQ(int(v->getVerkeerslichten().size()), 0);
+//         EXPECT_EQ(int(v->getVoertuigeneratoren().size()), 0);
+//         EXPECT_EQ(int(v->getKruispunten().size()), 0);
+//         EXPECT_EQ(int(v->getBushaltes().size()), 0);
+//     }
 // }
 //
 // TEST_F(SimulationTESTS, DifferentOrderOfElements) {
@@ -480,22 +478,22 @@
 //     }
 //
 // }
-//
-//
-//
-//
-// int main(int argc, char **argv) {
-//     // Redirect cerr to NUL (Windows)
-//     std::ofstream null_stream("NUL");
-//     std::streambuf *old_cerr = std::cerr.rdbuf(null_stream.rdbuf());
-//
-//     // Initialize Google Test
-//     ::testing::InitGoogleTest(&argc, argv);
-//
-//     int result = RUN_ALL_TESTS();
-//
-//     // Restore cerr after tests
-//     std::cerr.rdbuf(old_cerr);
-//
-//     return result;
-// }
+
+
+
+
+ int main(int argc, char **argv) {
+     // Redirect cerr to NUL (Windows)
+     std::ofstream null_stream("NUL");
+     std::streambuf *old_cerr = std::cerr.rdbuf(null_stream.rdbuf());
+
+     // Initialize Google Test
+     ::testing::InitGoogleTest(&argc, argv);
+
+     int result = RUN_ALL_TESTS();
+
+     // Restore cerr after tests
+     std::cerr.rdbuf(old_cerr);
+
+     return result;
+ }

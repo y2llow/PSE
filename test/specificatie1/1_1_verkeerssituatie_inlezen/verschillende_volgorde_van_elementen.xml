@@ -4,11 +4,14 @@
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
         <frequentie>5</frequentie>
+        <type>auto</type>
     </VOERTUIGGENERATOR>
 
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>20</positie>
+        <type>auto</type>
+
     </VOERTUIG>
 
     <VERKEERSLICHT>
@@ -20,10 +23,29 @@
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>0</positie>
+        <type>auto</type>
     </VOERTUIG>
 
     <BAAN>
         <naam>Middelheimlaan</naam>
         <lengte>1000</lengte>
     </BAAN>
+
+
+    <BUSHALTE>
+        <baan>Middelheimlaan</baan>
+        <positie>250</positie>
+        <wachttijd>20</wachttijd>
+    </BUSHALTE>
+
+    <KRUISPUNT>
+        <baan positie="250">Middelheimlaan</baan>
+        <baan positie="500">Floralienlaan</baan>
+    </KRUISPUNT>
+
+    <BAAN>
+        <naam>Floralienlaan</naam>
+        <lengte>750</lengte>
+    </BAAN>
+
 </VERKEERSSITUATIE>

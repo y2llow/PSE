@@ -36,6 +36,14 @@ public:
     [[nodiscard]] double getCyclus() const;
     void setCyclus(double cyclus);
 
+    bool isOpKruispunt() const;
+
+    void setOpKruispunt(bool opKruispunt);
+
+    bool isOranje() const;
+
+    void setOranje(bool oranje);
+
     [[nodiscard]] bool isGroen() const;
 
     void switchColor();

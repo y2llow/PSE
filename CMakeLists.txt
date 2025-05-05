@@ -76,9 +76,11 @@ set(DEBUG_SOURCE_FILES
         src/elementen/voertuigen/Politiecombi.h
         src/elementen/voertuigen/Ziekenwagen.cpp
         src/elementen/voertuigen/Ziekenwagen.h
-#        test/specificatie1/1_1_verkeerssituatie_inlezen/SimulationTESTS.cpp
         test/VoertuigTest.cpp
-#        test/ParserTest.cpp
+        test/ParserTest.cpp
+        test/tests.cpp
+        test/VerkeerslichtTest.cpp
+        test/VoertuiggeneratorTest.cpp
 )
 
 # Create RELEASE target

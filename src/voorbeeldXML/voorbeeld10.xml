@@ -9,16 +9,41 @@
         <lengte>220</lengte>
     </BAAN>
 
+    <VOERTUIG>
+        <baan>Floralienlaan</baan>
+        <positie>20</positie>
+        <type>bus</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <type>auto</type>
+    </VOERTUIG>
+
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
-        <positie>50</positie>
+        <positie>100</positie>
         <cyclus>10</cyclus>
     </VERKEERSLICHT>
 
     <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <cyclus>5</cyclus>
+    </VERKEERSLICHT>
+
+
+    <VERKEERSLICHT>
         <baan>Floralienlaan</baan>
-        <positie>75</positie>
+        <positie>100</positie>
         <cyclus>20</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Floralienlaan</baan>
+        <positie>15</positie>
+        <cyclus>6</cyclus>
     </VERKEERSLICHT>
 
     <VOERTUIGGENERATOR>
@@ -34,8 +59,15 @@
     </VOERTUIGGENERATOR>
 
     <KRUISPUNT>
-        <baan positie="50">Middelheimlaan</baan>
-        <baan positie="75">Floralienlaan</baan>
+        <baan positie="10">Middelheimlaan</baan>
+        <baan positie="15">Floralienlaan</baan>
     </KRUISPUNT>
+
+<!--    <KRUISPUNT>-->
+<!--        <baan positie="100">Middelheimlaan</baan>-->
+<!--        <baan positie="100">Floralienlaan</baan>-->
+<!--    </KRUISPUNT>-->
+
+
 
 </VERKEERSSITUATIE>
