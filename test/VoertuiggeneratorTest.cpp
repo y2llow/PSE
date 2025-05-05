@@ -3,11 +3,6 @@
 #include "../src/simulatie/Simulator.h"
 #include "../src/elementen/Verkeerslicht.h"
 #include "../src/elementen/Voertuiggenerator.h"
-#include <gtest/gtest.h>
-#include "../src/simulatie/Parser.h"
-#include "../src/simulatie/Simulator.h"
-#include "../src/elementen/Verkeerslicht.h"
-#include "../src/elementen/Voertuiggenerator.h"
 
 class VoertuiggeneratorTest : public ::testing::Test {
 protected:
