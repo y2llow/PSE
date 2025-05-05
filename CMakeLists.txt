@@ -81,6 +81,7 @@ set(DEBUG_SOURCE_FILES
         test/tests.cpp
         test/VerkeerslichtTest.cpp
         test/VoertuiggeneratorTest.cpp
+        test/BushalteTest.cpp
 )
 
 # Create RELEASE target
