@@ -43,7 +43,7 @@ int main()
 
 
     auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld2.xml", sim))
+    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld11.xml", sim))
     {
         sim->simulate(10000);
     }

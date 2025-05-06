@@ -26,6 +26,7 @@ find_package(SFML 2.5 REQUIRED graphics window system)
 set(RELEASE_SOURCE_FILES
         ./src/TinyXML/tinystr.cpp ./src/TinyXML/tinyxml.cpp ./src/TinyXML/tinyxmlerror.cpp ./src/TinyXML/tinyxmlparser.cpp
         src/elementen/Verkeerslicht.cpp
+        src/elementen/Verkeerslicht.h
         src/elementen/Baan.cpp
         src/elementen/Voertuig.cpp
         src/elementen/Voertuiggenerator.cpp
@@ -34,7 +35,6 @@ set(RELEASE_SOURCE_FILES
         src/elementen/Constants.h
         src/simulatie/Parser.cpp
         src/simulatie/Parser.h
-        # Zorg ervoor dat deze is toegevoegd
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
         src/elementen/voertuigen/Auto.cpp

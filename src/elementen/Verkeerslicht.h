@@ -21,6 +21,7 @@ class Verkeerslicht {
     pair<double,double> oranjecyclus;
     bool oranje = false;
     bool opKruispunt = false;
+    bool VoertuigInVertraagzone = false;
     pair<Verkeerslicht*,Verkeerslicht*> opKruispuntPair;
     bool groen = true;
 
@@ -49,6 +50,8 @@ public:
     void switchColor();
 
     void updateVerkeerslicht();
+
+    static void switchVerkeerslichten(Verkeerslicht* vk1, Verkeerslicht* vk2);
 
     void OpKruisPunt();
 
