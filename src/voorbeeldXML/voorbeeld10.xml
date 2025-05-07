@@ -27,12 +27,6 @@
         <cyclus>10</cyclus>
     </VERKEERSLICHT>
 
-    <VERKEERSLICHT>
-        <baan>Middelheimlaan</baan>
-        <positie>10</positie>
-        <cyclus>5</cyclus>
-    </VERKEERSLICHT>
-
 
     <VERKEERSLICHT>
         <baan>Floralienlaan</baan>
@@ -63,10 +57,10 @@
         <baan positie="15">Floralienlaan</baan>
     </KRUISPUNT>
 
-<!--    <KRUISPUNT>-->
-<!--        <baan positie="100">Middelheimlaan</baan>-->
-<!--        <baan positie="100">Floralienlaan</baan>-->
-<!--    </KRUISPUNT>-->
+    <KRUISPUNT>
+        <baan positie="100">Middelheimlaan</baan>
+        <baan positie="100">Floralienlaan</baan>
+    </KRUISPUNT>
 
 
 

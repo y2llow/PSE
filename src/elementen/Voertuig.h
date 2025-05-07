@@ -99,9 +99,8 @@ public:
     void accelerate();
     void stop();
 
-    void kruispunt(const pair<const int, vector<Baan*>> & k);
     void checkForKruispunt(double position, double newpostion);
-    void Kruispunt();
+    void kruispunt(pair<int, vector<Baan*>> k);
 
 //    void Kruispunt();
 

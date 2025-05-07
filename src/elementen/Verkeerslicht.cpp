@@ -388,7 +388,6 @@ void Verkeerslicht::updateVerkeerslicht()
         if (eerst_voertuig->isPrioriteitsVoertuig())
         {
             // ======= THEN voertuig hoeft niet te vertragen of te stoppen =======
-            // eerst_voertuig->accelerate();
             return;
         }
 
@@ -398,9 +397,7 @@ void Verkeerslicht::updateVerkeerslicht()
 
         // Laat het voertuig stoppen als het in de stop afstand is
         else if (afstand_van_licht < 1) // afstand_van_licht < STOP_AFSTAND
-        {
             eerst_voertuig->stop();
-        }
     }
 }
 

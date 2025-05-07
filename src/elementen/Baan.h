@@ -50,7 +50,7 @@ public:
     void addKruispunt(int key, Baan* value);
 
     void removeVoertuig(Voertuig* v);
-    void TakeOutVoertuig(Voertuig* v);
+    void takeOutVoertuig(Voertuig* v);
 
     const vector<Verkeerslicht*>& getVerkeerslichten() const;
     const vector<Bushalte*>& getBushaltes() const;

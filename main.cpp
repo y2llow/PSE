@@ -39,26 +39,24 @@ int main()
 
 
     auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld11.xml", sim))
+    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld9.xml", sim))
     {
-        sim->simulate(1000);
+        sim->simulate(10000);
     }
 
 
-    for (const auto b : sim->getBanen())
-    {
-        b->sortVoertuigenByPosition();
-
-        sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, 200), b->getNaam(),
-                                sf::Style::Close);
-
-        window.setFramerateLimit(60);
-        Game game = Game(&window);
-        game.loadMap("../output/baan_" + b->getNaam() + ".txt");
-
-
-
-    }
+    // for (const auto b : sim->getBanen())
+    // {
+    //     b->sortVoertuigenByPosition();
+    //
+    //     sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, 200), b->getNaam(),
+    //                             sf::Style::Close);
+    //
+    //     window.setFramerateLimit(60);
+    //     Game game = Game(&window);
+    //     game.loadMap("../output/baan_" + b->getNaam() + ".txt");
+    //
+    // }
 
     return 0;
 }
