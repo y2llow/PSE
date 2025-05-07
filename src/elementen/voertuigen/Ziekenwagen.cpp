@@ -3,10 +3,10 @@
 //
 
 #include "Ziekenwagen.h"
-#include <cassert>
+#include "../../DesignByContract.h"
 
 string Ziekenwagen::getType() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     return "Ziekenwagen";
 }

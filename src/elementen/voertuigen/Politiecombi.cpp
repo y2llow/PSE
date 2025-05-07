@@ -3,10 +3,10 @@
 //
 
 #include "Politiecombi.h"
-#include <cassert>
+#include "../../DesignByContract.h"
 
 string Politiecombi::getType() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     return "Politiecombi";
 }

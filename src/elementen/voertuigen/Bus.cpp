@@ -3,23 +3,23 @@
 //
 
 #include "Bus.h"
-#include <cassert>
+#include "../../DesignByContract.h"
 
 [[nodiscard]] double Bus::getTimeSindsStopped() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     return tijd_sinds_stopped;
 }
 
 void Bus::setTimeSindsStopped(double t)
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     tijd_sinds_stopped = t;
-    assert(getTimeSindsStopped() == t);
+    ENSURE(getTimeSindsStopped() == t, "Tijd sinds gestopt is niet correct ingesteld");
 }
 
 string Bus::getType() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     return "Bus";
 }

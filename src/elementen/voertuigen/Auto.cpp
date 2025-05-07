@@ -1,10 +1,10 @@
 
 #include "Auto.h"
-#include <cassert>
+#include "../../DesignByContract.h"
 
 
 string Auto::getType() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bus is niet correct geïnitialiseerd");
     return "Auto";
 }
