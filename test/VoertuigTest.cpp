@@ -216,29 +216,30 @@ TEST_F(VoertuigTest, KruispuntGedrag) {
     v->setSnelheid(20);
     v->setState(State::DRIVING);
     b1->addVoertuig(v);
+    auto kp1 = b1->getKruispunten();
+    for (auto k : kp1) {
+        // Simuleer tot aan kruispunt
+            v->setPositie(499);
+            v->kruispunt(k);
+            EXPECT_EQ(v->getBaan(), b1) << "Nog niet op kruispunt, zou opzelfde baan moeten blijven";
+        v->setPositie(501);
+        // Na kruispunt - zou van baan kunnen veranderen
+        v->kruispunt(k);
+        bool changed = (v->getBaan() == b2);
 
-    // Simuleer tot aan kruispunt
-    while (v->getPositie() < 500) {
-        v->Kruispunt();
-        EXPECT_EQ(v->getBaan(), b1) << "Nog niet op kruispunt, zou opzelfde baan moeten blijven";
+        // Controleer of positie correct is aangepast
+        if (changed) {
+            EXPECT_EQ(v->getPositie(), 500) << "Positie zou moeten overeenkomen met kruispuntpositie op nieuwe baan";
+            EXPECT_EQ(int(b2->getVoertuigen().size()), 1) << "Voertuig zou op nieuwe baan moeten staan";
+            EXPECT_EQ(int(b1->getVoertuigen().size()), 0) << "Voertuig zou van oude baan verwijderd moeten zijn";
+        } else {
+            EXPECT_GT(v->getPositie(), 500) << "Voertuig zou door moeten rijden";
+        }
+
+        delete b1;
+        delete b2;
+        delete v;
     }
-
-    // Na kruispunt - zou van baan kunnen veranderen
-    v->Kruispunt();
-    bool changed = (v->getBaan() == b2);
-
-    // Controleer of positie correct is aangepast
-    if (changed) {
-        EXPECT_EQ(v->getPositie(), 500) << "Positie zou moeten overeenkomen met kruispuntpositie op nieuwe baan";
-        EXPECT_EQ(int(b2->getVoertuigen().size()), 1) << "Voertuig zou op nieuwe baan moeten staan";
-        EXPECT_EQ(int(b1->getVoertuigen().size()), 0) << "Voertuig zou van oude baan verwijderd moeten zijn";
-    } else {
-        EXPECT_GT(v->getPositie(), 500) << "Voertuig zou door moeten rijden";
-    }
-
-    delete b1;
-    delete b2;
-    delete v;
 }
 
 TEST_F(VoertuigTest, VerwijderingAanEindBaan) {
