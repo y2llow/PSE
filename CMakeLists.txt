@@ -16,8 +16,8 @@ link_directories(./gtest/lib)
 
 # Don't use local SFML files
 # Remove or comment out these:
-# set(SFML_STATIC_LIBRARIES TRUE)
-# set(SFML_DIR "${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/cmake/SFML")
+ set(SFML_STATIC_LIBRARIES TRUE)
+ set(SFML_DIR "${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/cmake/SFML")
 
 # Use system SFML
 find_package(SFML 2.5 REQUIRED graphics window system)

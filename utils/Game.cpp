@@ -53,28 +53,28 @@ void Game::loadMap(const string& filename)
     if (!baan_texture->loadFromFile("../resources/lane.png"))
         cerr << "COULDN'T LOAD MAP FILE" << endl;
 
-    auto auto_texture= new sf::Texture();
+    auto auto_texture = new sf::Texture();
     auto_texture->loadFromFile("../resources/auto.png");
 
-    auto bus_texture= new sf::Texture();
+    auto bus_texture = new sf::Texture();
     bus_texture->loadFromFile("../resources/bus.png");
 
-    auto firetruck_texture= new sf::Texture();
+    auto firetruck_texture = new sf::Texture();
     firetruck_texture->loadFromFile("../resources/firetruck.png");
 
-    auto ziekenwagen_texture= new sf::Texture();
+    auto ziekenwagen_texture = new sf::Texture();
     ziekenwagen_texture->loadFromFile("../resources/ambulance.png");
 
-    auto red_texture= new sf::Texture();
+    auto red_texture = new sf::Texture();
     red_texture->loadFromFile("../resources/red-light.png");
 
-    auto green_texture= new sf::Texture();
+    auto green_texture = new sf::Texture();
     green_texture->loadFromFile("../resources/green-light.png");
 
-    auto bushalte_texture= new sf::Texture();
+    auto bushalte_texture = new sf::Texture();
     bushalte_texture->loadFromFile("../resources/bushalte.png");
 
-    auto police_texture= new sf::Texture();
+    auto police_texture = new sf::Texture();
     police_texture->loadFromFile("../resources/police.png");
 
 
@@ -95,12 +95,13 @@ void Game::loadMap(const string& filename)
     while (getline(contents, line) && !paused)
     {
         int first_vehicle = line.length();
-        for (int i = line.length() / 2 - 1; i >= 0; i--)
+        for (int i = line.length() - 1; i >= 0; i--)
         {
-            if (line[i] != '=' && (line[i] != 'G' && line[i] != 'R'))
+            if (line[i] != '=' && line[i] != ' ')
             {
                 first_vehicle = i;
-                break;
+                if (line[i] != 'G' && line[i] != 'R' && line[i] != '|')
+                    break;
             }
         }
 

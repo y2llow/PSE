@@ -37,10 +37,6 @@ int main()
         return 0;
     }
 
-    // cout << "Pause the simulation   [P]" << endl;
-    // cout << "Resume the simulation  [R]" << endl;
-    // cout << "Exit the simulator     [X]" << endl;
-
 
     auto* sim = new Simulator();
     if (Parser::parseElements("../src/voorbeeldXML/voorbeeld11.xml", sim))

@@ -98,7 +98,9 @@ void Simulator::makeGraphicalImpression()
         output_string.append(bushaltes_text + bushaltes + "\n\n");
 
         graphical_impression += output_string;
-        banen_3d_content[b->getNaam()] += baan + second_line + '\n';
+        banen_3d_content[b->getNaam()] += baan + (!b->getBushaltes().empty() || !b->getVerkeerslichten().empty()
+                                                      ? second_line
+                                                      : "") + '\n';
     }
 }
 
@@ -165,16 +167,17 @@ void Simulator::simulationRun()
         for (const auto bushalte : b->getBushaltes())
             bushalte->stopBus();
 
-        for (const auto v : b->getVoertuigen()) {
+        for (const auto v : b->getVoertuigen())
+        {
             double positie = v->getPositie();
             v->rijd();
             double newpositie = v->getPositie();
 
 
-            if (!b->getKruispunten().empty()) {
+            if (!b->getKruispunten().empty())
+            {
                 // =========Voor meerderen banen aan een kruispunten=========
-                v->checkForKruispunt(positie,newpositie);
-
+                v->checkForKruispunt(positie, newpositie);
             }
         }
     }
