@@ -1,0 +1,21 @@
+
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Buerstedelei</naam>
+        <lengte>175</lengte>
+    </BAAN>
+
+    <BUSHALTE>
+        <baan>Buerstedelei</baan>
+        <positie>50</positie>
+        <wachttijd>5</wachttijd>
+    </BUSHALTE>
+
+    <VOERTUIGGENERATOR>
+        <baan>Buerstedelei</baan>
+        <frequentie>1</frequentie>
+        <type>bus</type>
+    </VOERTUIGGENERATOR>
+
+
+</VERKEERSSITUATIE>

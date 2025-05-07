@@ -6,16 +6,33 @@
 #define BRANDWEERWAGEN_H
 #include "../Voertuig.h"
 
+class Brandweerwagen : public Voertuig
+{
+    Brandweerwagen* _initCheck; // Voor properlyInit
 
-class Brandweerwagen: public Voertuig {
+public:
+    /**
+     * @brief Standaard constructor voor Brandweerwagen
+     * @post properlyInit() == true
+     */
+    Brandweerwagen() : Voertuig(8, 27.8, 1.8, 5.1, 3, true)
+    {
+        _initCheck = this;
+    }
 
-    public:
-    Brandweerwagen(): Voertuig(10, 14.6, 1.33, 4.56, 10, true){}
+    /**
+     * @brief Controleert of het object correct geïnitialiseerd is
+     * @return true als dit object correct is geïnitialiseerd
+     */
+    bool properlyInit() const { return _initCheck == this; }
 
+    /**
+     * @brief Geeft het type van het voertuig terug
+     * @pre properlyInit() == true
+     * @return "Brandweerwagen"
+     */
     [[nodiscard]] string getType() const override;
-
 };
-
 
 
 #endif //BRANDWEERWAGEN_H

@@ -1,56 +1,58 @@
-//
-// Created by s0243673 on 24/04/2025.
-//
-
 #include "Bushalte.h"
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
 #include "voertuigen/Bus.h"
 
-
-Baan* Bushalte::getBaan() const
-{
+Baan* Bushalte::getBaan() const {
+    assert(properlyInit());
     return baan;
 }
 
-void Bushalte::setBaan(Baan* baan)
-{
+void Bushalte::setBaan(Baan* baan) {
+    assert(properlyInit());
+    assert(baan != nullptr);
     this->baan = baan;
+    assert(getBaan() == baan);
 }
 
-void Bushalte::setPositie(const double positie)
-{
-    this->positie = positie;
-}
-
-double Bushalte::getPositie() const
-{
+double Bushalte::getPositie() const {
+    assert(properlyInit());
     return positie;
 }
 
-double Bushalte::getWachttijd() const
-{
+void Bushalte::setPositie(const double positie) {
+    assert(properlyInit());
+    assert(positie >= 0);
+    this->positie = positie;
+    assert(getPositie() == positie);
+}
+
+double Bushalte::getWachttijd() const {
+    assert(properlyInit());
     return wachttijd;
 }
 
-void Bushalte::setWachttijd(const double wt)
-{
+void Bushalte::setWachttijd(const double wt) {
+    assert(properlyInit());
+    assert(wt >= 0);
     this->wachttijd = wt;
+    assert(getWachttijd() == wt);
 }
 
-void Bushalte::stopBus()
-{
+void Bushalte::stopBus() {
+    assert(properlyInit());
+    assert(baan != nullptr);
+
     Bus* bus = nullptr;
     double distance = 0;
 
-    for (const auto voertuig : baan->getVoertuigen())
-    {
-        if (voertuig->getType() == "Bus")
-        {
+    for (const auto voertuig : baan->getVoertuigen()) {
+        if (voertuig->getType() == "Bus") {
             distance = positie - voertuig->getPositie();
 
             if (distance < 0 || distance > VERTRAAG_AFSTAND || find(waited_busses.begin(), waited_busses.end(), voertuig) != waited_busses.end())
@@ -64,7 +66,7 @@ void Bushalte::stopBus()
     if (bus == nullptr)
         return;
 
-    const double time = bus->getTimeSindsStopped();
+    double time = bus->getTimeSindsStopped();
 
     if (time > wachttijd)
     {
@@ -86,7 +88,13 @@ void Bushalte::stopBus()
     {
         bus->stop();
         bus->setTimeSindsStopped(time + SIMULATIE_TIJD);
-    }
-    else if (distance > 0 && distance < VERTRAAG_AFSTAND && bus->getState() != State::SLOWINGDOWN && bus->getState() != State::STOPPING)
+    } else if (distance > 0 && distance < VERTRAAG_AFSTAND &&
+               bus->getState() != State::SLOWINGDOWN &&
+               bus->getState() != State::STOPPING) {
         bus->slowDown();
+    }
+
+    // Postconditie check:
+    // Dezelfde bus kan max 1 keer in waited_busses staan.
+    assert(std::count(waited_busses.begin(), waited_busses.end(), bus) <= 1);
 }

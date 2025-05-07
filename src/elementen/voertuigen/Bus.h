@@ -6,20 +6,47 @@
 #define BUS_H
 #include "../Voertuig.h"
 
-
-class Bus final : public Voertuig
+class Bus : public Voertuig
 {
-    double time_sinds_stopped = 0;
+    double tijd_sinds_stopped = 0;
+    Bus* _initCheck; // Voor properlyInit
 
 public:
-    Bus(): Voertuig(12, 11.4, 1.22, 4.29, 12, false)
+    /**
+     * @brief Standaard constructor voor Bus
+     * @post properlyInit() == true
+     */
+    Bus() : Voertuig(12, 13.9, 1.0, 2.9, 6, false)
     {
+        _initCheck = this;
     }
 
-    [[nodiscard]] string getType() const override;
+    /**
+     * @brief Controleert of het object correct geïnitialiseerd is
+     * @return true als dit object correct is geïnitialiseerd
+     */
+    bool properlyInit() const { return _initCheck == this; }
 
+    /**
+     * @brief Geeft de tijd sinds het voertuig is gestopt
+     * @pre properlyInit() == true
+     * @return Tijd sinds laatst gestopt
+     */
     [[nodiscard]] double getTimeSindsStopped() const;
-    void setTimeSindsStopped(double time_sinds_stopped);
+
+    /**
+     * @brief Zet de tijd sinds het voertuig is gestopt
+     * @pre properlyInit() == true
+     * @post getTimeSindsStopped() == t
+     */
+    void setTimeSindsStopped(double t);
+
+    /**
+     * @brief Geeft het type van het voertuig terug
+     * @pre properlyInit() == true
+     * @return "Bus"
+     */
+    [[nodiscard]] string getType() const override;
 };
 
 

@@ -3,8 +3,10 @@
 //
 
 #include "Ziekenwagen.h"
+#include <cassert>
 
 string Ziekenwagen::getType() const
 {
+    assert(properlyInit());
     return "Ziekenwagen";
 }

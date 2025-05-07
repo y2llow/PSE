@@ -4,6 +4,7 @@
 
 
 #include "Parser.h"
+#include <cassert>
 
 #include "../elementen/Voertuiggenerator.h"
 #include "../elementen/Verkeerslicht.h"
@@ -16,10 +17,15 @@
 #include "../elementen/Constants.h"
 
 map<string, Baan*> Parser::banenMap;
+Parser* Parser::_initCheck = nullptr;
 
 
 void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     const char* name = nullptr;
     int length = -1;
 
@@ -64,6 +70,11 @@ void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
         sim->addBaan(baan);
 
         banenMap[name] = baan;
+
+        // Postcondities
+        assert(banenMap.find(name) != banenMap.end());
+        assert(banenMap[name]->getNaam() == name);
+        assert(banenMap[name]->getLengte() == length);
     }
     else
     {
@@ -73,6 +84,10 @@ void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
 
 void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     const char* type = nullptr;
     const char* voertuig_baan = nullptr;
     // if the voertuig in the xml file doesn't have the "snelheid" element, then it begins from this value
@@ -120,7 +135,7 @@ void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
 
     // Als we geen geldige baan of positie hebben, sla over
     REQUIRE(voertuig_baan != nullptr && banenMap.find(voertuig_baan) != banenMap.end(),
-        "Verkeersituatie is inconsistent. Een van de voertuigen heeft geen bestaande baan.");
+            "Verkeersituatie is inconsistent. Een van de voertuigen heeft geen bestaande baan.");
 
     REQUIRE(type != nullptr && geldigeTypen(type),
             "Verkeersituatie is inconsistent! De type van een voertuig is ongeldig.");
@@ -139,10 +154,19 @@ void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
     voertuig->setSnelheid(voertuig_snelheid);
     voertuig->setBaan(banenMap[voertuig_baan]);
     banenMap[voertuig_baan]->addVoertuig(voertuig);
+
+    // Postcondities
+    assert(voertuig->getPositie() == positie);
+    assert(voertuig->getSnelheid() == voertuig_snelheid);
+    assert(voertuig->getBaan() == banenMap[voertuig_baan]);
 }
 
 void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     const char* baan = nullptr;
     int cyclus = -1;
     int positie = -1;
@@ -199,10 +223,20 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
     verkeerslicht->setPositie(positie);
 
     banenMap[baan]->addVerkeerslicht(verkeerslicht);
+
+    // Postcondities
+    assert(verkeerslicht->getBaan() == banenMap[baan]);
+    assert(verkeerslicht->getCyclus() == cyclus);
+    assert(verkeerslicht->getPositie() == positie);
+
 }
 
 void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     const char* voertuigbaan = nullptr;
     const char* type = nullptr;
     double frequentie = -1;
@@ -249,10 +283,20 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
     auto* generator = new Voertuiggenerator(banenMap[voertuigbaan], frequentie, type);
     // Voeg de generator toe aan de simulatie
     banenMap[voertuigbaan]->addVoertuiggenerator(generator);
+
+    // Postcondities
+    assert(generator->getBaan() == banenMap[voertuigbaan]);
+    assert(generator->getFrequentie() == frequentie);
+    assert(generator->getType() == type);
+
 }
 
 void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     int positie = -1;
     int wachttijd = -1;
     const char* baan = nullptr;
@@ -308,14 +352,24 @@ void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
     bushalte->setBaan(bushalte_baan);
     bushalte_baan->addBushalte(bushalte);
     bushalte->setPositie(positie);
+
+    // Postcondities
+    assert(bushalte->getBaan() == bushalte_baan);
+    assert(bushalte->getWachttijd() == wachttijd);
+    assert(bushalte->getPositie() == positie);
+
 }
 
 void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(elem != nullptr);
+    assert(sim != nullptr);
+
     vector<pair<int, Baan*>> kruisPunten;
 
     for (TiXmlElement* baanElem = elem->FirstChildElement(
-             "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan"))
+            "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan"))
     {
         // Attributen ophalen
         const string positie = baanElem->Attribute("positie");
@@ -342,11 +396,36 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
                 baan->addKruispunt(position, baan_2);
         }
     }
+
+    // Postcondities
+    // Elk kruispunt wordt correct toegevoegd aan de juiste banen
+    for (auto [position, baan] : kruisPunten) {
+        for (auto [position_2, baan_2] : kruisPunten) {
+            if (baan_2 != baan) {
+                bool foundKruispunt = false;
+                auto& kruispunten = baan->getKruispunten();
+                auto it = kruispunten.find(position);
+                if (it != kruispunten.end()) {
+                    for (const auto& b : it->second) {
+                        if (b == baan_2) {
+                            foundKruispunt = true;
+                            break;
+                        }
+                    }
+                }
+                assert(foundKruispunt);
+            }
+        }
+    }
 }
 
 
 bool Parser::parseElements(const std::string& filename, Simulator* sim)
 {
+    assert(properlyInit());
+    assert(!filename.empty());
+    assert(sim != nullptr);
+
     TiXmlDocument doc;
 
     if (!doc.LoadFile(filename.c_str()))
@@ -364,7 +443,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
 
     // =========== First parse banen because they are essential for the implementation of other elements =============
     for (auto ti_xml_element = root->FirstChildElement(); ti_xml_element != nullptr; ti_xml_element =
-         ti_xml_element->NextSiblingElement())
+                                                                                             ti_xml_element->NextSiblingElement())
     {
         if (string elementType = ti_xml_element->Value(); elementType != "BAAN")
             continue;
@@ -374,7 +453,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
     // =========== Only then parse the other elements =============
     assert(sim->getBanen().size() > 0);
     for (auto ti_xml_element = root->FirstChildElement(); ti_xml_element != nullptr; ti_xml_element =
-         ti_xml_element->NextSiblingElement())
+                                                                                             ti_xml_element->NextSiblingElement())
     {
         if (string elementType = ti_xml_element->Value(); elementType == "VOERTUIG")
             parseVoertuigen(ti_xml_element, sim);
@@ -397,9 +476,9 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
         for (int i = 0, n = b->getVerkeerslichten().size(); i < n - 1; i++)
         {
             REQUIRE(
-                abs(b->getVerkeerslichten()[i]->getPositie() - b->getVerkeerslichten()[i+1]->getPositie()) >
-                VERTRAAG_AFSTAND,
-                "Verkeerssituatie is niet consistent! Een verkeerslicht mag zich niet in de vertraagafstand van een ander verkeerslicht bevinden");
+                    abs(b->getVerkeerslichten()[i]->getPositie() - b->getVerkeerslichten()[i+1]->getPositie()) >
+                    VERTRAAG_AFSTAND,
+                    "Verkeerssituatie is niet consistent! Een verkeerslicht mag zich niet in de vertraagafstand van een ander verkeerslicht bevinden");
         }
     }
 
@@ -409,6 +488,8 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
 
 void Parser::VerkeerslichtenOpKruispunten()
 {
+    assert(properlyInit());
+
     for (auto& banenPair : banenMap)
     {
         Baan* currentbaan = banenPair.second;
@@ -465,6 +546,12 @@ void Parser::VerkeerslichtenOpKruispunten()
 
                     verkeerslichtKP2->KruispuntPair(verkeerslichtKP2, verkeerslichtKP1);
                     verkeerslichtKP1->KruispuntPair(verkeerslichtKP1, verkeerslichtKP2);
+
+                    // Postcondities
+                    assert(verkeerslichtKP2->getCyclus() == verkeerslichtKP1->getCyclus());
+                    assert(verkeerslichtKP2->isGroen() != verkeerslichtKP1->isGroen());
+                    assert(verkeerslichtKP2->isOpKruispunt());
+                    assert(verkeerslichtKP1->isOpKruispunt());
                 }
             }
         }
@@ -473,6 +560,7 @@ void Parser::VerkeerslichtenOpKruispunten()
 
 bool Parser::geldigeTypen(const string& type)
 {
+    assert(properlyInit());
     return type == "auto" || type == "bus" || type == "brandweerwagen" || type == "politiecombi" || type ==
-        "ziekenwagen";
+                                                                                                    "ziekenwagen";
 }

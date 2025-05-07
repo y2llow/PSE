@@ -3,6 +3,7 @@
 //
 
 #include "Voertuiggenerator.h"
+#include <cassert>
 
 #include "Constants.h"
 #include "Voertuig.h"
@@ -11,31 +12,44 @@
 
 Baan* Voertuiggenerator::getBaan() const
 {
+    assert(properlyInit());
     return baan;
 }
 
 void Voertuiggenerator::setBaan(Baan* b)
 {
+    assert(properlyInit());
     this->baan = b;
+    assert(getBaan() == b);
 }
 
 double Voertuiggenerator::getFrequentie() const
 {
+    assert(properlyInit());
     return frequentie;
 }
 
 void Voertuiggenerator::setFrequentie(const double frequentie)
 {
+    assert(properlyInit());
+    assert(frequentie >= 0);
     this->frequentie = frequentie;
+    assert(getFrequentie() == frequentie);
 }
 
 string Voertuiggenerator::getType()
 {
+    assert(properlyInit());
     return type;
 }
 
 void Voertuiggenerator::generateVoertuig()
 {
+    assert(properlyInit());
+    assert(baan != nullptr);
+
+    double oude_tijd = tijd_sinds_laatste_voertuig;
+
     if (tijd_sinds_laatste_voertuig > frequentie)
     {
         bool geen_voertuig = true;
@@ -56,11 +70,16 @@ void Voertuiggenerator::generateVoertuig()
             voertuig->setBaan(baan);
 
             tijd_sinds_laatste_voertuig = 0;
+            assert(tijd_sinds_laatste_voertuig == 0);
         }
 
         delete temp_voertuig_voor_lengte;
     }
 
-
     tijd_sinds_laatste_voertuig += SIMULATIE_TIJD;
+
+    // Als geen voertuig is toegevoegd, moet de tijd verhoogd zijn
+    if (oude_tijd == tijd_sinds_laatste_voertuig - SIMULATIE_TIJD) {
+        assert(tijd_sinds_laatste_voertuig == oude_tijd + SIMULATIE_TIJD);
+    }
 }

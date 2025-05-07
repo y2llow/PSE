@@ -6,16 +6,33 @@
 #define POLITIECOMBI_H
 #include "../Voertuig.h"
 
+class Politiecombi : public Voertuig
+{
+    Politiecombi* _initCheck; // Voor properlyInit
 
-class Politiecombi: public Voertuig{
+public:
+    /**
+     * @brief Standaard constructor voor Politiecombi
+     * @post properlyInit() == true
+     */
+    Politiecombi() : Voertuig(6, 24.1, 1.7, 5.0, 2, true)
+    {
+        _initCheck = this;
+    }
 
-    public:
-    Politiecombi(): Voertuig(6, 17.2, 1.55, 4.92, 6, true){}
+    /**
+     * @brief Controleert of het object correct geïnitialiseerd is
+     * @return true als dit object correct is geïnitialiseerd
+     */
+    bool properlyInit() const { return _initCheck == this; }
 
+    /**
+     * @brief Geeft het type van het voertuig terug
+     * @pre properlyInit() == true
+     * @return "Politiecombi"
+     */
     [[nodiscard]] string getType() const override;
-
 };
-
 
 
 #endif //POLITIECOMBI_H

@@ -15,57 +15,85 @@
 
 Baan* Verkeerslicht::getBaan() const
 {
+    assert(properlyInit());
     return baan;
 }
 
 
 void Verkeerslicht::setPositie(const double positie)
 {
+    assert(properlyInit());
     this->positie = positie;
+    assert(getPositie() == positie);
 }
 
 double Verkeerslicht::getCyclus() const
 {
+    assert(properlyInit());
     return cyclus;
 }
 
 void Verkeerslicht::setCyclus(const double cyclus)
 {
+    assert(properlyInit());
+    assert(cyclus > 0);
     this->cyclus = cyclus;
+    assert(getCyclus() == cyclus);
 }
 
 void Verkeerslicht::setBaan(Baan* baan)
 {
+    assert(properlyInit());
     this->baan = baan;
+    assert(getBaan() == baan);
 }
 
 double Verkeerslicht::getPositie() const
 {
+    assert(properlyInit());
     return positie;
 }
 
 bool Verkeerslicht::isGroen() const
 {
+    assert(properlyInit());
     return groen;
 }
 
 void Verkeerslicht::switchColor()
 {
+    assert(properlyInit());
+    bool oude_waarde = groen;
     groen = !groen;
+    assert(isGroen() != oude_waarde);
 }
 
 void Verkeerslicht::switchVerkeerslichten(Verkeerslicht* vk1, Verkeerslicht* vk2)
 {
+    assert(vk1 != nullptr);
+    assert(vk2 != nullptr);
+
+    bool oude_waarde_vk1 = vk1->isGroen();
+    bool oude_waarde_vk2 = vk2->isGroen();
+
     vk1->switchColor();
     vk1->tijd_sinds_laatste_verandering = 0;
 
     vk2->switchColor();
     vk2->tijd_sinds_laatste_verandering = 0;
+
+    assert(vk1->isGroen() != oude_waarde_vk1);
+    assert(vk2->isGroen() != oude_waarde_vk2);
 }
 
 
 void Verkeerslicht::updateVerkeerslicht()
 {
+    assert(properlyInit());
+    assert(baan != nullptr);
+
+    double oude_tijd = tijd_sinds_laatste_verandering;
+
     //2 situaties: 1. verkeerslicht staat op een kruisputn/2. niet op een kruispunt
     if(opKruispunt) {
         Verkeerslicht* verkeerslicht2 = (opKruispuntPair.first == this) ? opKruispuntPair.second : opKruispuntPair.first;
@@ -92,115 +120,6 @@ void Verkeerslicht::updateVerkeerslicht()
             switchVerkeerslichten(this,verkeerslicht2);
     }
 
-
-
-        //op een kruispunt
-
-        //3 situaties:
-            //1. tijd sinds laatste verandering is is groter dan 60 min de volldeige oranje cyclus
-            //2. de tijd staat tussen 10 en 60 min de volledige oranje cyclus
-            //3. de tijd is onder de 10 seconden
-
-        //1.
-    //     if (tijd_sinds_laatste_verandering>= 60 - oranjecyclus.first){
-    //         //3 situaties:
-    //             //groen
-    //             //oranje
-    //             //rood
-    //
-    //             //groen
-    //             if(groen){
-    //                 oranjecyclus.second+=SIMULATIE_TIJD;
-    //                 tijd_sinds_laatste_verandering+=SIMULATIE_TIJD;
-    //                 //kleur moet veranderen, oranje wordt eerst verwerkt, oranjecyclus wordt vermeerdert.
-    //                 switchColor();
-    //                 oranje = true;
-    //             }
-    //
-    //             //oranje
-    //             else if (!groen && oranje){
-    //                 //de oranjeCyclus tijd vermeerderen. kijken als dit cyclus klaar is
-    //                 oranjecyclus.second+=SIMULATIE_TIJD;
-    //                 tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //
-    //                 //als cyclus klaar is (de oranjes van tegenovergestelde verkeerslichten beinvloeden de cyclus bij zowel die ene als de andere verkeerslicht)
-    //
-    //                 //bijvoorbeeld:
-    //                     //VL1: groen->rood: de functie hieronder zorgt ervoor dat de rode licht van de andere verkeerslicht groen wordt, wat de cyclus restart.
-    //                     //dus wanneer VL1 groen->rood ondergaat: VL2 rood->groen ondergaat.
-    //                 if (oranjecyclus.second>=oranjecyclus.first){
-    //                     //het is rood ->tegenovergestelde verkeerslicht mag groen worden, simulatietijd sinds laatste verandering en oranjeCylcus op 0 zetten
-    //                     oranje = false;
-    //
-    //                     opKruispuntPair.second->switchColor();
-    //
-    //                     opKruispuntPair.second->tijd_sinds_laatste_verandering = 0;
-    //
-    //                     oranjecyclus.second = 0;
-    //
-    //                     tijd_sinds_laatste_verandering = 0;
-    //                 }
-    //             }
-    //     }
-    //
-    //     //2.
-    //     else if (tijd_sinds_laatste_verandering>=10 && tijd_sinds_laatste_verandering<=60-oranjecyclus.first) {
-    //         //3 situaties:
-    //         //groen
-    //         // oranje
-    //         //rood
-    //
-    //         //groen
-    //         if (groen && !oranje) {
-    //             tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
-    //             //als er geen voertuigen zijn in de volgende 300 meter -> rood, anders niks veranderen. : tegenover gestelde verkeerslicht mag groen worden pas als dit volledig rood wordt
-    //             for (const auto v: baan->getVoertuigen()) {
-    //                 if (positie - v->getPositie() >= 300) {
-    //                     oranjecyclus.second += SIMULATIE_TIJD;
-    //                     switchColor();
-    //                     oranje = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //
-    //             //oranje
-    //         else if (!groen && oranje) {
-    //             //als de tijd van de oranje cyclus groot genoeg is dan maken we de licht rood -> tegenover gestelde licht mag hierna pas groen worden
-    //             tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
-    //
-    //             if (oranjecyclus.second >= oranjecyclus.first) {
-    //                 oranjecyclus.second = 0;
-    //
-    //                 oranje = false;
-    //
-    //                 tijd_sinds_laatste_verandering = 0;
-    //
-    //                 //andere verkeerslicht wordt groen
-    //                 opKruispuntPair.second->switchColor();
-    //             }
-    //         }
-    //
-    //             //rood
-    //         else if (!groen && !oranje) {
-    //             tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //             //als er een voertuig is in de volgende 50 meter dan naar groen omzetten als kan
-    //             for (const auto v: baan->getVoertuigen()) {
-    //                 if (positie - v->getPositie() <= 50) {
-    //                     opKruispuntPair.second->oranjecyclus.second+=SIMULATIE_TIJD;
-    //                     opKruispuntPair.second->oranje = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //
-    //     //3.
-    //     else{
-    //         tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //     }
-    // }
-
     else // volg gewoon normale cyclus
     {
         if (tijd_sinds_laatste_verandering > cyclus)
@@ -209,130 +128,6 @@ void Verkeerslicht::updateVerkeerslicht()
             tijd_sinds_laatste_verandering = 0;
         }
     }
-
-    //     if(tijd_sinds_laatste_verandering>= 60 - oranjecyclus.first){
-    //         if (groen){
-    //             oranjecyclus.second+=SIMULATIE_TIJD;
-    //             tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //
-    //             oranje = true;
-    //
-    //             switchColor();
-    //         }
-    //         else if (!groen && oranje){
-    //             oranjecyclus.second+=SIMULATIE_TIJD;
-    //             tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
-    //
-    //             if (oranjecyclus.second >=oranjecyclus.first){
-    //                 oranjecyclus.second = 0;
-    //                 tijd_sinds_laatste_verandering = 0;
-    //                 oranje = false;
-    //             }
-    //         }
-    //         else if(!groen && ! oranje){
-    //             switchColor();
-    //             tijd_sinds_laatste_verandering =0;
-    //         }
-    //     }
-    //     else if(tijd_sinds_laatste_verandering>=10 && tijd_sinds_laatste_verandering<=60-oranjecyclus.first){
-    //         if (groen){
-    //             tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //
-    //             for (auto const v: baan->getVoertuigen()){
-    //                 if(positie - v->getPositie() <=300){
-    //                     switchColor();
-    //                     oranje = true;
-    //                     oranjecyclus.second+=SIMULATIE_TIJD;
-    //                 }
-    //             }
-    //         }
-    //         else if(!groen && oranje){
-    //             tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //
-    //             oranjecyclus.second+=SIMULATIE_TIJD;
-    //
-    //             if(oranjecyclus.second>=oranjecyclus.first){
-    //                 oranje = false;
-    //                 tijd_sinds_laatste_verandering = 0;
-    //                 oranjecyclus.second = 0;
-    //             }
-    //         }
-    //         else if(!groen && !oranje){
-    //             tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
-    //
-    //             for (auto const v: baan->getVoertuigen()){
-    //                 if (positie - v->getPositie()<=50){
-    //                     switchColor();
-    //                     tijd_sinds_laatste_verandering = 0;
-    //                 }
-    //             }
-    //         }
-    //         else{
-    //             tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
-    //         }
-    //     }
-    // }
-
-//    //als de tijd sinds laatste verandering 60 seconden is, veranderd de verkeerslichts kleur
-//    if (tijd_sinds_laatste_verandering >= 60){
-//        //als de verkeerslicht groen is
-//        if(groen){
-//            tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
-//            switchColor();
-//            oranje = true;
-//
-//            if(verkeerslichtOpKruispunt){
-//                verkeerlichtenOpKruispuntPair.second->switchColor();
-//            }
-//        }
-//
-//        if (!groen && oranje){
-//            oranjecyclus.second+=SIMULATIE_TIJD;
-//
-//            if(oranjecyclus.second>=oranjecyclus.first){
-//                oranjecyclus.second = 0;
-//                oranje = false;
-//            }
-//
-//        }
-//
-//        if(!groen && !oranje){
-//            switchColor();
-//            tijd_sinds_laatste_verandering = 0;
-//
-//        }
-//    }
-//    //of als de tijd sinds laatste verandering tussen 10 en 60 seconden is
-//    else if (tijd_sinds_laatste_verandering >= 10 && tijd_sinds_laatste_verandering < 60){
-//        //als verkeerslicht rood is
-//        if (!groen && !oranje){
-//           //als voertuig binnen de 50 meter van het verkeerslicht is
-//           for (const auto v : baan->getVoertuigen()){
-//               //licht groen maken, tijd sinds laatste verandering =0
-//               if (positie - v->getPositie() > 0 && positie - v->getPositie() <= 50){
-//                   switchColor();
-//                   tijd_sinds_laatste_verandering = 0;
-//
-//                   //kijken als dit op een kruispunt staat
-//                   if(verkeerslichtOpKruispunt){
-//                       verkeerlichtenOpKruispuntPair.second->switchColor();
-//                       verkeerlichtenOpKruispuntPair.second->oranje = true;
-//                       verkeerlichtenOpKruispuntPair.second->tijd_sinds_laatste_verandering = 60;
-//                   }
-//                   break;
-//               }
-//           }
-//        }
-//    }
-
-
-//    if (tijd_sinds_laatste_verandering > cyclus)
-//    {
-//        switchColor();
-//        tijd_sinds_laatste_verandering = 0;
-//    }
-
-    // assert(baan != nullptr);
 
     tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
 
@@ -362,7 +157,7 @@ void Verkeerslicht::updateVerkeerslicht()
 
         }
     }
-    // anders laten we het eerste voertuig vertragen zodat alle autos stoppen
+        // anders laten we het eerste voertuig vertragen zodat alle autos stoppen
     else
     {
         Voertuig* eerst_voertuig = nullptr;
@@ -395,37 +190,53 @@ void Verkeerslicht::updateVerkeerslicht()
         if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND && eerst_voertuig->getState() != State::SLOWINGDOWN && eerst_voertuig->getState() != State::STOPPING)
             eerst_voertuig->slowDown();
 
-        // Laat het voertuig stoppen als het in de stop afstand is
+            // Laat het voertuig stoppen als het in de stop afstand is
         else if (afstand_van_licht < 1) // afstand_van_licht < STOP_AFSTAND
             eerst_voertuig->stop();
     }
+
+    // Post-condities
+    assert(tijd_sinds_laatste_verandering > oude_tijd || tijd_sinds_laatste_verandering == 0.166 || tijd_sinds_laatste_verandering == 0.0166 );
 }
 
 void Verkeerslicht::OpKruisPunt() {
+    assert(properlyInit());
     this->opKruispunt = true;
+    assert(isOpKruispunt() == true);
 }
 
 void Verkeerslicht::KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2) {
-    this->opKruispuntPair  = {v1,v2};
+    assert(properlyInit());
+    assert(v1 != nullptr);
+    assert(v2 != nullptr);
+    this->opKruispuntPair = {v1,v2};
 }
 
 void Verkeerslicht::setOranjeCyclus(double c) {
+    assert(properlyInit());
+    assert(c >= 0);
     oranjecyclus.first = c;
     oranjecyclus.second = 0;
 }
 
 bool Verkeerslicht::isOpKruispunt() const {
+    assert(properlyInit());
     return opKruispunt;
 }
 
 void Verkeerslicht::setOpKruispunt(bool OpKruispunt) {
+    assert(properlyInit());
     Verkeerslicht::opKruispunt = OpKruispunt;
+    assert(isOpKruispunt() == OpKruispunt);
 }
 
 bool Verkeerslicht::isOranje() const {
+    assert(properlyInit());
     return oranje;
 }
 
 void Verkeerslicht::setOranje(bool Oranje) {
+    assert(properlyInit());
     Verkeerslicht::oranje = Oranje;
+    assert(isOranje() == Oranje);
 }

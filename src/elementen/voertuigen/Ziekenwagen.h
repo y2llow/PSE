@@ -6,15 +6,33 @@
 #define ZIEKENWAGEN_H
 #include "../Voertuig.h"
 
+class Ziekenwagen : public Voertuig
+{
+    Ziekenwagen* _initCheck; // Voor properlyInit
 
-class Ziekenwagen: public Voertuig {
+public:
+    /**
+     * @brief Standaard constructor voor Ziekenwagen
+     * @post properlyInit() == true
+     */
+    Ziekenwagen() : Voertuig(6, 24.1, 1.7, 5.0, 2, true)
+    {
+        _initCheck = this;
+    }
 
-    public:
-    Ziekenwagen(): Voertuig(8, 15.5, 1.44, 4.47, 8, true){}
+    /**
+     * @brief Controleert of het object correct geïnitialiseerd is
+     * @return true als dit object correct is geïnitialiseerd
+     */
+    bool properlyInit() const { return _initCheck == this; }
 
+    /**
+     * @brief Geeft het type van het voertuig terug
+     * @pre properlyInit() == true
+     * @return "Ziekenwagen"
+     */
     [[nodiscard]] string getType() const override;
 };
-
 
 
 #endif //ZIEKENWAGEN_H

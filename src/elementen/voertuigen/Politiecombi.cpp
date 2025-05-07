@@ -3,8 +3,10 @@
 //
 
 #include "Politiecombi.h"
+#include <cassert>
 
 string Politiecombi::getType() const
 {
+    assert(properlyInit());
     return "Politiecombi";
 }

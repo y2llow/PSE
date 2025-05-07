@@ -5,6 +5,7 @@
 #include <iostream>
 #include <ostream>
 #include <random>
+#include <cassert>
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
@@ -16,134 +17,172 @@
 
 Baan* Voertuig::getBaan() const
 {
+    assert(properlyInit());
     return baan;
 }
 
 void Voertuig::setBaan(Baan* weg)
 {
+    assert(properlyInit());
     baan = weg;
+    assert(getBaan() == weg);
 }
 
 double Voertuig::getPositie() const
 {
+    assert(properlyInit());
     return p;
 }
 
 void Voertuig::setPositie(const double positie)
 {
+    assert(properlyInit());
     p = positie;
+    assert(getPositie() == positie);
 }
 
 double Voertuig::getSnelheid() const
 {
+    assert(properlyInit());
     return v;
 }
 
 void Voertuig::setSnelheid(const double speed)
 {
+    assert(properlyInit());
     v = speed;
+    assert(getSnelheid() == speed);
 }
 
 State Voertuig::getState() const
 {
+    assert(properlyInit());
     return voertuig_state;
 }
 
 int Voertuig::getId() const
 {
+    assert(properlyInit());
     return id;
 }
 
 void Voertuig::setId(const int ID)
 {
+    assert(properlyInit());
     this->id = ID;
+    assert(getId() == ID);
 }
 
 double Voertuig::getVersnelling() const
 {
+    assert(properlyInit());
     return a;
 }
 
 void Voertuig::setVersnelling(const double versnelling)
 {
+    assert(properlyInit());
     a = versnelling;
+    assert(getVersnelling() == versnelling);
 }
 
 double Voertuig::getKvmax() const
 {
+    assert(properlyInit());
     return k_v_max;
 }
 
 void Voertuig::setKvmax(const double kvmax)
 {
+    assert(properlyInit());
     k_v_max = kvmax;
+    assert(getKvmax() == kvmax);
 }
 
 double Voertuig::getLengte() const
 {
+    assert(properlyInit());
     return l;
 }
 
 
 void Voertuig::setLengte(double lengte)
 {
+    assert(properlyInit());
     l = lengte;
+    assert(getLengte() == lengte);
 }
 
 double Voertuig::getMaximaleSnelheid() const
 {
+    assert(properlyInit());
     return v_max;
 }
 
 void Voertuig::setMaximaleSnelheid(const double maximale_snelheid)
 {
+    assert(properlyInit());
     v_max = maximale_snelheid;
+    assert(getMaximaleSnelheid() == maximale_snelheid);
 }
 
 double Voertuig::getMaximaleVersnelling() const
 {
+    assert(properlyInit());
     return a_max;
 }
 
 void Voertuig::setMaximaleVersnelling(const double maximale_versnelling)
 {
+    assert(properlyInit());
     a_max = maximale_versnelling;
+    assert(getMaximaleVersnelling() == maximale_versnelling);
 }
 
 double Voertuig::getMaximaleRemfactor() const
 {
+    assert(properlyInit());
     return b_max;
 }
 
 void Voertuig::setMaximaleRemfactor(const double maximale_remfactor)
 {
+    assert(properlyInit());
     b_max = maximale_remfactor;
+    assert(getMaximaleRemfactor() == maximale_remfactor);
 }
 
 double Voertuig::getMinimaleVolgafstand() const
 {
+    assert(properlyInit());
     return f_min;
 }
 
 void Voertuig::setMinimaleVolgafstand(const double minimale_volgaftand)
 {
+    assert(properlyInit());
     f_min = minimale_volgaftand;
+    assert(getMinimaleVolgafstand() == minimale_volgaftand);
 }
 
 
 bool Voertuig::isPrioriteitsVoertuig() const
 {
+    assert(properlyInit());
     return prioriteitsvoertuig;
 }
 
 string Voertuig::getType() const
 {
+    assert(properlyInit());
     return "";
 }
 
 void Voertuig::setState(const State state)
 {
+    assert(properlyInit());
     this->voertuig_state = state;
+    assert(getState() == state);
 }
 
 
@@ -167,6 +206,9 @@ Voertuig* Voertuig::createVoertuig(const string& type)
 
 void Voertuig::rijd()
 {
+    assert(properlyInit());
+    assert(baan != nullptr);
+
     if (voertuig_state == State::DRIVING || voertuig_state == State::SLOWINGDOWN)
     {
         // ============= 1. Bereken nieuwe snelheid en positie van voertuig =============
@@ -209,7 +251,6 @@ void Voertuig::rijd()
         a = a_max * (1 - pow(v / k_v_max, 4) - pow(delta, 2));
     }
 
-
     // ============= 3. IF nieuwe positie valt buiten huidige baan =============
     if (p > baan->getLengte())
         // ======== 3.1. Verwijder voertuig uit simulatie ========
@@ -218,45 +259,39 @@ void Voertuig::rijd()
 
 void Voertuig::slowDown()
 {
+    assert(properlyInit());
     k_v_max = VERTRAAG_FACTOR * v_max;
     voertuig_state = State::SLOWINGDOWN;
+
+    // Postcondities
+    assert(getState() == State::SLOWINGDOWN);
+    assert(getKvmax() == VERTRAAG_FACTOR * getMaximaleSnelheid());
 }
 
 void Voertuig::accelerate()
 {
+    assert(properlyInit());
     k_v_max = v_max;
     voertuig_state = State::DRIVING;
+
+    // Postcondities
+    assert(getState() == State::DRIVING);
+    assert(getKvmax() == getMaximaleSnelheid());
 }
 
 void Voertuig::stop()
 {
+    assert(properlyInit());
     a = -(b_max * v / k_v_max);
     voertuig_state = State::STOPPING;
-}
 
-// void Voertuig::kruispunt(const pair<const int, vector<Baan*>> & k)
-// {
-//     Baan* currentBaan = getBaan();
-//     const auto kruispunten = currentBaan->getKruispunten();
-//
-// //    for (auto &k : kruispunten){
-//         // randomise the baan als ze op het kruispunt zijn en als het kruispunt niet op het einde ligt van een baan
-//         if (std::rand() % 2 == 0) {
-//             setBaan(k.second[0]);
-//             k.second[0]->addVoertuig(this);
-//             currentBaan->takeOutVoertuig(this);
-//
-//             // get the position of the kruistpunten to update postion of car on new road
-//             auto map = k.second[0]->getKruispunten();
-//             for (auto &B: map) {
-//                 p = B.first;
-//             }
-//         }
-// //    }
-// }
+    // Postcondities
+    assert(getState() == State::STOPPING);
+}
 
 void Voertuig::checkForKruispunt(double position, double newposition)
 {
+    assert(properlyInit());
     auto kruispunten = baan->getKruispunten();
 
     for (const auto& k : kruispunten)
@@ -270,19 +305,8 @@ void Voertuig::checkForKruispunt(double position, double newposition)
 
 void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
 {
+    assert(properlyInit());
     if (!baan) return;
-
-    // double oude_positie = getPositie();
-    // rijd();
-
-    // for (const auto& [kruispunt_pos, kruis_bannen] : baan->getKruispunten())
-    // {
-    //     double kruistpunt_pos = kruispunt_pos;
-    //
-    //     // Kijk ofdat we over het krijspunt zijn gegaan tijdens de update
-    //     if ((oude_positie < kruistpunt_pos && p >= kruistpunt_pos) ||
-    //         (oude_positie > kruistpunt_pos && p <= kruistpunt_pos))
-    //     {
 
     // check voor kruispunten
     if (!k.second.empty())
@@ -293,11 +317,12 @@ void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
         int random_index = std::rand() % alle_opties.size();
         Baan* selected_road = alle_opties[random_index];
 
-        // if (selected_road == nullptr){break;}
-
         // Update position
         if (selected_road != baan)
         {
+            // Bewaar oude baan voor postcondities
+            Baan* oude_baan = baan;
+
             // verander de positie correct
             for (const auto& [fst, snd] : selected_road->getKruispunten())
             {
@@ -305,7 +330,7 @@ void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
                 {
                     if (b == baan)
                     {
-                        p = fst;
+                        p = fst + 1;
                         break;
                     }
                 }
@@ -315,9 +340,15 @@ void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
             selected_road->addVoertuig(this);
             baan->takeOutVoertuig(this);
             setBaan(selected_road);
+
+            // Postcondities
+            assert(getBaan() == selected_road);
+            assert(std::find(selected_road->getVoertuigen().begin(),
+                             selected_road->getVoertuigen().end(),
+                             this) != selected_road->getVoertuigen().end());
+            assert(std::find(oude_baan->getVoertuigen().begin(),
+                             oude_baan->getVoertuigen().end(),
+                             this) == oude_baan->getVoertuigen().end());
         }
     }
-    // break;
-    // }
-    // }
 }

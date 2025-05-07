@@ -3,7 +3,7 @@
 //
 
 #include "Simulator.h"
-
+#include <cassert>
 
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Bushalte.h"
@@ -23,11 +23,23 @@
 
 void Simulator::addBaan(Baan* b)
 {
+    assert(properlyInit());
+    assert(b != nullptr);
+
+    size_t old_size = banen.size();
     banen.push_back(b);
+
+    // Postcondities
+    assert(banen.size() == old_size + 1);
+    assert(std::find(banen.begin(), banen.end(), b) != banen.end());
 }
 
 void Simulator::makeGraphicalImpression()
 {
+    assert(properlyInit());
+
+    string old_impression = graphical_impression;
+
     for (const auto b : banen)
     {
         string output_string;
@@ -99,13 +111,18 @@ void Simulator::makeGraphicalImpression()
 
         graphical_impression += output_string;
         banen_3d_content[b->getNaam()] += baan + (!b->getBushaltes().empty() || !b->getVerkeerslichten().empty()
-                                                      ? second_line
-                                                      : "") + '\n';
+                                                  ? second_line
+                                                  : "") + '\n';
     }
+
+    // Postcondities
+    assert(graphical_impression != old_impression || banen.empty());
 }
 
 void Simulator::generateGraphicsFile() const
 {
+    assert(properlyInit());
+
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
     {
@@ -126,6 +143,9 @@ void Simulator::generateGraphicsFile() const
 
 void Simulator::simulate(const int times)
 {
+    assert(properlyInit());
+    assert(times > 0);
+
     for (int i = 0; i < times; i++)
     {
         makeGraphicalImpression();
@@ -138,11 +158,14 @@ void Simulator::simulate(const int times)
 
     for (const auto b : banen)
         generate3dfile(b->getNaam());
+
 }
 
 
 const vector<Baan*> Simulator::getBanen() const
 {
+    assert(properlyInit());
+
     // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
     vector<Baan*> bb;
     for (auto* b : banen)
@@ -154,6 +177,10 @@ const vector<Baan*> Simulator::getBanen() const
 
 void Simulator::simulationRun()
 {
+    assert(properlyInit());
+
+    double old_time = current_time;
+
     for (const auto b : banen)
     {
         for (const auto g : b->getVoertuigeneratoren())
@@ -184,10 +211,16 @@ void Simulator::simulationRun()
 
 
     current_time += SIMULATIE_TIJD;
+
+    // Postcondities
+    assert(current_time == old_time + SIMULATIE_TIJD);
 }
 
 void Simulator::generate3dfile(const string& baan)
 {
+    assert(properlyInit());
+    assert(!baan.empty());
+
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
     {
@@ -210,6 +243,8 @@ void Simulator::generate3dfile(const string& baan)
 
 void Simulator::print()
 {
+    assert(properlyInit());
+
     cout << "Tijd: " << current_time << endl;
     for (const auto b : banen)
     {
@@ -221,8 +256,10 @@ void Simulator::print()
 
 void Simulator::printStatus(Voertuig const* voertuig)
 {
+    assert(voertuig != nullptr);
+
     cout << voertuig->getType() << ": " << voertuig->getId() << "\n"
-        << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"
-        << "-> positie: " << voertuig->getPositie() << "\n"
-        << "-> snelheid: " << voertuig->getSnelheid() << endl;
+         << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"
+         << "-> positie: " << voertuig->getPositie() << "\n"
+         << "-> snelheid: " << voertuig->getSnelheid() << endl;
 }

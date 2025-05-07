@@ -1,11 +1,10 @@
-//
-// Created by Abdellah on 4/28/2025.
-//
 
 #include "Auto.h"
+#include <cassert>
 
 
 string Auto::getType() const
 {
+    assert(properlyInit());
     return "Auto";
 }
