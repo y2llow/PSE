@@ -99,7 +99,7 @@ TEST_F(SimulationTestingParser, CombinedErrorTests) {
 
 TEST(CompareOutput, MatchExpectedErrors) {
     std::ifstream actual_file("outputs/test_output.txt");
-    std::ifstream expected_file("outputs/expected_output.txt");
+    std::ifstream expected_file("outputs/expected_errors.txt");
 
     std::stringstream actual_stream, expected_stream;
     actual_stream << actual_file.rdbuf();

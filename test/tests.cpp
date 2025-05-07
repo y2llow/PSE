@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 int main(int argc, char **argv) {
-//     std::ofstream error_log("outputs/expected_output.txt");
+//     std::ofstream error_log("outputs/expected_invalids_xml.txt");
 //     std::streambuf* old_cerr = std::cerr.rdbuf(error_log.rdbuf());
 
     ::testing::InitGoogleTest(&argc, argv);

@@ -1,0 +1,9 @@
+Error loading file: Error document empty.
+Error loading file: Error reading end tag.
+Er is een baan met een ongeldige lengte of naam!
+De lengte van een baan is geen integer!
+Er is een baan zonder naam!
+De snelheid van een voertuig is geen double!
+Er is een verkeerslicht waarvan de cyclus geen integer is!
+Er is een bushalte waarvan de wachttijd geen integer is!
+De wachttijd van een bushalte is ongeldig
