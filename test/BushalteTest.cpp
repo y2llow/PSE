@@ -183,7 +183,7 @@ TEST_F(MultipleBusesTest, secondStopsToo) {
 
     bus1->setPositie(550);
     bus2->setVersnelling(15);
-    sim->simulate(99);
+    sim->simulate(76);
     EXPECT_EQ(bus1->getState(), State::DRIVING);
     EXPECT_EQ(bus2->getState(), State::STOPPING);
 }

@@ -4,7 +4,6 @@
 
 
 #include "Parser.h"
-#include <cassert>
 
 #include "../elementen/Voertuiggenerator.h"
 #include "../elementen/Verkeerslicht.h"
@@ -20,11 +19,12 @@ map<string, Baan*> Parser::banenMap;
 Parser* Parser::_initCheck = nullptr;
 
 
+
 void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     const char* name = nullptr;
     int length = -1;
@@ -72,9 +72,9 @@ void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
         banenMap[name] = baan;
 
         // Postcondities
-        assert(banenMap.find(name) != banenMap.end());
-        assert(banenMap[name]->getNaam() == name);
-        assert(banenMap[name]->getLengte() == length);
+        ENSURE(banenMap.find(name) != banenMap.end(), "Baan is niet correct toegevoegd aan de banenMap");
+        ENSURE(banenMap[name]->getNaam() == name, "Naam van de baan is niet correct ingesteld");
+        ENSURE(banenMap[name]->getLengte() == length, "Lengte van de baan is niet correct ingesteld");
     }
     else
     {
@@ -84,9 +84,9 @@ void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
 
 void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     const char* type = nullptr;
     const char* voertuig_baan = nullptr;
@@ -156,16 +156,16 @@ void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
     banenMap[voertuig_baan]->addVoertuig(voertuig);
 
     // Postcondities
-    assert(voertuig->getPositie() == positie);
-    assert(voertuig->getSnelheid() == voertuig_snelheid);
-    assert(voertuig->getBaan() == banenMap[voertuig_baan]);
+    ENSURE(voertuig->getPositie() == positie, "Positie van voertuig is niet correct ingesteld");
+    ENSURE(voertuig->getSnelheid() == voertuig_snelheid, "Snelheid van voertuig is niet correct ingesteld");
+    ENSURE(voertuig->getBaan() == banenMap[voertuig_baan], "Baan van voertuig is niet correct ingesteld");
 }
 
 void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     const char* baan = nullptr;
     int cyclus = -1;
@@ -225,17 +225,16 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
     banenMap[baan]->addVerkeerslicht(verkeerslicht);
 
     // Postcondities
-    assert(verkeerslicht->getBaan() == banenMap[baan]);
-    assert(verkeerslicht->getCyclus() == cyclus);
-    assert(verkeerslicht->getPositie() == positie);
-
+    ENSURE(verkeerslicht->getBaan() == banenMap[baan], "Baan van verkeerslicht is niet correct ingesteld");
+    ENSURE(verkeerslicht->getCyclus() == cyclus, "Cyclus van verkeerslicht is niet correct ingesteld");
+    ENSURE(verkeerslicht->getPositie() == positie, "Positie van verkeerslicht is niet correct ingesteld");
 }
 
 void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     const char* voertuigbaan = nullptr;
     const char* type = nullptr;
@@ -285,17 +284,16 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
     banenMap[voertuigbaan]->addVoertuiggenerator(generator);
 
     // Postcondities
-    assert(generator->getBaan() == banenMap[voertuigbaan]);
-    assert(generator->getFrequentie() == frequentie);
-    assert(generator->getType() == type);
-
+    ENSURE(generator->getBaan() == banenMap[voertuigbaan], "Baan van generator is niet correct ingesteld");
+    ENSURE(generator->getFrequentie() == frequentie, "Frequentie van generator is niet correct ingesteld");
+    ENSURE(generator->getType() == type, "Type van generator is niet correct ingesteld");
 }
 
 void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     int positie = -1;
     int wachttijd = -1;
@@ -354,17 +352,16 @@ void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
     bushalte->setPositie(positie);
 
     // Postcondities
-    assert(bushalte->getBaan() == bushalte_baan);
-    assert(bushalte->getWachttijd() == wachttijd);
-    assert(bushalte->getPositie() == positie);
-
+    ENSURE(bushalte->getBaan() == bushalte_baan, "Baan van bushalte is niet correct ingesteld");
+    ENSURE(bushalte->getWachttijd() == wachttijd, "Wachttijd van bushalte is niet correct ingesteld");
+    ENSURE(bushalte->getPositie() == positie, "Positie van bushalte is niet correct ingesteld");
 }
 
 void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(elem != nullptr);
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     vector<pair<int, Baan*>> kruisPunten;
 
@@ -413,7 +410,7 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
                         }
                     }
                 }
-                assert(foundKruispunt);
+                ENSURE(foundKruispunt, "Kruispunt is niet correct toegevoegd aan de baan");
             }
         }
     }
@@ -422,9 +419,9 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
 
 bool Parser::parseElements(const std::string& filename, Simulator* sim)
 {
-    assert(properlyInit());
-    assert(!filename.empty());
-    assert(sim != nullptr);
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
+    REQUIRE(!filename.empty(), "Bestandsnaam mag niet leeg zijn");
+    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
 
     TiXmlDocument doc;
 
@@ -451,7 +448,7 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
     }
 
     // =========== Only then parse the other elements =============
-    assert(sim->getBanen().size() > 0);
+    REQUIRE(sim->getBanen().size() > 0, "Er zijn geen banen gevonden in het bestand");
     for (auto ti_xml_element = root->FirstChildElement(); ti_xml_element != nullptr; ti_xml_element =
                                                                                              ti_xml_element->NextSiblingElement())
     {
@@ -488,13 +485,12 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
 
 void Parser::VerkeerslichtenOpKruispunten()
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
 
     for (auto& banenPair : banenMap)
     {
         Baan* currentbaan = banenPair.second;
 
-        // Skip banen zonder verkeerslichten of kruispunten
         if (currentbaan->getVerkeerslichten().empty() || currentbaan->getKruispunten().empty())
             continue;
 
@@ -507,51 +503,51 @@ void Parser::VerkeerslichtenOpKruispunten()
             // Zoek verkeerslicht op currentbaan dat matcht met KP1
             for (Verkeerslicht* licht : currentbaan->getVerkeerslichten())
             {
-                if (licht->getPositie() == KP1.first)
+                if ((licht->getPositie() == KP1.first))
                 {
                     verkeerslichtKP1 = licht;
-                    break;
+                    break; // Stop na eerste match
                 }
             }
 
             if (!verkeerslichtKP1) continue;
 
-            // Check of er verbonden kruispunten zijn
-            if (KP1.second.empty()) continue;
-
             for (auto& KP2 : KP1.second[0]->getKruispunten())
             {
                 Verkeerslicht* verkeerslichtKP2 = nullptr;
 
-                // Zoek verkeerslicht op de verbonden baan
+                // Zoek verkeerslicht op de verbonden baan dat matcht met KP2
                 for (Verkeerslicht* licht2 : KP1.second[0]->getVerkeerslichten())
                 {
                     if (licht2->getPositie() == KP2.first)
                     {
                         verkeerslichtKP2 = licht2;
-                        break;
+                        break; // Stop na eerste match
                     }
                 }
 
-                if (verkeerslichtKP2 && verkeerslichtKP1 != verkeerslichtKP2)
+                // Als beide lichten gevonden zijn en verschillend zijn verander kleur en cyclus
+                if (verkeerslichtKP2 != nullptr && verkeerslichtKP1 != verkeerslichtKP2)
                 {
                     verkeerslichtKP2->setCyclus(verkeerslichtKP1->getCyclus());
 
-                    if (verkeerslichtKP1->isGroen() == verkeerslichtKP2->isGroen()) {
-                        verkeerslichtKP2->switchColor();
-                    }
+                    if (verkeerslichtKP1->isGroen() == verkeerslichtKP2->isGroen()) { verkeerslichtKP2->switchColor(); }
 
                     verkeerslichtKP2->OpKruisPunt();
                     verkeerslichtKP1->OpKruisPunt();
 
-                    verkeerslichtKP2->KruispuntPair(verkeerslichtKP2, verkeerslichtKP1);
-                    verkeerslichtKP1->KruispuntPair(verkeerslichtKP1, verkeerslichtKP2);
+                    verkeerslichtKP2->KruispuntPair(verkeerslichtKP2,verkeerslichtKP1);
+                    verkeerslichtKP1->KruispuntPair(verkeerslichtKP1,verkeerslichtKP2);
 
                     // Postcondities
-                    assert(verkeerslichtKP2->getCyclus() == verkeerslichtKP1->getCyclus());
-                    assert(verkeerslichtKP2->isGroen() != verkeerslichtKP1->isGroen());
-                    assert(verkeerslichtKP2->isOpKruispunt());
-                    assert(verkeerslichtKP1->isOpKruispunt());
+                    ENSURE(verkeerslichtKP2->getCyclus() == verkeerslichtKP1->getCyclus(),
+                           "Cyclus van verkeerslicht op kruispunt is niet correct gesynchroniseerd");
+                    ENSURE(verkeerslichtKP2->isGroen() != verkeerslichtKP1->isGroen(),
+                           "Verkeerslichten op kruispunt hebben dezelfde kleur");
+                    ENSURE(verkeerslichtKP2->isOpKruispunt(),
+                           "Verkeerslicht is niet correct gemarkeerd als zijnde op kruispunt");
+                    ENSURE(verkeerslichtKP1->isOpKruispunt(),
+                           "Verkeerslicht is niet correct gemarkeerd als zijnde op kruispunt");
                 }
             }
         }
@@ -560,7 +556,7 @@ void Parser::VerkeerslichtenOpKruispunten()
 
 bool Parser::geldigeTypen(const string& type)
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
     return type == "auto" || type == "bus" || type == "brandweerwagen" || type == "politiecombi" || type ==
                                                                                                     "ziekenwagen";
 }

@@ -1,11 +1,11 @@
 #include "Voertuig.h"
+#include "../DesignByContract.h"
 
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <ostream>
 #include <random>
-#include <cassert>
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
@@ -17,172 +17,146 @@
 
 Baan* Voertuig::getBaan() const
 {
-    assert(properlyInit());
     return baan;
 }
 
 void Voertuig::setBaan(Baan* weg)
 {
-    assert(properlyInit());
     baan = weg;
-    assert(getBaan() == weg);
+    ENSURE(getBaan() == weg, "Baan is niet correct ingesteld");
 }
 
 double Voertuig::getPositie() const
 {
-    assert(properlyInit());
     return p;
 }
 
 void Voertuig::setPositie(const double positie)
 {
-    assert(properlyInit());
     p = positie;
-    assert(getPositie() == positie);
+    ENSURE(getPositie() == positie, "Positie is niet correct ingesteld");
 }
 
 double Voertuig::getSnelheid() const
 {
-    assert(properlyInit());
     return v;
 }
 
 void Voertuig::setSnelheid(const double speed)
 {
-    assert(properlyInit());
     v = speed;
-    assert(getSnelheid() == speed);
+    ENSURE(getSnelheid() == speed, "Snelheid is niet correct ingesteld");
 }
 
 State Voertuig::getState() const
 {
-    assert(properlyInit());
     return voertuig_state;
 }
 
 int Voertuig::getId() const
 {
-    assert(properlyInit());
     return id;
 }
 
 void Voertuig::setId(const int ID)
 {
-    assert(properlyInit());
     this->id = ID;
-    assert(getId() == ID);
+    ENSURE(getId() == ID, "ID is niet correct ingesteld");
 }
 
 double Voertuig::getVersnelling() const
 {
-    assert(properlyInit());
     return a;
 }
 
 void Voertuig::setVersnelling(const double versnelling)
 {
-    assert(properlyInit());
     a = versnelling;
-    assert(getVersnelling() == versnelling);
+    ENSURE(getVersnelling() == versnelling, "Versnelling is niet correct ingesteld");
 }
 
 double Voertuig::getKvmax() const
 {
-    assert(properlyInit());
     return k_v_max;
 }
 
 void Voertuig::setKvmax(const double kvmax)
 {
-    assert(properlyInit());
     k_v_max = kvmax;
-    assert(getKvmax() == kvmax);
+    ENSURE(getKvmax() == kvmax, "Kvmax is niet correct ingesteld");
 }
 
 double Voertuig::getLengte() const
 {
-    assert(properlyInit());
     return l;
 }
 
 
 void Voertuig::setLengte(double lengte)
 {
-    assert(properlyInit());
     l = lengte;
-    assert(getLengte() == lengte);
+    ENSURE(getLengte() == lengte, "Lengte is niet correct ingesteld");
 }
 
 double Voertuig::getMaximaleSnelheid() const
 {
-    assert(properlyInit());
     return v_max;
 }
 
 void Voertuig::setMaximaleSnelheid(const double maximale_snelheid)
 {
-    assert(properlyInit());
     v_max = maximale_snelheid;
-    assert(getMaximaleSnelheid() == maximale_snelheid);
+    ENSURE(getMaximaleSnelheid() == maximale_snelheid, "Maximale snelheid is niet correct ingesteld");
 }
 
 double Voertuig::getMaximaleVersnelling() const
 {
-    assert(properlyInit());
     return a_max;
 }
 
 void Voertuig::setMaximaleVersnelling(const double maximale_versnelling)
 {
-    assert(properlyInit());
     a_max = maximale_versnelling;
-    assert(getMaximaleVersnelling() == maximale_versnelling);
+    ENSURE(getMaximaleVersnelling() == maximale_versnelling, "Maximale versnelling is niet correct ingesteld");
 }
 
 double Voertuig::getMaximaleRemfactor() const
 {
-    assert(properlyInit());
     return b_max;
 }
 
 void Voertuig::setMaximaleRemfactor(const double maximale_remfactor)
 {
-    assert(properlyInit());
     b_max = maximale_remfactor;
-    assert(getMaximaleRemfactor() == maximale_remfactor);
+    ENSURE(getMaximaleRemfactor() == maximale_remfactor, "Maximale remfactor is niet correct ingesteld");
 }
 
 double Voertuig::getMinimaleVolgafstand() const
 {
-    assert(properlyInit());
     return f_min;
 }
 
 void Voertuig::setMinimaleVolgafstand(const double minimale_volgaftand)
 {
-    assert(properlyInit());
     f_min = minimale_volgaftand;
-    assert(getMinimaleVolgafstand() == minimale_volgaftand);
+    ENSURE(getMinimaleVolgafstand() == minimale_volgaftand, "Minimale volgafstand is niet correct ingesteld");
 }
 
 
 bool Voertuig::isPrioriteitsVoertuig() const
 {
-    assert(properlyInit());
     return prioriteitsvoertuig;
 }
 
 string Voertuig::getType() const
 {
-    assert(properlyInit());
     return "";
 }
 
 void Voertuig::setState(const State state)
 {
-    assert(properlyInit());
     this->voertuig_state = state;
-    assert(getState() == state);
+    ENSURE(getState() == state, "State is niet correct ingesteld");
 }
 
 
@@ -206,8 +180,7 @@ Voertuig* Voertuig::createVoertuig(const string& type)
 
 void Voertuig::rijd()
 {
-    assert(properlyInit());
-    assert(baan != nullptr);
+    REQUIRE(baan != nullptr, "Baan mag niet nullptr zijn");
 
     if (voertuig_state == State::DRIVING || voertuig_state == State::SLOWINGDOWN)
     {
@@ -259,39 +232,35 @@ void Voertuig::rijd()
 
 void Voertuig::slowDown()
 {
-    assert(properlyInit());
     k_v_max = VERTRAAG_FACTOR * v_max;
     voertuig_state = State::SLOWINGDOWN;
 
     // Postcondities
-    assert(getState() == State::SLOWINGDOWN);
-    assert(getKvmax() == VERTRAAG_FACTOR * getMaximaleSnelheid());
+    ENSURE(getState() == State::SLOWINGDOWN, "State is niet correct ingesteld op SLOWINGDOWN");
+    ENSURE(getKvmax() == VERTRAAG_FACTOR * getMaximaleSnelheid(), "Kvmax is niet correct aangepast voor vertraging");
 }
 
 void Voertuig::accelerate()
 {
-    assert(properlyInit());
     k_v_max = v_max;
     voertuig_state = State::DRIVING;
 
     // Postcondities
-    assert(getState() == State::DRIVING);
-    assert(getKvmax() == getMaximaleSnelheid());
+    ENSURE(getState() == State::DRIVING, "State is niet correct ingesteld op DRIVING");
+    ENSURE(getKvmax() == getMaximaleSnelheid(), "Kvmax is niet correct hersteld na versnelling");
 }
 
 void Voertuig::stop()
 {
-    assert(properlyInit());
     a = -(b_max * v / k_v_max);
     voertuig_state = State::STOPPING;
 
     // Postcondities
-    assert(getState() == State::STOPPING);
+    ENSURE(getState() == State::STOPPING, "State is niet correct ingesteld op STOPPING");
 }
 
 void Voertuig::checkForKruispunt(double position, double newposition)
 {
-    assert(properlyInit());
     auto kruispunten = baan->getKruispunten();
 
     for (const auto& k : kruispunten)
@@ -305,7 +274,6 @@ void Voertuig::checkForKruispunt(double position, double newposition)
 
 void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
 {
-    assert(properlyInit());
     if (!baan) return;
 
     // check voor kruispunten
@@ -342,13 +310,15 @@ void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
             setBaan(selected_road);
 
             // Postcondities
-            assert(getBaan() == selected_road);
-            assert(std::find(selected_road->getVoertuigen().begin(),
+            ENSURE(getBaan() == selected_road, "Baan is niet correct gewijzigd na kruispunt");
+            ENSURE(std::find(selected_road->getVoertuigen().begin(),
                              selected_road->getVoertuigen().end(),
-                             this) != selected_road->getVoertuigen().end());
-            assert(std::find(oude_baan->getVoertuigen().begin(),
+                             this) != selected_road->getVoertuigen().end(),
+                   "Voertuig is niet correct toegevoegd aan de nieuwe baan");
+            ENSURE(std::find(oude_baan->getVoertuigen().begin(),
                              oude_baan->getVoertuigen().end(),
-                             this) == oude_baan->getVoertuigen().end());
+                             this) == oude_baan->getVoertuigen().end(),
+                   "Voertuig is niet correct verwijderd uit de oude baan");
         }
     }
 }

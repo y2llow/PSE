@@ -3,7 +3,7 @@
 //
 
 #include "Simulator.h"
-#include <cassert>
+#include "../DesignByContract.h"
 
 #include "../../src/elementen/Verkeerslicht.h"
 #include "../../src/elementen/Bushalte.h"
@@ -23,20 +23,20 @@
 
 void Simulator::addBaan(Baan* b)
 {
-    assert(properlyInit());
-    assert(b != nullptr);
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
+    REQUIRE(b != nullptr, "Baan mag niet nullptr zijn");
 
     size_t old_size = banen.size();
     banen.push_back(b);
 
     // Postcondities
-    assert(banen.size() == old_size + 1);
-    assert(std::find(banen.begin(), banen.end(), b) != banen.end());
+    ENSURE(banen.size() == old_size + 1, "Baan is niet correct toegevoegd aan de vector");
+    ENSURE(std::find(banen.begin(), banen.end(), b) != banen.end(), "Baan is niet aanwezig in de vector");
 }
 
 void Simulator::makeGraphicalImpression()
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
 
     string old_impression = graphical_impression;
 
@@ -116,12 +116,12 @@ void Simulator::makeGraphicalImpression()
     }
 
     // Postcondities
-    assert(graphical_impression != old_impression || banen.empty());
+    ENSURE(graphical_impression != old_impression || banen.empty(), "Grafische weergave is niet bijgewerkt");
 }
 
 void Simulator::generateGraphicsFile() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
 
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
@@ -143,8 +143,8 @@ void Simulator::generateGraphicsFile() const
 
 void Simulator::simulate(const int times)
 {
-    assert(properlyInit());
-    assert(times > 0);
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
+    REQUIRE(times > 0, "Aantal simulatiestappen moet groter zijn dan 0");
 
     for (int i = 0; i < times; i++)
     {
@@ -159,12 +159,13 @@ void Simulator::simulate(const int times)
     for (const auto b : banen)
         generate3dfile(b->getNaam());
 
+
 }
 
 
 const vector<Baan*> Simulator::getBanen() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
 
     // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
     vector<Baan*> bb;
@@ -177,7 +178,7 @@ const vector<Baan*> Simulator::getBanen() const
 
 void Simulator::simulationRun()
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
 
     double old_time = current_time;
 
@@ -213,13 +214,13 @@ void Simulator::simulationRun()
     current_time += SIMULATIE_TIJD;
 
     // Postcondities
-    assert(current_time == old_time + SIMULATIE_TIJD);
+    ENSURE(current_time == old_time + SIMULATIE_TIJD, "Simulatietijd is niet correct bijgewerkt");
 }
 
 void Simulator::generate3dfile(const string& baan)
 {
-    assert(properlyInit());
-    assert(!baan.empty());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
+    REQUIRE(!baan.empty(), "Baannaam mag niet leeg zijn");
 
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
@@ -243,7 +244,7 @@ void Simulator::generate3dfile(const string& baan)
 
 void Simulator::print()
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
 
     cout << "Tijd: " << current_time << endl;
     for (const auto b : banen)
@@ -256,7 +257,7 @@ void Simulator::print()
 
 void Simulator::printStatus(Voertuig const* voertuig)
 {
-    assert(voertuig != nullptr);
+    REQUIRE(voertuig != nullptr, "Voertuig mag niet nullptr zijn");
 
     cout << voertuig->getType() << ": " << voertuig->getId() << "\n"
          << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"

@@ -52,6 +52,8 @@ set(RELEASE_SOURCE_FILES
         src/elementen/voertuigen/Ziekenwagen.h
         utils/Game.cpp
         utils/Game.h
+        src/DesignByContract.cpp
+
 )
 
 # Set source files for DEBUG target
@@ -85,6 +87,7 @@ set(DEBUG_SOURCE_FILES
         test/VerkeerslichtTest.cpp
         test/VoertuiggeneratorTest.cpp
         test/BushalteTest.cpp
+        src/DesignByContract.cpp
 )
 
 # Create RELEASE target

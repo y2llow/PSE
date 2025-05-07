@@ -4,7 +4,6 @@
 
 #include "Verkeerslicht.h"
 
-#include <assert.h>
 #include <cmath>
 #include <iostream>
 
@@ -15,63 +14,63 @@
 
 Baan* Verkeerslicht::getBaan() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return baan;
 }
 
 
 void Verkeerslicht::setPositie(const double positie)
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     this->positie = positie;
-    assert(getPositie() == positie);
+    ENSURE(getPositie() == positie, "Positie is niet correct ingesteld");
 }
 
 double Verkeerslicht::getCyclus() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return cyclus;
 }
 
 void Verkeerslicht::setCyclus(const double cyclus)
 {
-    assert(properlyInit());
-    assert(cyclus > 0);
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
+    REQUIRE(cyclus > 0, "Cyclus moet groter zijn dan 0");
     this->cyclus = cyclus;
-    assert(getCyclus() == cyclus);
+    ENSURE(getCyclus() == cyclus, "Cyclus is niet correct ingesteld");
 }
 
 void Verkeerslicht::setBaan(Baan* baan)
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     this->baan = baan;
-    assert(getBaan() == baan);
+    ENSURE(getBaan() == baan, "Baan is niet correct ingesteld");
 }
 
 double Verkeerslicht::getPositie() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return positie;
 }
 
 bool Verkeerslicht::isGroen() const
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return groen;
 }
 
 void Verkeerslicht::switchColor()
 {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     bool oude_waarde = groen;
     groen = !groen;
-    assert(isGroen() != oude_waarde);
+    ENSURE(isGroen() != oude_waarde, "Kleur is niet correct omgeschakeld");
 }
 
 void Verkeerslicht::switchVerkeerslichten(Verkeerslicht* vk1, Verkeerslicht* vk2)
 {
-    assert(vk1 != nullptr);
-    assert(vk2 != nullptr);
+    REQUIRE(vk1 != nullptr, "Eerste verkeerslicht mag niet nullptr zijn");
+    REQUIRE(vk2 != nullptr, "Tweede verkeerslicht mag niet nullptr zijn");
 
     bool oude_waarde_vk1 = vk1->isGroen();
     bool oude_waarde_vk2 = vk2->isGroen();
@@ -82,15 +81,15 @@ void Verkeerslicht::switchVerkeerslichten(Verkeerslicht* vk1, Verkeerslicht* vk2
     vk2->switchColor();
     vk2->tijd_sinds_laatste_verandering = 0;
 
-    assert(vk1->isGroen() != oude_waarde_vk1);
-    assert(vk2->isGroen() != oude_waarde_vk2);
+    ENSURE(vk1->isGroen() != oude_waarde_vk1, "Kleur van eerste verkeerslicht is niet correct omgeschakeld");
+    ENSURE(vk2->isGroen() != oude_waarde_vk2, "Kleur van tweede verkeerslicht is niet correct omgeschakeld");
 }
 
 
 void Verkeerslicht::updateVerkeerslicht()
 {
-    assert(properlyInit());
-    assert(baan != nullptr);
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
+    REQUIRE(baan != nullptr, "Baan mag niet nullptr zijn");
 
     double oude_tijd = tijd_sinds_laatste_verandering;
 
@@ -129,7 +128,7 @@ void Verkeerslicht::updateVerkeerslicht()
         }
     }
 
-    tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
+    tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
 
     // Update de voertuigen adhv de lichten
     auto voertuigen = baan->getVoertuigen();
@@ -153,8 +152,6 @@ void Verkeerslicht::updateVerkeerslicht()
         {
             if (positie - v->getPositie() > 0 && positie - v->getPositie() <= 50)
                 v->accelerate();
-
-
         }
     }
         // anders laten we het eerste voertuig vertragen zodat alle autos stoppen
@@ -187,7 +184,8 @@ void Verkeerslicht::updateVerkeerslicht()
         }
 
         // Laat het voertuig vertragen als het in de vertraag afstand is
-        if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND && eerst_voertuig->getState() != State::SLOWINGDOWN && eerst_voertuig->getState() != State::STOPPING)
+        if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND &&
+            eerst_voertuig->getState() != State::SLOWINGDOWN && eerst_voertuig->getState() != State::STOPPING)
             eerst_voertuig->slowDown();
 
             // Laat het voertuig stoppen als het in de stop afstand is
@@ -196,47 +194,48 @@ void Verkeerslicht::updateVerkeerslicht()
     }
 
     // Post-condities
-    assert(tijd_sinds_laatste_verandering > oude_tijd || tijd_sinds_laatste_verandering == 0.166 || tijd_sinds_laatste_verandering == 0.0166 );
+    ENSURE(tijd_sinds_laatste_verandering > oude_tijd || tijd_sinds_laatste_verandering == 0.166 ||
+           tijd_sinds_laatste_verandering == 0.0166, "Tijd sinds laatste verandering is niet correct bijgewerkt");
 }
 
 void Verkeerslicht::OpKruisPunt() {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     this->opKruispunt = true;
-    assert(isOpKruispunt() == true);
+    ENSURE(isOpKruispunt() == true, "Verkeerslicht is niet correct gemarkeerd als zijnde op kruispunt");
 }
 
 void Verkeerslicht::KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2) {
-    assert(properlyInit());
-    assert(v1 != nullptr);
-    assert(v2 != nullptr);
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
+    REQUIRE(v1 != nullptr, "Eerste verkeerslicht mag niet nullptr zijn");
+    REQUIRE(v2 != nullptr, "Tweede verkeerslicht mag niet nullptr zijn");
     this->opKruispuntPair = {v1,v2};
 }
 
 void Verkeerslicht::setOranjeCyclus(double c) {
-    assert(properlyInit());
-    assert(c >= 0);
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
+    REQUIRE(c >= 0, "Oranje cyclus moet groter dan of gelijk aan 0 zijn");
     oranjecyclus.first = c;
     oranjecyclus.second = 0;
 }
 
 bool Verkeerslicht::isOpKruispunt() const {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return opKruispunt;
 }
 
 void Verkeerslicht::setOpKruispunt(bool OpKruispunt) {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     Verkeerslicht::opKruispunt = OpKruispunt;
-    assert(isOpKruispunt() == OpKruispunt);
+    ENSURE(isOpKruispunt() == OpKruispunt, "OpKruispunt is niet correct ingesteld");
 }
 
 bool Verkeerslicht::isOranje() const {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return oranje;
 }
 
 void Verkeerslicht::setOranje(bool Oranje) {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     Verkeerslicht::oranje = Oranje;
-    assert(isOranje() == Oranje);
+    ENSURE(isOranje() == Oranje, "Oranje is niet correct ingesteld");
 }

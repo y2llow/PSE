@@ -1,52 +1,52 @@
 #include "Bushalte.h"
+#include "../DesignByContract.h"
 
 #include <iostream>
 #include <algorithm>
-#include <cassert>
 
 #include "Constants.h"
 #include "../simulatie/Simulator.h"
 #include "voertuigen/Bus.h"
 
 Baan* Bushalte::getBaan() const {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
     return baan;
 }
 
 void Bushalte::setBaan(Baan* baan) {
-    assert(properlyInit());
-    assert(baan != nullptr);
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
+    REQUIRE(baan != nullptr, "Baan mag niet nullptr zijn");
     this->baan = baan;
-    assert(getBaan() == baan);
+    ENSURE(getBaan() == baan, "Baan is niet correct ingesteld");
 }
 
 double Bushalte::getPositie() const {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
     return positie;
 }
 
 void Bushalte::setPositie(const double positie) {
-    assert(properlyInit());
-    assert(positie >= 0);
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
+    REQUIRE(positie >= 0, "Positie moet groter dan of gelijk aan 0 zijn");
     this->positie = positie;
-    assert(getPositie() == positie);
+    ENSURE(getPositie() == positie, "Positie is niet correct ingesteld");
 }
 
 double Bushalte::getWachttijd() const {
-    assert(properlyInit());
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
     return wachttijd;
 }
 
 void Bushalte::setWachttijd(const double wt) {
-    assert(properlyInit());
-    assert(wt >= 0);
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
+    REQUIRE(wt >= 0, "Wachttijd moet groter dan of gelijk aan 0 zijn");
     this->wachttijd = wt;
-    assert(getWachttijd() == wt);
+    ENSURE(getWachttijd() == wt, "Wachttijd is niet correct ingesteld");
 }
 
 void Bushalte::stopBus() {
-    assert(properlyInit());
-    assert(baan != nullptr);
+    REQUIRE(properlyInit(), "Bushalte is niet correct geïnitialiseerd");
+    REQUIRE(baan != nullptr, "Baan mag niet nullptr zijn");
 
     Bus* bus = nullptr;
     double distance = 0;
@@ -96,5 +96,6 @@ void Bushalte::stopBus() {
 
     // Postconditie check:
     // Dezelfde bus kan max 1 keer in waited_busses staan.
-    assert(std::count(waited_busses.begin(), waited_busses.end(), bus) <= 1);
+    ENSURE(std::count(waited_busses.begin(), waited_busses.end(), bus) <= 1,
+           "Bus is meer dan één keer toegevoegd aan waited_busses");
 }

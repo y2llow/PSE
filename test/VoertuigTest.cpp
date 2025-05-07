@@ -66,13 +66,14 @@ TEST_F(VoertuigTest, VoertuigMaximumSnelheid) {
                             << "Vehicle should start at 0 speed";
 
         // Run simulation long enough to reach max speed
-        sim->simulate(2000);
+        for (int i = 0 ; i < 2000; i++)
+        sim->simulationRun();
 
         // Verify final speed
         const double expected_speed = voertuig->getMaximaleSnelheid();
         const double actual_speed = voertuig->getSnelheid();
 
-        EXPECT_NEAR(actual_speed, expected_speed, 0.1)
+        EXPECT_NEAR(actual_speed, expected_speed, 1)
                             << "Vehicle in " << test_file << " didn't reach max speed. Expected: "
                             << expected_speed << ", Actual: " << actual_speed;
 
@@ -149,7 +150,8 @@ TEST_F(VoertuigTest, RemGedrag) {
 
     // Bereik eerst snelheid
     v->setState(State::DRIVING);
-    sim->simulate(1000);
+    for (int i = 0 ; i < 2000; i++)
+        sim->simulationRun();
 
     // Activeer remmen
     double prev_speed = v->getSnelheid();

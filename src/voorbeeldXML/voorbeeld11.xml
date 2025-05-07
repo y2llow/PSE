@@ -48,7 +48,7 @@
     <VOERTUIGGENERATOR>
         <baan>Floralienlaan</baan>
         <frequentie>15</frequentie>
-        <type>auto</type>
+        <type>politiecombi</type>
     </VOERTUIGGENERATOR>
 
     <BUSHALTE>

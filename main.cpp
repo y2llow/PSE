@@ -40,24 +40,24 @@ int main()
     // Initialiseer de Parser klasse
     Parser::initialize();
     auto* sim = new Simulator();
-    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld12.xml", sim))
+    if (Parser::parseElements("../src/voorbeeldXML/voorbeeld11.xml", sim))
     {
-        sim->simulate(2500);
+        sim->simulate(5000);
     }
 
-
-     for (const auto b : sim->getBanen())
-     {
-         b->sortVoertuigenByPosition();
-
-         sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, 200), b->getNaam(),
-                                 sf::Style::Close);
-
-         window.setFramerateLimit(60);
-         Game game = Game(&window);
-         game.loadMap("../output/baan_" + b->getNaam() + ".txt");
-
-     }
+//
+//     for (const auto b : sim->getBanen())
+//     {
+//         b->sortVoertuigenByPosition();
+//
+//         sf::RenderWindow window(sf::VideoMode(sf::VideoMode::getDesktopMode().width, 200), b->getNaam(),
+//                                 sf::Style::Close);
+//
+//         window.setFramerateLimit(60);
+//         Game game = Game(&window);
+//         game.loadMap("../output/baan_" + b->getNaam() + ".txt");
+//
+//     }
 
     return 0;
 }
