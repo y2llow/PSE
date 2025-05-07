@@ -209,7 +209,7 @@ void Verkeerslicht::updateVerkeerslicht()
             tijd_sinds_laatste_verandering = 0;
         }
     }
-    //
+
     //     if(tijd_sinds_laatste_verandering>= 60 - oranjecyclus.first){
     //         if (groen){
     //             oranjecyclus.second+=SIMULATIE_TIJD;
@@ -333,17 +333,36 @@ void Verkeerslicht::updateVerkeerslicht()
 //    }
 
     // assert(baan != nullptr);
+
     tijd_sinds_laatste_verandering +=SIMULATIE_TIJD;
+
+    // Update de voertuigen adhv de lichten
     auto voertuigen = baan->getVoertuigen();
 
+    // Check of er een Voertuig in de vertraag zone is
+    VoertuigInVertraagzone = false;
+    for (const auto& v : voertuigen)
+    {
+        double afstand = positie - v->getPositie();
+        if (afstand > 0 && afstand <= 50)
+        {
+            VoertuigInVertraagzone = true;
+            break; // Geen verdere checks nodig
+        }
+    }
+
+    // Als het groen is laat de autos dan versnellen
     if (groen)
     {
         for (const auto v : voertuigen)
         {
             if (positie - v->getPositie() > 0 && positie - v->getPositie() <= 50)
                 v->accelerate();
+
+
         }
     }
+    // anders laten we het eerste voertuig vertragen zodat alle autos stoppen
     else
     {
         Voertuig* eerst_voertuig = nullptr;
@@ -365,7 +384,7 @@ void Verkeerslicht::updateVerkeerslicht()
         if (afstand_van_licht > VERTRAAG_AFSTAND)
             return;
 
-        // ======== IF het eerste voertuig voor het verkeerslicht is een prioriteitsvoertuig ========
+        // If het eerste voertuig voor het verkeerslicht is een prioriteitsvoertuig
         if (eerst_voertuig->isPrioriteitsVoertuig())
         {
             // ======= THEN voertuig hoeft niet te vertragen of te stoppen =======
@@ -373,8 +392,11 @@ void Verkeerslicht::updateVerkeerslicht()
             return;
         }
 
-        if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND && eerst_voertuig->getState() != State::SLOWINGDOWN)
+        // Laat het voertuig vertragen als het in de vertraag afstand is
+        if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND && eerst_voertuig->getState() != State::SLOWINGDOWN && eerst_voertuig->getState() != State::STOPPING)
             eerst_voertuig->slowDown();
+
+        // Laat het voertuig stoppen als het in de stop afstand is
         else if (afstand_van_licht < 1) // afstand_van_licht < STOP_AFSTAND
         {
             eerst_voertuig->stop();

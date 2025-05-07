@@ -53,8 +53,7 @@ void Bushalte::stopBus()
         {
             distance = positie - voertuig->getPositie();
 
-            if (distance < 0 || distance > VERTRAAG_AFSTAND || find(waited_busses.begin(), waited_busses.end(),
-                                                                    voertuig) != waited_busses.end())
+            if (distance < 0 || distance > VERTRAAG_AFSTAND || find(waited_busses.begin(), waited_busses.end(), voertuig) != waited_busses.end())
                 continue;
 
             bus = dynamic_cast<Bus*>(voertuig);
@@ -88,6 +87,6 @@ void Bushalte::stopBus()
         bus->stop();
         bus->setTimeSindsStopped(time + SIMULATIE_TIJD);
     }
-    else if (distance > 0 && distance < VERTRAAG_AFSTAND && bus->getState() != State::SLOWINGDOWN)
+    else if (distance > 0 && distance < VERTRAAG_AFSTAND && bus->getState() != State::SLOWINGDOWN && bus->getState() != State::STOPPING)
         bus->slowDown();
 }
