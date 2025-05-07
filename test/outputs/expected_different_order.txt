@@ -1,0 +1,6 @@
+Aantal banen: 2
+Voertuigen: 2
+Generators: 1
+Verkeerslichten: 1
+Bushaltes: 1
+Kruispunten: 1
