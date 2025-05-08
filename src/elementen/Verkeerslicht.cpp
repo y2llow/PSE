@@ -218,6 +218,16 @@ void Verkeerslicht::setOranjeCyclus(double c) {
     oranjecyclus.second = 0;
 }
 
+void Verkeerslicht::setGroen(bool b)
+{
+    groen = b;
+}
+
+bool Verkeerslicht::getGroen() const
+{
+    return groen;
+}
+
 bool Verkeerslicht::isOpKruispunt() const {
     REQUIRE(properlyInit(), "Verkeerslicht is niet correct geïnitialiseerd");
     return opKruispunt;

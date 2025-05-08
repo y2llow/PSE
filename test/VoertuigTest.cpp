@@ -1,19 +1,25 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
+#include "../src/elementen/Verkeerslicht.h"
 #include "../src/simulatie/Parser.h"
 #include "../src/simulatie/Simulator.h"
 
 #include <random>
 #include <iterator>
 
-std::mt19937& getRNG() {
+#include "../src/elementen/voertuigen/Auto.h"
+#include "../src/elementen/voertuigen/Bus.h"
+
+std::mt19937& getRNG()
+{
     static std::mt19937 rng(std::random_device{}());
     return rng;
 }
 
 template <typename Container>
-auto randomElement(const Container& container) -> decltype(*container.begin()) {
+auto randomElement(const Container& container) -> decltype(*container.begin())
+{
     auto it = container.begin();
     std::uniform_int_distribution<size_t> dist(0, container.size() - 1);
     std::advance(it, dist(getRNG()));
@@ -24,7 +30,6 @@ class VoertuigTest : public ::testing::Test
 {
 public:
     Simulator* sim = new Simulator();
-    vector<string> only_one_voertuig_op_baan;
 
     void SetUp() override
     {
@@ -37,9 +42,12 @@ public:
 };
 
 // ====== If the baan is empty and there are no voertuigen in front of a voertuig, it should get to the max speed =====
-TEST_F(VoertuigTest, VoertuigMaximumSnelheid) {
+TEST_F(VoertuigTest, VoertuigMaximumSnelheid)
+{
+    vector<string> only_one_voertuig_op_baan;
     // Test each vehicle type configuration
-    for (const auto& test_file : only_one_voertuig_op_baan) {
+    for (const auto& test_file : only_one_voertuig_op_baan)
+    {
         // Reset simulator for each test
         delete sim;
         sim = new Simulator();
@@ -61,7 +69,7 @@ TEST_F(VoertuigTest, VoertuigMaximumSnelheid) {
                             << "Vehicle should start at 0 speed";
 
         // Run simulation long enough to reach max speed
-        for (int i = 0 ; i < 2000; i++)
+        for (int i = 0; i < 2000; i++)
             sim->simulationRun();
 
         // Verify final speed
@@ -78,11 +86,13 @@ TEST_F(VoertuigTest, VoertuigMaximumSnelheid) {
     }
 }
 
-TEST_F(VoertuigTest, VoertuigCreatieEnProperties) {
+TEST_F(VoertuigTest, VoertuigCreatieEnProperties)
+{
     // Test alle voertuigtypes
     vector<string> types = {"auto", "bus", "brandweerwagen", "politiecombi", "ziekenwagen"};
 
-    for (const auto& type : types) {
+    for (const auto& type : types)
+    {
         Voertuig* v = Voertuig::createVoertuig(type);
 
         // Test type-specifieke properties
@@ -92,9 +102,12 @@ TEST_F(VoertuigTest, VoertuigCreatieEnProperties) {
         EXPECT_GT(v->getMaximaleRemfactor(), 0) << type << " heeft ongeldige remfactor";
 
         // Test prioriteitsvoertuigen
-        if (type == "brandweerwagen" || type == "ziekenwagen" || type == "politiecombi") {
+        if (type == "brandweerwagen" || type == "ziekenwagen" || type == "politiecombi")
+        {
             EXPECT_TRUE(v->isPrioriteitsVoertuig()) << type << " zou prioriteitsvoertuig moeten zijn";
-        } else {
+        }
+        else
+        {
             EXPECT_FALSE(v->isPrioriteitsVoertuig()) << type << " zou geen prioriteitsvoertuig moeten zijn";
         }
 
@@ -109,7 +122,8 @@ TEST_F(VoertuigTest, VoertuigCreatieEnProperties) {
     delete v;
 }
 
-TEST_F(VoertuigTest, VersnellingsGedrag) {
+TEST_F(VoertuigTest, VersnellingsGedrag)
+{
     Voertuig* v = Voertuig::createVoertuig("auto");
     Baan* b = new Baan();
     b->setLengte(1000);
@@ -124,7 +138,8 @@ TEST_F(VoertuigTest, VersnellingsGedrag) {
     v->rijd();
 
     // Simuleer enkele stappen
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         double prev_speed = v->getSnelheid();
         v->rijd();
         EXPECT_GT(v->getSnelheid(), prev_speed) << "Snelheid zou moeten toenemen";
@@ -135,7 +150,8 @@ TEST_F(VoertuigTest, VersnellingsGedrag) {
     delete v;
 }
 
-TEST_F(VoertuigTest, RemGedrag) {
+TEST_F(VoertuigTest, RemGedrag)
+{
     Voertuig* v = Voertuig::createVoertuig("auto");
     Baan* b = new Baan();
     b->setLengte(1000);
@@ -145,7 +161,7 @@ TEST_F(VoertuigTest, RemGedrag) {
 
     // Bereik eerst snelheid
     v->setState(State::DRIVING);
-    for (int i = 0 ; i < 2000; i++)
+    for (int i = 0; i < 2000; i++)
         sim->simulationRun();
 
     // Activeer remmen
@@ -159,7 +175,8 @@ TEST_F(VoertuigTest, RemGedrag) {
     delete v;
 }
 
-TEST_F(VoertuigTest, VolgAfstandGedrag) {
+TEST_F(VoertuigTest, VolgAfstandGedrag)
+{
     // Maak 2 voertuigen opzelfde baan
     Voertuig* v1 = Voertuig::createVoertuig("auto");
     Voertuig* v2 = Voertuig::createVoertuig("auto");
@@ -178,14 +195,16 @@ TEST_F(VoertuigTest, VolgAfstandGedrag) {
     v2->setState(State::DRIVING);
 
     // Simuleer
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 20; i++)
+    {
         double prev_accel = v1->getVersnelling();
         v1->rijd();
         v1->rijd();
 
         // Controleer of volgvoertuig aanpast aan voorligger
         double afstand = v2->getPositie() - v1->getPositie() - v1->getLengte();
-        if (afstand < v1->getMinimaleVolgafstand() * 2) {
+        if (afstand < v1->getMinimaleVolgafstand() * 2)
+        {
             EXPECT_LT(v1->getVersnelling(), prev_accel) << "Versnelling zou moeten afnemen bij kleine afstand";
         }
     }
@@ -195,7 +214,8 @@ TEST_F(VoertuigTest, VolgAfstandGedrag) {
     delete v2;
 }
 
-TEST_F(VoertuigTest, KruispuntGedrag) {
+TEST_F(VoertuigTest, KruispuntGedrag)
+{
     // Maak 2 banen met kruispunt
     Baan* b1 = new Baan();
     Baan* b2 = new Baan();
@@ -214,22 +234,26 @@ TEST_F(VoertuigTest, KruispuntGedrag) {
     v->setState(State::DRIVING);
     b1->addVoertuig(v);
     auto kp1 = b1->getKruispunten();
-    for (auto k : kp1) {
+    for (auto k : kp1)
+    {
         // Simuleer tot aan kruispunt
-            v->setPositie(499);
-            v->kruispunt(k);
-            EXPECT_EQ(v->getBaan(), b1) << "Nog niet op kruispunt, zou opzelfde baan moeten blijven";
+        v->setPositie(499);
+        v->kruispunt(k);
+        EXPECT_EQ(v->getBaan(), b1) << "Nog niet op kruispunt, zou opzelfde baan moeten blijven";
         v->setPositie(501);
         // Na kruispunt - zou van baan kunnen veranderen
         v->kruispunt(k);
         bool changed = (v->getBaan() == b2);
 
         // Controleer of positie correct is aangepast
-        if (changed) {
+        if (changed)
+        {
             EXPECT_EQ(v->getPositie(), 500) << "Positie zou moeten overeenkomen met kruispuntpositie op nieuwe baan";
             EXPECT_EQ(int(b2->getVoertuigen().size()), 1) << "Voertuig zou op nieuwe baan moeten staan";
             EXPECT_EQ(int(b1->getVoertuigen().size()), 0) << "Voertuig zou van oude baan verwijderd moeten zijn";
-        } else {
+        }
+        else
+        {
             EXPECT_GT(v->getPositie(), 500) << "Voertuig zou door moeten rijden";
         }
 
@@ -239,7 +263,8 @@ TEST_F(VoertuigTest, KruispuntGedrag) {
     }
 }
 
-TEST_F(VoertuigTest, VerwijderingAanEindBaan) {
+TEST_F(VoertuigTest, VerwijderingAanEindBaan)
+{
     Voertuig* v = Voertuig::createVoertuig("auto");
     Voertuig* v1 = Voertuig::createVoertuig("auto");
     Baan* b = new Baan();
@@ -257,4 +282,42 @@ TEST_F(VoertuigTest, VerwijderingAanEindBaan) {
 
     delete b;
     delete v;
+}
+
+TEST_F(VoertuigTest, StopBijVerkeerslicht)
+{
+    sim = new Simulator();
+
+    int verkeerslich_positie = 10;
+
+    const auto baan = new Baan();
+    baan->setNaam("TestBaan");
+    baan->setLengte(200);
+
+    auto* verkeerslicht = new Verkeerslicht();
+    verkeerslicht->setCyclus(30);
+    verkeerslicht->setPositie(verkeerslich_positie);
+    verkeerslicht->setBaan(baan);
+    verkeerslicht->setGroen(false);
+
+    auto* voertuig_1 = new Auto();
+    voertuig_1->setPositie(0);
+    voertuig_1->setBaan(baan);
+
+    baan->addVoertuig(voertuig_1);
+    baan->addVerkeerslicht(verkeerslicht);
+
+    sim->addBaan(baan);
+
+    sim->simulate(500); // 500 <=> 8.3 seconden
+
+    EXPECT_EQ(trunc(voertuig_1->getPositie()), verkeerslich_positie - 1);
+
+    sim->simulate(1000); // 1500 <=> 24.9 seconden
+
+    EXPECT_GT(voertuig_1->getPositie(), verkeerslich_positie - 1);
+
+    delete voertuig_1;
+    delete baan;
+    delete verkeerslicht;
 }

@@ -154,6 +154,9 @@ public:
      * @pre properlyInit() == true && c >= 0
      */
     void setOranjeCyclus(double c);
+
+    void setGroen(bool b);
+    bool getGroen() const;
 };
 
 
