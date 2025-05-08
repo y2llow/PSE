@@ -149,7 +149,7 @@ void Simulator::simulate(const int times)
     for (int i = 0; i < times; i++)
     {
         makeGraphicalImpression();
-        // print();
+        print();
 
         simulationRun();
     }

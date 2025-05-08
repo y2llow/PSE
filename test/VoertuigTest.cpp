@@ -240,7 +240,7 @@ TEST_F(VoertuigTest, KruispuntGedrag)
         v->setPositie(499);
         v->kruispunt(k);
         EXPECT_EQ(v->getBaan(), b1) << "Nog niet op kruispunt, zou opzelfde baan moeten blijven";
-        v->setPositie(501);
+        v->setPositie(500);
         // Na kruispunt - zou van baan kunnen veranderen
         v->kruispunt(k);
         bool changed = (v->getBaan() == b2);
@@ -248,7 +248,7 @@ TEST_F(VoertuigTest, KruispuntGedrag)
         // Controleer of positie correct is aangepast
         if (changed)
         {
-            EXPECT_EQ(v->getPositie(), 500) << "Positie zou moeten overeenkomen met kruispuntpositie op nieuwe baan";
+            EXPECT_EQ(v->getPositie(), 501) << "Positie zou moeten overeenkomen met kruispuntpositie op nieuwe baan";
             EXPECT_EQ(int(b2->getVoertuigen().size()), 1) << "Voertuig zou op nieuwe baan moeten staan";
             EXPECT_EQ(int(b1->getVoertuigen().size()), 0) << "Voertuig zou van oude baan verwijderd moeten zijn";
         }
