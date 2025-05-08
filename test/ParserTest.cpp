@@ -14,9 +14,10 @@ protected:
 
 TEST_F(SimulationTestingParser, EmptyXMLFileTest) {
     Parser::initialize();
-    Parser::parseElements("specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml", sim);
+    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml", sim);
 
     EXPECT_EQ(int(sim->getBanen().size()), 1); // Moet 1 zijn anders zal onze assertion failen
+
     for (auto &v : sim->getBanen()){
         EXPECT_EQ(int(v->getVerkeerslichten().size()), 0);
         EXPECT_EQ(int(v->getVoertuigeneratoren().size()), 0);
@@ -28,9 +29,9 @@ TEST_F(SimulationTestingParser, EmptyXMLFileTest) {
 TEST_F(SimulationTestingParser, DifferentOrderOfElements) {
     Parser::initialize();
     // Run parser and log relevant output to a file
-    std::ofstream actual_file("outputs/output_different_order.txt");
+    std::ofstream actual_file("../outputs/output_different_order.txt");
 
-    Parser::parseElements("specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml", sim);
+    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml", sim);
 
     actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
 
@@ -44,8 +45,8 @@ TEST_F(SimulationTestingParser, DifferentOrderOfElements) {
     actual_file.close();
 
     // Compare to expected file
-    std::ifstream actual("outputs/output_different_order.txt");
-    std::ifstream expected("outputs/expected_different_order.txt");
+    std::ifstream actual("../outputs/output_different_order.txt");
+    std::ifstream expected("../outputs/expected_different_order.txt");
     std::stringstream actual_ss, expected_ss;
     actual_ss << actual.rdbuf();
     expected_ss << expected.rdbuf();

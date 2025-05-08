@@ -28,11 +28,6 @@ public:
 
     void SetUp() override
     {
-        only_one_voertuig_op_baan.emplace_back("xml/VoertuigTests/only_auto_op_baan.xml");
-        only_one_voertuig_op_baan.emplace_back("xml/VoertuigTests/only_bus_op_baan.xml");
-        only_one_voertuig_op_baan.emplace_back("xml/VoertuigTests/only_ziekenwagen_op_baan.xml");
-        only_one_voertuig_op_baan.emplace_back("xml/VoertuigTests/only_brandweerwagen_op_baan.xml");
-        only_one_voertuig_op_baan.emplace_back("xml/VoertuigTests/only_politiecombi_op_baan.xml");
     }
 
     void TearDown() override
@@ -67,7 +62,7 @@ TEST_F(VoertuigTest, VoertuigMaximumSnelheid) {
 
         // Run simulation long enough to reach max speed
         for (int i = 0 ; i < 2000; i++)
-        sim->simulationRun();
+            sim->simulationRun();
 
         // Verify final speed
         const double expected_speed = voertuig->getMaximaleSnelheid();
