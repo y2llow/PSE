@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "Verkeerslicht.h"
 #include "Voertuig.h"
+#include "Kruispunt.h"
 
 std::string Baan::getNaam() const {
     REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
@@ -34,11 +35,9 @@ void Baan::addBushalte(Bushalte* b) {
     ENSURE(getBushaltes().back() == b, "Bushalte is niet correct toegevoegd");
 }
 
-void Baan::addVerkeerslicht(Verkeerslicht* v) {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    REQUIRE(v != nullptr, "Verkeerslicht mag niet nullptr zijn");
-    verkeers.push_back(v);
-    ENSURE(getVerkeerslichten().back() == v, "Verkeerslicht is niet correct toegevoegd");
+void Baan::addVerkeerslicht(Verkeerslicht* v)
+{
+    verkeerslichten.push_back(v);
 }
 
 void Baan::addVoertuig(Voertuig* v) {
@@ -55,34 +54,19 @@ void Baan::addVoertuiggenerator(Voertuiggenerator* vg) {
     ENSURE(getVoertuigeneratoren().back() == vg, "Voertuiggenerator is niet correct toegevoegd");
 }
 
-void Baan::addKruispunt(const int key, Baan* value) {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    REQUIRE(value != nullptr, "Kruispunt-baan mag niet nullptr zijn");
-    kruispunten[key].push_back(value);
-    ENSURE(std::find(kruispunten[key].begin(), kruispunten[key].end(), value) != kruispunten[key].end(),
-           "Kruispunt is niet correct toegevoegd");
+void Baan::addKruispunt(Kruispunt* kruispunt)
+{
+    kruispunten.push_back(kruispunt);
 }
 
-void Baan::removeVoertuig(Voertuig* v) {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    REQUIRE(v != nullptr, "Voertuig mag niet nullptr zijn");
-    voertuigen.erase(std::remove(voertuigen.begin(), voertuigen.end(), v), voertuigen.end());
-    delete v;
-    ENSURE(std::find(voertuigen.begin(), voertuigen.end(), v) == voertuigen.end(),
-           "Voertuig is niet correct verwijderd");
-}
-
-void Baan::takeOutVoertuig(Voertuig* v) {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    REQUIRE(v != nullptr, "Voertuig mag niet nullptr zijn");
-    voertuigen.erase(std::remove(voertuigen.begin(), voertuigen.end(), v), voertuigen.end());
-    ENSURE(std::find(voertuigen.begin(), voertuigen.end(), v) == voertuigen.end(),
-           "Voertuig is niet correct uitgenomen");
+void Baan::removeVoertuig(Voertuig* v)
+{
+    voertuigen.erase(remove(voertuigen.begin(), voertuigen.end(), v), voertuigen.end());
 }
 
 const vector<Verkeerslicht*>& Baan::getVerkeerslichten() const {
     REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    return verkeers;
+    return verkeerslichten;
 }
 
 const vector<Bushalte*>& Baan::getBushaltes() const {
@@ -100,9 +84,15 @@ const vector<Voertuiggenerator*>& Baan::getVoertuigeneratoren() const {
     return voertuiggeneratoren;
 }
 
-const map<int, vector<Baan*>>& Baan::getKruispunten() const {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
+const vector<Kruispunt*>& Baan::getKruispunten() const
+{
     return kruispunten;
+}
+
+bool Baan::verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt)
+{
+    auto pp = kruispunt->getPositions();
+    return pp[this] == verkeerslicht->getPositie();
 }
 
 void Baan::sortVoertuigenByPosition() {
@@ -118,15 +108,10 @@ void Baan::sortVoertuigenByPosition() {
     }
 }
 
-void Baan::sortVerkeerslichtenByPosition() {
-    REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
-    sort(verkeers.begin(), verkeers.end(), [](const Verkeerslicht* a, const Verkeerslicht* b) {
-        return a->getPositie() < b->getPositie();
+void Baan::sortVerkeerslichtenByVoertuigen()
+{
+    sort(verkeerslichten.begin(), verkeerslichten.end(), [](const Verkeerslicht* a, const Verkeerslicht* b)
+    {
+        return a->getWaitingVehicles() > b->getWaitingVehicles();
     });
-
-    // Postconditie: verkeerslichten zijn gesorteerd op oplopende positie
-    for (size_t i = 0; i + 1 < verkeers.size(); ++i) {
-        ENSURE(verkeers[i]->getPositie() <= verkeers[i + 1]->getPositie(),
-               "Verkeerslichten zijn niet correct gesorteerd op positie (oplopend)");
-    }
 }

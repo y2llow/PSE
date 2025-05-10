@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 
+class Kruispunt;
 class Voertuiggenerator;
 class Voertuig;
 class Verkeerslicht;
@@ -18,12 +19,13 @@ class Baan {
     int lengte{};
 
     vector<Bushalte*> bushaltes;
-    vector<Verkeerslicht*> verkeers;
+    vector<Verkeerslicht*> verkeerslichten;
     vector<Voertuig*> voertuigen;
     vector<Voertuiggenerator*> voertuiggeneratoren;
+    vector<Kruispunt*> kruispunten;
 
-    vector<double> bushaltes_positions;
-    map<int, vector<Baan*>> kruispunten;
+    Verkeerslicht* current_green_verkeerslicht;
+
 
     Baan* _initCheck; // Voor properlyInit
 
@@ -110,13 +112,8 @@ public:
      */
     void addVoertuiggenerator(Voertuiggenerator* vg);
 
-    /**
-     * @brief Voegt een kruispunt toe aan deze baan.
-     * @pre value != nullptr
-     * @pre properlyInit() == true
-     * @post getKruispunten().at(key) bevat value
-     */
-    void addKruispunt(int key, Baan* value);
+
+    void addKruispunt(Kruispunt* kruispunt);
 
     /**
      * @brief Verwijdert een voertuig en delete het.
@@ -125,14 +122,6 @@ public:
      * @post v is verwijderd uit getVoertuigen()
      */
     void removeVoertuig(Voertuig* v);
-
-    /**
-     * @brief Haalt een voertuig uit de lijst (zonder delete).
-     * @pre v != nullptr
-     * @pre properlyInit() == true
-     * @post v is verwijderd uit getVoertuigen()
-     */
-    void takeOutVoertuig(Voertuig* v);
 
     /**
      * @brief Geeft de verkeerslichten op deze baan.
@@ -158,11 +147,9 @@ public:
      */
     const vector<Voertuiggenerator*>& getVoertuigeneratoren() const;
 
-    /**
-     * @brief Geeft de kruispuntenstructuur.
-     * @pre properlyInit() == true
-     */
-    const map<int, vector<Baan*>>& getKruispunten() const;
+
+
+    const vector<Kruispunt*> &getKruispunten() const;
 
     /**
      * @brief Sorteert voertuigen op positie (aflopend).
@@ -177,6 +164,10 @@ public:
      * @post Voor alle geldige i: getVerkeerslichten()[i]->getPositie() <= getVerkeerslichten()[i+1]->getPositie()
      */
     void sortVerkeerslichtenByPosition();
+
+    bool verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt);
+
+    void sortVerkeerslichtenByVoertuigen();
 };
 
 #endif // BAAN_H

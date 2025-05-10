@@ -283,13 +283,13 @@ public:
      * @brief Controleert of het voertuig een kruispunt passeert
      * @pre properlyInit() == true
      */
-    void checkForKruispunt(double position, double newpostion);
+    [[nodiscard]] bool opKruispunt(double old_position) const;
 
     /**
      * @brief Verwerkt een kruispunt voor het voertuig
      * @pre properlyInit() == true
      */
-    void kruispunt(pair<int, vector<Baan*>> k);
+    void chooseKruispunt();
 };
 
 #endif //VOERTUIG_H

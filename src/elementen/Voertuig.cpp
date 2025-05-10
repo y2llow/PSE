@@ -14,6 +14,7 @@
 #include "voertuigen/Bus.h"
 #include "voertuigen/Politiecombi.h"
 #include "voertuigen/Ziekenwagen.h"
+#include "Kruispunt.h"
 
 Baan* Voertuig::getBaan() const
 {
@@ -259,66 +260,65 @@ void Voertuig::stop()
     ENSURE(getState() == State::STOPPING, "State is niet correct ingesteld op STOPPING");
 }
 
-void Voertuig::checkForKruispunt(double position, double newposition)
+void Voertuig::chooseKruispunt()
 {
-    auto kruispunten = baan->getKruispunten();
+    vector<Baan*> alle_beschikbare_bannen;
 
+    // ============= First choose the options that we have ==============
+    auto kruispunten = baan->getKruispunten();
     for (const auto& k : kruispunten)
     {
-        auto KruispuntPosition = k.first;
-        // als de auto over het kruispunt is gereden dan chekken we voor een baanwisseling
-        if (KruispuntPosition >= position && KruispuntPosition <= newposition)
-            kruispunt(k);
-    }
-}
+        auto positions = k->getPositions();
+        const int pos = positions[baan];
 
-void Voertuig::kruispunt(pair<int, vector<Baan*>> k)
-{
-    if (!baan) return;
-
-    // check voor kruispunten
-    if (!k.second.empty())
-    {
-        std::vector<Baan*> alle_opties = k.second;
-        alle_opties.push_back(baan);
-
-        int random_index = std::rand() % alle_opties.size();
-        Baan* selected_road = alle_opties[random_index];
-
-        // Update position
-        if (selected_road != baan)
+        if (abs(p - pos) < 1)
         {
-            // Bewaar oude baan voor postcondities
-            Baan* oude_baan = baan;
+            alle_beschikbare_bannen = k->getBannen();
+            break;
+        }
+    }
 
-            // verander de positie correct
-            for (const auto& [fst, snd] : selected_road->getKruispunten())
+
+    // ============= Then choose a random Baan from our options ===============
+    std::random_device rd; // Seed
+    std::mt19937 gen(rd()); // Mersenne Twister generator
+    std::uniform_int_distribution<> distr(1, 100000); // Range: 1 to 100
+    const int randomNum = distr(gen) % alle_beschikbare_bannen.size(); // Generate random integer
+
+
+    if (Baan* selected_road = alle_beschikbare_bannen[randomNum]; selected_road != baan)
+    {
+        for (const auto& kruispunt : selected_road->getKruispunten())
+        {
+            bool changed = false;
+            for (const auto [b, pos] : kruispunt->getPositions())
             {
-                for (auto b : snd)
+                if (b == selected_road)
                 {
-                    if (b == baan)
-                    {
-                        p = fst + 1;
-                        break;
-                    }
+                    changed = true;
+                    p = pos;
+                    break;
                 }
             }
 
-            // verander baan
-            selected_road->addVoertuig(this);
-            baan->takeOutVoertuig(this);
-            setBaan(selected_road);
-
-            // Postcondities
-            ENSURE(getBaan() == selected_road, "Baan is niet correct gewijzigd na kruispunt");
-            ENSURE(std::find(selected_road->getVoertuigen().begin(),
-                             selected_road->getVoertuigen().end(),
-                             this) != selected_road->getVoertuigen().end(),
-                   "Voertuig is niet correct toegevoegd aan de nieuwe baan");
-            ENSURE(std::find(oude_baan->getVoertuigen().begin(),
-                             oude_baan->getVoertuigen().end(),
-                             this) == oude_baan->getVoertuigen().end(),
-                   "Voertuig is niet correct verwijderd uit de oude baan");
+            if (changed)
+                break;
         }
+
+        // verander baan
+        selected_road->addVoertuig(this);
+        baan->removeVoertuig(this);
+        baan = selected_road;
     }
+}
+bool Voertuig::opKruispunt(const double old_position) const
+{
+    for (const auto kruispunt : baan->getKruispunten())
+    {
+        if (auto positions = kruispunt->getPositions(); old_position < positions[baan] && p > positions[baan])
+            return true;
+    }
+
+    return false;
+
 }

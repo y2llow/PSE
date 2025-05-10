@@ -51,31 +51,31 @@ public:
      * @brief Verwerkt voertuigen uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVoertuigen(TiXmlElement* elem, Simulator* sim);
+    static void parseVoertuigen(TiXmlElement* elem);
 
     /**
      * @brief Verwerkt kruispunten uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseKruisPunten(TiXmlElement* elem, Simulator* sim);
+    static void parseKruisPunten(TiXmlElement* elem);
 
     /**
      * @brief Verwerkt verkeerslichten uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVerkeerslichten(TiXmlElement* elem, Simulator* sim);
+    static void parseVerkeerslichten(TiXmlElement* elem);
 
     /**
      * @brief Verwerkt bushaltes uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseBushaltes(TiXmlElement* elem, Simulator* sim);
+    static void parseBushaltes(TiXmlElement* elem);
 
     /**
      * @brief Verwerkt voertuiggeneratoren uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim);
+    static void parseVoertuiggeneratoren(TiXmlElement* elem);
 
     /**
      * @brief Markeert een exception in het verwerkingsproces

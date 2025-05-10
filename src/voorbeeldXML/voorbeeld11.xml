@@ -1,79 +1,74 @@
-
 <VERKEERSSITUATIE>
     <BAAN>
         <naam>Middelheimlaan</naam>
-        <lengte>125</lengte>
+        <lengte>500</lengte>
     </BAAN>
 
     <BAAN>
-        <naam>Floralienlaan</naam>
-        <lengte>150</lengte>
+        <naam>Groeneborgerlaan</naam>
+        <lengte>500</lengte>
     </BAAN>
 
     <BAAN>
-        <naam>Buerstedelei</naam>
-        <lengte>175</lengte>
+        <naam>Sintbernardsesteenweg</naam>
+        <lengte>500</lengte>
     </BAAN>
 
-    <VERKEERSLICHT>
-        <baan>Middelheimlaan</baan>
-        <positie>24</positie>
-        <cyclus>4</cyclus>
-    </VERKEERSLICHT>
 
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
-        <positie>75</positie>
-        <cyclus>25</cyclus>
+        <positie>25</positie>
+        <cyclus>1</cyclus>
     </VERKEERSLICHT>
 
+    <VERKEERSLICHT>
+        <baan>Groeneborgerlaan</baan>
+        <positie>50</positie>
+        <cyclus>2</cyclus>
+    </VERKEERSLICHT>
 
     <VERKEERSLICHT>
-        <baan>Floralienlaan</baan>
+        <baan>Sintbernardsesteenweg</baan>
         <positie>100</positie>
-        <cyclus>25</cyclus>
+        <cyclus>3</cyclus>
     </VERKEERSLICHT>
 
-    <KRUISPUNT>
-        <baan positie="75">Middelheimlaan</baan>
-        <baan positie="100">Floralienlaan</baan>
-    </KRUISPUNT>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+        <type>politiecombi</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <type>bus</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>20</positie>
+        <type>brandweerwagen</type>
+        <snelheid>10</snelheid>
+    </VOERTUIG>
 
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
         <frequentie>1</frequentie>
+        <type>brandweerwagen</type>
+    </VOERTUIGGENERATOR>
+
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>2</frequentie>
         <type>auto</type>
     </VOERTUIGGENERATOR>
 
-    <VOERTUIGGENERATOR>
-        <baan>Floralienlaan</baan>
-        <frequentie>15</frequentie>
-        <type>politiecombi</type>
-    </VOERTUIGGENERATOR>
-
-    <BUSHALTE>
-        <baan>Middelheimlaan</baan>
-        <positie>50</positie>
-        <wachttijd>55</wachttijd>
-    </BUSHALTE>
-
-    <BUSHALTE>
-        <baan>Buerstedelei</baan>
-        <positie>50</positie>
-        <wachttijd>10</wachttijd>
-    </BUSHALTE>
-
-    <VERKEERSLICHT>
-        <baan>Buerstedelei</baan>
-        <positie>75</positie>
-        <cyclus>25</cyclus>
-    </VERKEERSLICHT>
-
-    <VOERTUIGGENERATOR>
-        <baan>Buerstedelei</baan>
-        <frequentie>1</frequentie>
-        <type>bus</type>
-    </VOERTUIGGENERATOR>
-
+    <KRUISPUNT>
+        <baan positie="25">Middelheimlaan</baan>
+        <baan positie="50">Groeneborgerlaan</baan>
+        <baan positie="100">Sintbernardsesteenweg</baan>
+    </KRUISPUNT>
 
 </VERKEERSSITUATIE>

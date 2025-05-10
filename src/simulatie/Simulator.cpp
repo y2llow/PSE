@@ -1,55 +1,149 @@
 //
-// Created by eraya on 13/03/2025.
+// Created by Abdellah on 4/28/2025.
 //
 
 #include "Simulator.h"
-#include "../DesignByContract.h"
-
-#include "../../src/elementen/Verkeerslicht.h"
-#include "../../src/elementen/Bushalte.h"
-#include "../../src/elementen/Voertuiggenerator.h"
-#include "../elementen/Constants.h"
-#include <iostream>
-#include <map>
-#include <string>
-#include "../../src/TinyXML/tinyxml.h"
 #include <algorithm>
 #include <cmath>
-#include <regex>
-
-#include <filesystem>
 #include <fstream>
+#include <iostream>
+#include <filesystem>
 
+#include "../elementen/Constants.h"
+#include "../elementen/Verkeerslicht.h"
+#include "../elementen/Bushalte.h"
+#include "../elementen/Baan.h"
+#include "../elementen/Kruispunt.h"
+#include "../elementen/Voertuiggenerator.h"
+
+
+const vector<Baan*> Simulator::getBanen() const
+{
+    return banen;
+}
 
 void Simulator::addBaan(Baan* b)
 {
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-    REQUIRE(b != nullptr, "Baan mag niet nullptr zijn");
-
-    size_t old_size = banen.size();
     banen.push_back(b);
-
-    // Postcondities
-    ENSURE(banen.size() == old_size + 1, "Baan is niet correct toegevoegd aan de vector");
-    ENSURE(std::find(banen.begin(), banen.end(), b) != banen.end(), "Baan is niet aanwezig in de vector");
 }
+
+
+void Simulator::simulationRun()
+{
+    for (const auto b : banen)
+    {
+        b->sortVoertuigenByPosition();
+
+        for (const auto bushalte : b->getBushaltes())
+            bushalte->stopBus();
+
+        for (const auto v : b->getVoertuigen())
+        {
+            const auto old_position = v->getPositie();
+            v->rijd();
+
+            if (v->opKruispunt(old_position))
+                v->chooseKruispunt();
+        }
+
+        for (const auto vl : b->getVerkeerslichten())
+            vl->updateVerkeerslicht();
+
+        for (const auto g : b->getVoertuigeneratoren())
+            g->generateVoertuig();
+
+
+        for (const auto kruispunt : b->getKruispunten())
+        {
+            if (auto [hasLights, lichten] = kruispunt->verkeerslichtenStaanOpKruispunt(); hasLights)
+            {
+                Verkeerslicht* bestCandidate = *std::max_element(
+                    lichten.begin(), lichten.end(),
+                    [](Verkeerslicht* a, Verkeerslicht* b)
+                    {
+                        return a->getWaitingVehicles() < b->getWaitingVehicles();
+                    });
+
+
+                Verkeerslicht* current_green = kruispunt->getActiveVerkeerslicht();
+                if (current_green == nullptr)
+                {
+                    current_green = bestCandidate;
+                    kruispunt->setActiveVerkeerslicht(bestCandidate);
+                }
+
+                kruispunt->increaseTimeSince(SIMULATIE_TIJD);
+
+                const bool mag_veranderen = kruispunt->getTimeSince() > 10;
+                const bool moet_veranderen = kruispunt->getTimeSince() >= 60;
+
+                if (!mag_veranderen) continue;
+
+
+                if (moet_veranderen)
+                {
+                    vector<Verkeerslicht*> copy(lichten.begin(), lichten.end());
+                    while (copy.size() > 1 && bestCandidate == current_green)
+                    {
+                        copy.erase(remove(copy.begin(), copy.end(), current_green), copy.end());
+
+                        bestCandidate = *std::max_element(
+                            copy.begin(), copy.end(),
+                            [](const Verkeerslicht* a, const Verkeerslicht* b)
+                            {
+                                return a->getWaitingVehicles() < b->getWaitingVehicles();
+                            });
+                    }
+                    kruispunt->setActiveVerkeerslicht(bestCandidate);
+                    kruispunt->setTimeSince(0);
+                    // cout << "+===============================================\n\n\n";
+                }
+
+                if (!moet_veranderen && bestCandidate != current_green && bestCandidate->getWaitingVehicles() != current_green->getWaitingVehicles())
+                {
+                    kruispunt->setActiveVerkeerslicht(bestCandidate);
+                    kruispunt->setTimeSince(0);
+                }
+
+
+                for (const auto l : lichten)
+                {
+                    if (l != kruispunt->getActiveVerkeerslicht())
+                        l->setState(LightState::RED);
+                }
+            }
+        }
+    }
+
+
+    current_time += SIMULATIE_TIJD;
+}
+
+void Simulator::simulate(const int times)
+{
+    for (int i = 0; i < times; i++)
+    {
+        makeGraphicalImpression();
+        // print();
+        simulationRun();
+    }
+
+    generateGraphicsFile();
+}
+
 
 void Simulator::makeGraphicalImpression()
 {
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-
-    string old_impression = graphical_impression;
+    string output_string = "Tijd: " + to_string(current_time) + "\n";
 
     for (const auto b : banen)
     {
-        string output_string;
-
         // ========== Fill the baan array with '=' ============
         string baan(b->getLengte(), '=');
         string verkeerslichten(b->getLengte(), ' ');
         string bushaltes(b->getLengte(), ' ');
-        string second_line(b->getLengte(), ' ');
 
+        string second_line(b->getLengte(), ' ');
         // =========== Set the voertuigen in the baan ============
         for (const auto v : b->getVoertuigen())
         {
@@ -61,7 +155,6 @@ void Simulator::makeGraphicalImpression()
         string baan_text = b->getNaam();
         string verkeerslichten_text = " > verkeerslichten   ";
         string bushaltes_text = " > bushaltes         ";
-
 
         if (b->getNaam().size() > 21)
         {
@@ -91,46 +184,39 @@ void Simulator::makeGraphicalImpression()
             const int p = round(bushalte->getPositie());
             verkeerslichten[p] = '|';
             bushaltes[p] = 'B';
+
             second_line[p] = '|';
         }
 
         for (const auto v : b->getVerkeerslichten())
         {
             const int p = round(v->getPositie());
-            verkeerslichten[p] = v->isGroen() ? 'G' : 'R';
-            second_line[p] = v->isGroen() ? 'G' : 'R';
+            verkeerslichten[p] = (v->getState() == LightState::GREEN) ? 'G' : 'R';
+
+            second_line[p] = v->getState() == LightState::GREEN ? 'G' : 'R';
         }
 
         // ============ Print the baan and the voertuigen =============
         // ============ Then print the verkeerslichten ==============
         // ============ Then print the bushaltes ==============
-        if (b == banen.front()) output_string = "Tijd: " + to_string(current_time) + "\n";
         output_string.append(baan_text + baan + "\n");
         output_string.append(verkeerslichten_text + verkeerslichten + "\n");
         output_string.append(bushaltes_text + bushaltes + "\n\n");
-
-        graphical_impression += output_string;
-        banen_3d_content[b->getNaam()] += baan + (!b->getBushaltes().empty() || !b->getVerkeerslichten().empty()
-                                                  ? second_line
-                                                  : "") + '\n';
     }
-
-    // Postcondities
-    ENSURE(graphical_impression != old_impression || banen.empty(), "Grafische weergave is niet bijgewerkt");
+    graphical_impression += output_string + "\n\n";
 }
 
 void Simulator::generateGraphicsFile() const
 {
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-
     // Make sure "output" folder exists
     if (!filesystem::exists("../output"))
     {
         filesystem::create_directory("../output");
     }
     // Create an output directory first (manually or automatically)
+    ofstream file("../output/simulation_output.txt"); // Write to file inside 'output' folder
 
-    if (ofstream file("../output/simulation_output.txt"); file.is_open())
+    if (file.is_open())
     {
         file << graphical_impression; // Write the string into the file
         file.close(); // Always close the file
@@ -141,111 +227,8 @@ void Simulator::generateGraphicsFile() const
     }
 }
 
-void Simulator::simulate(const int times)
-{
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-    REQUIRE(times > 0, "Aantal simulatiestappen moet groter zijn dan 0");
-
-    for (int i = 0; i < times; i++)
-    {
-        makeGraphicalImpression();
-        print();
-
-        simulationRun();
-    }
-
-    generateGraphicsFile();
-
-    for (const auto b : banen)
-        generate3dfile(b->getNaam());
-
-
-}
-
-
-const vector<Baan*> Simulator::getBanen() const
-{
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-
-    // Don't return the original vector, return a new copy with the same values so that the original one cannot get edited
-    vector<Baan*> bb;
-    for (auto* b : banen)
-    {
-        bb.push_back(b);
-    }
-    return bb;
-}
-
-void Simulator::simulationRun()
-{
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-
-    double old_time = current_time;
-
-    for (const auto b : banen)
-    {
-        for (const auto g : b->getVoertuigeneratoren())
-            g->generateVoertuig();
-
-        b->sortVoertuigenByPosition();
-
-        for (const auto vl : b->getVerkeerslichten())
-            vl->updateVerkeerslicht();
-
-        for (const auto bushalte : b->getBushaltes())
-            bushalte->stopBus();
-
-        for (const auto v : b->getVoertuigen())
-        {
-            double positie = v->getPositie();
-            v->rijd();
-            double newpositie = v->getPositie();
-
-
-            if (!b->getKruispunten().empty())
-            {
-                // =========Voor meerderen banen aan een kruispunten=========
-                v->checkForKruispunt(positie, newpositie);
-            }
-        }
-    }
-
-
-    current_time += SIMULATIE_TIJD;
-
-    // Postcondities
-    ENSURE(current_time == old_time + SIMULATIE_TIJD, "Simulatietijd is niet correct bijgewerkt");
-}
-
-void Simulator::generate3dfile(const string& baan)
-{
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-    REQUIRE(!baan.empty(), "Baannaam mag niet leeg zijn");
-
-    // Make sure "output" folder exists
-    if (!filesystem::exists("../output"))
-    {
-        filesystem::create_directory("../output");
-    }
-    // Create an output directory first (manually or automatically)
-    ofstream file("../output/baan_" + baan + ".txt"); // Write to file inside 'output' folder
-
-    if (file.is_open())
-    {
-        file << banen_3d_content[baan]; // Write the string into the file
-        file.close(); // Always close the file
-    }
-    else
-    {
-        std::cerr << "Failed to open file!" << std::endl;
-    }
-}
-
-
 void Simulator::print()
 {
-    REQUIRE(properlyInit(), "Simulator is niet correct geïnitialiseerd");
-
     cout << "Tijd: " << current_time << endl;
     for (const auto b : banen)
     {
@@ -257,10 +240,14 @@ void Simulator::print()
 
 void Simulator::printStatus(Voertuig const* voertuig)
 {
-    REQUIRE(voertuig != nullptr, "Voertuig mag niet nullptr zijn");
+    cout << "Voertuig " << voertuig->getId() << "\n"
+        << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"
+        << "-> positie: " << voertuig->getPositie() << "\n"
+        << "-> snelheid: " << voertuig->getSnelheid() << endl;
+}
 
-    cout << voertuig->getType() << ": " << voertuig->getId() << "\n"
-         << "-> baan: " << voertuig->getBaan()->getNaam() << "\n"
-         << "-> positie: " << voertuig->getPositie() << "\n"
-         << "-> snelheid: " << voertuig->getSnelheid() << endl;
+void Simulator::geldigeTypen(const string& type)
+{
+    isConsistent = type == "auto" || type == "bus" || type == "brandwagen" || type == "politiecombi" || type ==
+        "ziekenwagen";
 }

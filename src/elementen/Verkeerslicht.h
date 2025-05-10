@@ -9,23 +9,24 @@
 #include "Baan.h"
 
 
+class Kruispunt;
 class Simulator;
 using namespace std;
+
+enum class LightState
+{
+    GREEN, ORANGE, RED
+};
 
 class Verkeerslicht {
     Baan *baan{};
     double positie{};
     double cyclus{};
 
-    //eerste double is 10%van de cyclus, 2de is de tijd na groen verandering naar rood
-    pair<double,double> oranjecyclus;
-    bool oranje = false;
-    bool opKruispunt = false;
-    bool VoertuigInVertraagzone = false;
-    pair<Verkeerslicht*,Verkeerslicht*> opKruispuntPair;
-    bool groen = true;
-
+    LightState state = LightState::GREEN;
     double tijd_sinds_laatste_verandering = 0;
+
+    Kruispunt* kruispunt = nullptr;
 
     Verkeerslicht* _initCheck; // Voor properlyInit
 
@@ -84,38 +85,6 @@ public:
     void setCyclus(double cyclus);
 
     /**
-     * @brief Controleert of het verkeerslicht op een kruispunt staat
-     * @pre properlyInit() == true
-     */
-    bool isOpKruispunt() const;
-
-    /**
-     * @brief Zet of het verkeerslicht op een kruispunt staat
-     * @pre properlyInit() == true
-     * @post isOpKruispunt() == opKruispunt
-     */
-    void setOpKruispunt(bool opKruispunt);
-
-    /**
-     * @brief Controleert of het verkeerslicht oranje is
-     * @pre properlyInit() == true
-     */
-    bool isOranje() const;
-
-    /**
-     * @brief Zet of het verkeerslicht oranje is
-     * @pre properlyInit() == true
-     * @post isOranje() == oranje
-     */
-    void setOranje(bool oranje);
-
-    /**
-     * @brief Controleert of het verkeerslicht groen is
-     * @pre properlyInit() == true
-     */
-    [[nodiscard]] bool isGroen() const;
-
-    /**
      * @brief Switcht de kleur van het verkeerslicht
      * @pre properlyInit() == true
      * @post isGroen() != oude waarde van isGroen()
@@ -129,34 +98,18 @@ public:
      */
     void updateVerkeerslicht();
 
-    /**
-     * @brief Switcht de kleuren van twee verkeerslichten en reset hun timers
-     * @pre vk1 != nullptr && vk2 != nullptr
-     * @post vk1->isGroen() != oude waarde van vk1->isGroen() && vk2->isGroen() != oude waarde van vk2->isGroen()
-     */
-    static void switchVerkeerslichten(Verkeerslicht* vk1, Verkeerslicht* vk2);
+    [[nodiscard]] Kruispunt* getKruispunt() const;
+    void setKruispunt(Kruispunt* kruispunt);
 
-    /**
-     * @brief Markeer verkeerslicht als op kruispunt
-     * @pre properlyInit() == true
-     * @post isOpKruispunt() == true
-     */
-    void OpKruisPunt();
+    [[nodiscard]] LightState getState() const;
+    void setState(LightState state);
 
-    /**
-     * @brief Stel kruispuntpaar in voor dit verkeerslicht
-     * @pre properlyInit() == true && v1 != nullptr && v2 != nullptr
-     */
-    void KruispuntPair(Verkeerslicht* v1, Verkeerslicht* v2);
 
-    /**
-     * @brief Stel oranje cyclus in
-     * @pre properlyInit() == true && c >= 0
-     */
-    void setOranjeCyclus(double c);
+    int getWaitingVehicles() const;
 
-    void setGroen(bool b);
-    bool getGroen() const;
+    void setTimeSince(int i);
+    double getTimeSince();
+
 };
 
 

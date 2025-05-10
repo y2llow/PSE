@@ -9,26 +9,20 @@
 #include "../elementen/Verkeerslicht.h"
 #include "../elementen/Bushalte.h"
 #include "../elementen/Baan.h"
-#include "../DesignByContract.h"
 
+#include <algorithm>
 #include <iostream>
 
-#include "../elementen/Constants.h"
+#include "../elementen/Kruispunt.h"
 
 map<string, Baan*> Parser::banenMap;
 Parser* Parser::_initCheck = nullptr;
 
 
-
 void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
-
-    const char* name = nullptr;
-    int length = -1;
-
+    const auto baan = new Baan();
+    bool geldig = true;
     // Loop through sub-elements to get properties
     for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr;
          subElem = subElem->NextSiblingElement())
@@ -38,135 +32,165 @@ void Parser::parseBanen(TiXmlElement* elem, Simulator* sim)
             if (!subElem->GetText())
             {
                 cerr << "Er is een baan zonder naam!" << endl;
-                return;
+                geldig = false;
+                break;
             }
-
-            name = subElem->GetText();
+            baan->setNaam(subElem->GetText());
         }
         else if (propertyName == "lengte")
         {
             if (!subElem->GetText())
             {
                 cerr << "Er is een baan zonder lengte!" << endl;
-                return;
+                geldig = false;
+                break;
             }
             try
             {
-                length = stoi(subElem->GetText());
+                baan->setLengte(stoi(subElem->GetText()));
             }
             catch (exception&)
             {
                 cerr << "De lengte van een baan is geen integer!" << endl;
-                return;
+                geldig = false;
+                break;
             }
         }
     }
 
-    if (length > 0 && name != nullptr)
+    if (geldig)
     {
-        const auto baan = new Baan();
-        baan->setNaam(name);
-        baan->setLengte(length);
+        assert(!baan->getNaam().empty());
+        assert(baan->getLengte() > 0);
+
         sim->addBaan(baan);
-
-        banenMap[name] = baan;
-
-        // Postcondities
-        ENSURE(banenMap.find(name) != banenMap.end(), "Baan is niet correct toegevoegd aan de banenMap");
-        ENSURE(banenMap[name]->getNaam() == name, "Naam van de baan is niet correct ingesteld");
-        ENSURE(banenMap[name]->getLengte() == length, "Lengte van de baan is niet correct ingesteld");
+        banenMap[baan->getNaam()] = baan;
     }
-    else
-    {
-        cerr << "Er is een baan met een ongeldige lengte of naam!" << endl;
-    }
+    else delete baan;
 }
 
-void Parser::parseVoertuigen(TiXmlElement* elem, Simulator* sim)
+void Parser::parseVoertuigen(TiXmlElement* elem)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
+    bool geldig = true;
 
-    const char* type = nullptr;
-    const char* voertuig_baan = nullptr;
-    // if the voertuig in the xml file doesn't have the "snelheid" element, then it begins from this value
-    double voertuig_snelheid = 0;
-    int positie = -1;
+    Voertuig* voertuig = nullptr;
+    Baan* voertuig_baan = nullptr;
+    double voertuig_snelheid = 16.6; // default value
+    int positie = 0;
 
     for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr;
          subElem = subElem->NextSiblingElement())
     {
         if (string propertyName = subElem->Value(); propertyName == "baan")
         {
-            voertuig_baan = subElem->GetText();
+            if (!subElem->GetText())
+            {
+                cerr << "Er is een voertuig zonder baan!" << endl;
+                geldig = false;
+                break;
+            }
+
+            if (banenMap.find(subElem->GetText()) == banenMap.end())
+            {
+                cerr << "Baan niet gevonden voor voertuig!" << endl;
+                geldig = false;
+                break;
+            }
+            voertuig_baan = banenMap[subElem->GetText()];
         }
         else if (propertyName == "positie")
         {
+            if (!subElem->GetText())
+            {
+                cerr << "Er is een voertuig zonder positie!" << endl;
+                geldig = false;
+                break;
+            }
+
             try
             {
                 positie = stoi(subElem->GetText());
+                if (positie < 0)
+                {
+                    cerr << "Positie moet positief zijn!" << endl;
+                    geldig = false;
+                    break;
+                }
             }
             catch (exception&)
             {
-                REQUIRE(false,
-                        "Verkeersituatie is inconsistent! De positie van een voertuig is ongeldig.");
+                cerr << "Er is een voertuig waarvan de positie geen integer is!" << endl;
+                geldig = false;
+                break;
             }
         }
 
         else if (propertyName == "type")
         {
-            type = subElem->GetText();
+            if (subElem->GetText())
+            {
+                std::string typeString = subElem->GetText();
+                voertuig = Voertuig::createVoertuig(typeString);
+            }
         }
 
         else if (propertyName == "snelheid")
         {
+            if (!subElem->GetText())
+            {
+                cerr << "Er is een voertuig zonder snelheid!" << endl;
+                geldig = false;
+                break;
+            }
+            string snelheidstring = subElem->GetText();
+
             try
             {
-                voertuig_snelheid = std::stod(subElem->GetText());
+                voertuig_snelheid = std::stod(snelheidstring);
+                if (voertuig_snelheid < 0)
+                {
+                    cerr << "Snelheid moet positief zijn!" << endl;
+                    geldig = false;
+                    break;
+                }
             }
             catch (exception&)
             {
                 cerr << "De snelheid van een voertuig is geen double!" << endl;
-                return;;
+                geldig = false;
+                break;
             }
         }
     }
 
     // Als we geen geldige baan of positie hebben, sla over
-    REQUIRE(voertuig_baan != nullptr && banenMap.find(voertuig_baan) != banenMap.end(),
-            "Verkeersituatie is inconsistent. Een van de voertuigen heeft geen bestaande baan.");
-
-    REQUIRE(type != nullptr && geldigeTypen(type),
-            "Verkeersituatie is inconsistent! De type van een voertuig is ongeldig.");
-
-    REQUIRE(positie < banenMap[voertuig_baan]->getLengte() && positie >= 0,
-            "Verkeersituatie is inconsistent! Een van de voertuigen heeft een ongeldige positie.");
-
-    if (voertuig_snelheid < 0)
+    if (geldig && voertuig_baan != nullptr)
     {
-        //cout << "De snelheid van een auto kan niet negatief zijn! New Value=0" << endl;
-        voertuig_snelheid = 0;
+        if (voertuig == nullptr)
+            voertuig = Voertuig::createVoertuig("UNKNOWN");
+
+        voertuig->setPositie(positie);
+        voertuig->setSnelheid(voertuig_snelheid);
+        voertuig->setBaan(voertuig_baan);
+
+        voertuig_baan->addVoertuig(voertuig);
+
+        // REQUIRE and ENSURE checks
+        assert(voertuig != nullptr);
+        assert(voertuig_baan != nullptr);
+        assert(positie >= 0);
+        assert(voertuig->getPositie() < voertuig_baan->getLengte());
+        assert(voertuig_snelheid >= 0);
     }
-
-    const auto voertuig = Voertuig::createVoertuig(type);
-    voertuig->setPositie(positie);
-    voertuig->setSnelheid(voertuig_snelheid);
-    voertuig->setBaan(banenMap[voertuig_baan]);
-    banenMap[voertuig_baan]->addVoertuig(voertuig);
-
-    // Postcondities
-    ENSURE(voertuig->getPositie() == positie, "Positie van voertuig is niet correct ingesteld");
-    ENSURE(voertuig->getSnelheid() == voertuig_snelheid, "Snelheid van voertuig is niet correct ingesteld");
-    ENSURE(voertuig->getBaan() == banenMap[voertuig_baan], "Baan van voertuig is niet correct ingesteld");
+    else
+    {
+        cerr << "Voertuig wordt overgeslagen vanwege ongeldige baan of positie." << endl;
+        delete voertuig;
+    }
 }
 
-void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
+void Parser::parseVerkeerslichten(TiXmlElement* elem)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
-
     const char* baan = nullptr;
     int cyclus = -1;
     int positie = -1;
@@ -187,8 +211,6 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
             }
             catch (exception&)
             {
-                REQUIRE(false,
-                        "Verkeersituatie is inconsistent! De positie van een verkeerslicht is ongeldig.");
             }
         }
         else if (propertyName == "cyclus")
@@ -206,10 +228,6 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
     }
 
 
-    REQUIRE(positie >= 0 && positie < banenMap[baan]->getLengte(),
-            "Verkeersituatie is inconsistent! De positie van een van de verkeerslichten is ongeldig.");
-    REQUIRE(baan != nullptr && (banenMap.find(baan) == banenMap.end()) == false,
-            "Verkeersituatie is inconsistent! Een van de verkeerslichten heeft geen bestaande baan.");
     if (cyclus < 0)
     {
         cerr << "Er is een verkeerslicht waarvan de cyclus ongeldig is!" << endl;
@@ -219,27 +237,19 @@ void Parser::parseVerkeerslichten(TiXmlElement* elem, Simulator* sim)
     auto* verkeerslicht = new Verkeerslicht();
     verkeerslicht->setBaan(banenMap[baan]);
     verkeerslicht->setCyclus(cyclus);
-    verkeerslicht->setOranjeCyclus(cyclus*0.1);
     verkeerslicht->setPositie(positie);
 
     banenMap[baan]->addVerkeerslicht(verkeerslicht);
 
-    // Postcondities
-    ENSURE(verkeerslicht->getBaan() == banenMap[baan], "Baan van verkeerslicht is niet correct ingesteld");
-    ENSURE(verkeerslicht->getCyclus() == cyclus, "Cyclus van verkeerslicht is niet correct ingesteld");
-    ENSURE(verkeerslicht->getPositie() == positie, "Positie van verkeerslicht is niet correct ingesteld");
 }
 
-void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
+void Parser::parseVoertuiggeneratoren(TiXmlElement* elem)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
+    Baan* voertuigbaan = nullptr;
+    double frequentie = 0;
+    string type;
 
-    const char* voertuigbaan = nullptr;
-    const char* type = nullptr;
-    double frequentie = -1;
-
+    bool geldig = true;
 
     // Verzamel alle benodigde eigenschappen
     for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr;
@@ -247,57 +257,68 @@ void Parser::parseVoertuiggeneratoren(TiXmlElement* elem, Simulator* sim)
     {
         if (string propertyName = subElem->Value(); propertyName == "baan")
         {
-            voertuigbaan = subElem->GetText();
+            if (!subElem->GetText())
+            {
+                exceptionFound(geldig, "Er is een VOERTUIGGENERATOR zonder baan!");
+                break;
+            }
+
+            // ======== Baan isn't found, dus niet toevoegen aan voertuiggenerators ========
+            if (banenMap.find(subElem->GetText()) == banenMap.end())
+            {
+                exceptionFound(geldig, "Baan niet gevonden voor voertuiggenerator!");
+                return;
+            }
+
+            voertuigbaan = banenMap[subElem->GetText()];
         }
         else if (propertyName == "frequentie")
         {
+            if (!subElem->GetText())
+            {
+                exceptionFound(geldig, "Er is een voertuiggenerator zonder frequentie!");
+                break;
+            }
+
             try
             {
                 frequentie = stod(subElem->GetText());
+                if (frequentie < 0)
+                {
+                    exceptionFound(geldig, "Frequentie moet positief zijn!");
+                    break;
+                }
             }
             catch (exception&)
             {
-                cerr << "De frequentie van een voertuiggenerator is geen getal!" << endl;
+                exceptionFound(geldig, "De frequentie van een voertuiggenerator is geen getal!");
                 break;
             }
         }
         else if (propertyName == "type")
         {
-            type = subElem->GetText();
+            if (subElem->GetText())
+            {
+                type = subElem->GetText();
+            }
         }
     }
 
     // Controleer of alle verplichte eigenschappen zijn ingesteld
-    REQUIRE(type != nullptr && geldigeTypen(type),
-            "Verkeersituatie is inconsistent! De type van een voertuiggenerator is ongeldig.");
-    REQUIRE(voertuigbaan != nullptr && banenMap.find(voertuigbaan) != banenMap.end(),
-            "Verkeersituatie is inconsistent. Een van de voertuiggeneratoren heeft geen bestaande baan.");
-    if (frequentie < 0)
+    if (geldig)
     {
-        cerr << "De frequentie van een voertuiggenerator is ongeldig!" << endl;
-        return;
+        // Maak de generator met de verzamelde gegevens
+        auto* generator = new Voertuiggenerator(voertuigbaan, frequentie, type);
+
+        // Voeg de generator toe aan de simulatie
+        voertuigbaan->addVoertuiggenerator(generator);
     }
-
-    // Maak de generator met de verzamelde gegevens
-    auto* generator = new Voertuiggenerator(banenMap[voertuigbaan], frequentie, type);
-    // Voeg de generator toe aan de simulatie
-    banenMap[voertuigbaan]->addVoertuiggenerator(generator);
-
-    // Postcondities
-    ENSURE(generator->getBaan() == banenMap[voertuigbaan], "Baan van generator is niet correct ingesteld");
-    ENSURE(generator->getFrequentie() == frequentie, "Frequentie van generator is niet correct ingesteld");
-    ENSURE(generator->getType() == type, "Type van generator is niet correct ingesteld");
 }
 
-void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
+void Parser::parseBushaltes(TiXmlElement* elem)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
-
-    int positie = -1;
-    int wachttijd = -1;
-    const char* baan = nullptr;
+    auto* bushalte = new Bushalte();
+    bool geldig = true;
 
     for (TiXmlElement* subElem = elem->FirstChildElement(); subElem != nullptr;
          subElem = subElem->NextSiblingElement())
@@ -305,68 +326,72 @@ void Parser::parseBushaltes(TiXmlElement* elem, Simulator* sim)
         if (string propertyName = subElem->Value(); propertyName == "baan")
         {
             // ======= Elke bushalte staat op een bestaande baan =======
-            baan = subElem->GetText();
+            // if (banenMap.find(subElem->GetText()) == banenMap.end())
+
+            Baan* bushalte_baan = banenMap[subElem->GetText()];
+            bushalte->setBaan(bushalte_baan);
         }
         else if (propertyName == "positie")
         {
+            if (!subElem->GetText())
+            {
+                cerr << "Er is een verkeerslicht zonder positie!" << endl;
+                geldig = false;
+                break;
+            }
             try
             {
-                positie = stoi(subElem->GetText());
+                int positie = stoi(subElem->GetText());
+                bushalte->setPositie(positie);
+                geldig = positie >= 0; // Positie moet positief zijn
             }
             catch (exception&)
             {
-                REQUIRE(false,
-                        "Verkeersituatie is inconsistent! De positie van een bushalte is ongeldig.");
+                cerr << "Er is een bushalte waarvan de positie geen integer is!" << endl;
+                geldig = false;
+                break;
             }
         }
         else if (propertyName == "wachttijd")
         {
+            if (!subElem->GetText())
+            {
+                cerr << "Er is een bushalte zonder wachttijd!" << endl;
+                geldig = false;
+                break;
+            }
             try
             {
-                wachttijd = stoi(subElem->GetText());
+                bushalte->setWachttijd(stoi(subElem->GetText()));
+                geldig = stoi(subElem->GetText()) >= 0; // Cyclus moet positief zijn
             }
             catch (exception&)
             {
                 cerr << "Er is een bushalte waarvan de wachttijd geen integer is!" << endl;
+                geldig = false;
                 break;
             }
         }
     }
-
-    Baan* bushalte_baan = banenMap[baan];
-
-    REQUIRE(positie >= 0 && positie < bushalte_baan->getLengte(),
-            "Verkeersituatie is inconsistent! De positie van een van de bushaltes is ongeldig.");
-    REQUIRE(baan != nullptr && banenMap.find(baan) != banenMap.end(),
-            "Verkeersituatie is inconsistent. Een van de bushaltes heeft geen bestaande baan.");
-    if (wachttijd < 0)
+    if (geldig)
     {
-        cerr << "De wachttijd van een bushalte is ongeldig" << endl;
-        return;
+        Baan* baan = bushalte->getBaan();
+        baan->addBushalte(bushalte);
+
     }
-
-    auto* bushalte = new Bushalte();
-    bushalte->setWachttijd(wachttijd);
-    bushalte->setBaan(bushalte_baan);
-    bushalte_baan->addBushalte(bushalte);
-    bushalte->setPositie(positie);
-
-    // Postcondities
-    ENSURE(bushalte->getBaan() == bushalte_baan, "Baan van bushalte is niet correct ingesteld");
-    ENSURE(bushalte->getWachttijd() == wachttijd, "Wachttijd van bushalte is niet correct ingesteld");
-    ENSURE(bushalte->getPositie() == positie, "Positie van bushalte is niet correct ingesteld");
 }
 
-void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
+void Parser::parseKruisPunten(TiXmlElement* elem)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(elem != nullptr, "TiXmlElement mag niet nullptr zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
-
     vector<pair<int, Baan*>> kruisPunten;
 
+    vector<Baan*> bannen;
+    map<Baan*, int> positions;
+
+    vector<int> positions_int;
+
     for (TiXmlElement* baanElem = elem->FirstChildElement(
-            "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan"))
+             "baan"); baanElem; baanElem = baanElem->NextSiblingElement("baan"))
     {
         // Attributen ophalen
         const string positie = baanElem->Attribute("positie");
@@ -376,42 +401,28 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
 
         // ========== Here we're not told to make het verkeersituatie inconsistent ============
         // ====== so we're just gonna parse other things and ignore this if it's invalid ======
-        if (banenMap.find(baanNaam) == banenMap.end() || positieInt > banenMap[baanNaam]->getLengte())
+        if (banenMap.find(baanNaam) == banenMap.end())
+            continue;
+        if (positieInt > banenMap[baanNaam]->getLengte())
             continue;
 
-        pair<int, Baan*> kruis_punt;
-        kruis_punt.first = positieInt;
-        kruis_punt.second = banenMap[baanNaam];
-        kruisPunten.push_back(kruis_punt);
+        positions[banenMap[baanNaam]] = positieInt;
+        bannen.push_back(banenMap[baanNaam]);
+
+        positions_int.push_back(positieInt);
     }
 
-    for (auto [position, baan] : kruisPunten)
+    const auto kruispunt = Kruispunt::createNewKruispunt(bannen, positions);
+
+    for (const auto b : kruispunt->getBannen())
+        b->addKruispunt(kruispunt);
+
+    for (const auto b : bannen)
     {
-        for (auto [position_2, baan_2] : kruisPunten)
+        for (const auto v : b->getVerkeerslichten())
         {
-            if (baan_2 != baan)
-                baan->addKruispunt(position, baan_2);
-        }
-    }
-
-    // Postcondities
-    // Elk kruispunt wordt correct toegevoegd aan de juiste banen
-    for (auto [position, baan] : kruisPunten) {
-        for (auto [position_2, baan_2] : kruisPunten) {
-            if (baan_2 != baan) {
-                bool foundKruispunt = false;
-                auto& kruispunten = baan->getKruispunten();
-                auto it = kruispunten.find(position);
-                if (it != kruispunten.end()) {
-                    for (const auto& b : it->second) {
-                        if (b == baan_2) {
-                            foundKruispunt = true;
-                            break;
-                        }
-                    }
-                }
-                ENSURE(foundKruispunt, "Kruispunt is niet correct toegevoegd aan de baan");
-            }
+            if (positions[b] == v->getPositie())
+                v->setKruispunt(kruispunt);
         }
     }
 }
@@ -419,10 +430,6 @@ void Parser::parseKruisPunten(TiXmlElement* elem, Simulator* sim)
 
 bool Parser::parseElements(const std::string& filename, Simulator* sim)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    REQUIRE(!filename.empty(), "Bestandsnaam mag niet leeg zijn");
-    REQUIRE(sim != nullptr, "Simulator mag niet nullptr zijn");
-
     TiXmlDocument doc;
 
     if (!doc.LoadFile(filename.c_str()))
@@ -434,129 +441,44 @@ bool Parser::parseElements(const std::string& filename, Simulator* sim)
     TiXmlElement* root = doc.FirstChildElement();
     if (!root)
     {
-//        cerr << "Failed to load file: No root element." << endl;
+        cerr << "Failed to load file: No root element." << endl;
         return false;
     }
 
     // =========== First parse banen because they are essential for the implementation of other elements =============
     for (auto ti_xml_element = root->FirstChildElement(); ti_xml_element != nullptr; ti_xml_element =
-                                                                                             ti_xml_element->NextSiblingElement())
+         ti_xml_element->NextSiblingElement())
     {
         if (string elementType = ti_xml_element->Value(); elementType != "BAAN")
             continue;
         parseBanen(ti_xml_element, sim);
     }
 
-    // =========== Only then parse the other elements =============
-    REQUIRE(sim->getBanen().size() > 0, "Er zijn geen banen gevonden in het bestand");
+    // =========== Just then parse the other elements =============
     for (auto ti_xml_element = root->FirstChildElement(); ti_xml_element != nullptr; ti_xml_element =
-                                                                                             ti_xml_element->NextSiblingElement())
+         ti_xml_element->NextSiblingElement())
     {
         if (string elementType = ti_xml_element->Value(); elementType == "VOERTUIG")
-            parseVoertuigen(ti_xml_element, sim);
+            parseVoertuigen(ti_xml_element);
         else if (elementType == "VOERTUIGGENERATOR")
-            parseVoertuiggeneratoren(ti_xml_element, sim);
+            parseVoertuiggeneratoren(ti_xml_element);
         else if (elementType == "VERKEERSLICHT")
-            parseVerkeerslichten(ti_xml_element, sim);
+            parseVerkeerslichten(ti_xml_element);
         else if (elementType == "BUSHALTE")
-            parseBushaltes(ti_xml_element, sim);
+            parseBushaltes(ti_xml_element);
         else if (elementType == "KRUISPUNT")
-            parseKruisPunten(ti_xml_element, sim);
-    }
-    VerkeerslichtenOpKruispunten();
-
-
-    // Checking the consistency of verkeerslichten
-    for (const auto b : sim->getBanen())
-    {
-        b->sortVerkeerslichtenByPosition();
-        for (int i = 0, n = b->getVerkeerslichten().size(); i < n - 1; i++)
-        {
-            REQUIRE(
-                    abs(b->getVerkeerslichten()[i]->getPositie() - b->getVerkeerslichten()[i+1]->getPositie()) >
-                    VERTRAAG_AFSTAND,
-                    "Verkeerssituatie is niet consistent! Een verkeerslicht mag zich niet in de vertraagafstand van een ander verkeerslicht bevinden");
-        }
+            parseKruisPunten(ti_xml_element);
     }
 
+
+    // Parse alle elementen in aparte functies
+    // sim->sortVoertuigenByPosition();
+    // sim->sortVerkeersLichtByPosition();
     return true;
 }
 
-
-void Parser::VerkeerslichtenOpKruispunten()
+void Parser::exceptionFound(bool& geldig, const string& message)
 {
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-
-    for (auto& banenPair : banenMap)
-    {
-        Baan* currentbaan = banenPair.second;
-
-        if (currentbaan->getVerkeerslichten().empty() || currentbaan->getKruispunten().empty())
-            continue;
-
-        auto kruispunten = currentbaan->getKruispunten();
-
-        for (auto& KP1 : kruispunten)
-        {
-            Verkeerslicht* verkeerslichtKP1 = nullptr;
-
-            // Zoek verkeerslicht op currentbaan dat matcht met KP1
-            for (Verkeerslicht* licht : currentbaan->getVerkeerslichten())
-            {
-                if ((licht->getPositie() == KP1.first))
-                {
-                    verkeerslichtKP1 = licht;
-                    break; // Stop na eerste match
-                }
-            }
-
-            if (!verkeerslichtKP1) continue;
-
-            for (auto& KP2 : KP1.second[0]->getKruispunten())
-            {
-                Verkeerslicht* verkeerslichtKP2 = nullptr;
-
-                // Zoek verkeerslicht op de verbonden baan dat matcht met KP2
-                for (Verkeerslicht* licht2 : KP1.second[0]->getVerkeerslichten())
-                {
-                    if (licht2->getPositie() == KP2.first)
-                    {
-                        verkeerslichtKP2 = licht2;
-                        break; // Stop na eerste match
-                    }
-                }
-
-                // Als beide lichten gevonden zijn en verschillend zijn verander kleur en cyclus
-                if (verkeerslichtKP2 != nullptr && verkeerslichtKP1 != verkeerslichtKP2)
-                {
-                    verkeerslichtKP2->setCyclus(verkeerslichtKP1->getCyclus());
-
-                    if (verkeerslichtKP1->isGroen() == verkeerslichtKP2->isGroen()) { verkeerslichtKP2->switchColor(); }
-
-                    verkeerslichtKP2->OpKruisPunt();
-                    verkeerslichtKP1->OpKruisPunt();
-
-                    verkeerslichtKP2->KruispuntPair(verkeerslichtKP2,verkeerslichtKP1);
-                    verkeerslichtKP1->KruispuntPair(verkeerslichtKP1,verkeerslichtKP2);
-
-                    // Postcondities
-                    ENSURE(verkeerslichtKP2->getCyclus() == verkeerslichtKP1->getCyclus(),
-                           "Cyclus van verkeerslicht op kruispunt is niet correct gesynchroniseerd");
-                    ENSURE(verkeerslichtKP2->isGroen() != verkeerslichtKP1->isGroen(),
-                           "Verkeerslichten op kruispunt hebben dezelfde kleur");
-                    ENSURE(verkeerslichtKP2->isOpKruispunt(),
-                           "Verkeerslicht is niet correct gemarkeerd als zijnde op kruispunt");
-                    ENSURE(verkeerslichtKP1->isOpKruispunt(),
-                           "Verkeerslicht is niet correct gemarkeerd als zijnde op kruispunt");
-                }
-            }
-        }
-    }
-}
-
-bool Parser::geldigeTypen(const string& type)
-{
-    REQUIRE(properlyInit(), "Parser is niet correct geïnitialiseerd");
-    return type == "auto" || type == "bus" || type == "brandweerwagen" || type == "politiecombi" || type ==
-                                                                                                    "ziekenwagen";
+    cerr << message << endl;
+    geldig = false;
 }

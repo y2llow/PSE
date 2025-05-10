@@ -1,21 +1,104 @@
-
 <VERKEERSSITUATIE>
     <BAAN>
-        <naam>Buerstedelei</naam>
-        <lengte>175</lengte>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
     </BAAN>
 
-    <BUSHALTE>
-        <baan>Buerstedelei</baan>
-        <positie>50</positie>
-        <wachttijd>5</wachttijd>
-    </BUSHALTE>
+    <BAAN>
+        <naam>Groeneborgerlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+
+    <BAAN>
+        <naam>Sintbernardsesteenweg</naam>
+        <lengte>500</lengte>
+    </BAAN>
+
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>135</positie>
+        <cyclus>10</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Groeneborgerlaan</baan>
+        <positie>160</positie>
+        <cyclus>15</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Sintbernardsesteenweg</baan>
+        <positie>185</positie>
+        <cyclus>20</cyclus>
+    </VERKEERSLICHT>
+
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>60</positie>
+        <cyclus>14</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Groeneborgerlaan</baan>
+        <positie>60</positie>
+        <cyclus>15</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Sintbernardsesteenweg</baan>
+        <positie>60</positie>
+        <cyclus>20</cyclus>
+    </VERKEERSLICHT>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>0</positie>
+        <type>politiecombi</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <type>bus</type>
+    </VOERTUIG>
+
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>20</positie>
+        <type>brandweerwagen</type>
+        <snelheid>10</snelheid>
+    </VOERTUIG>
 
     <VOERTUIGGENERATOR>
-        <baan>Buerstedelei</baan>
+        <baan>Middelheimlaan</baan>
         <frequentie>1</frequentie>
-        <type>bus</type>
+        <type>brandweerwagen</type>
     </VOERTUIGGENERATOR>
 
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>2</frequentie>
+        <type>auto</type>
+    </VOERTUIGGENERATOR>
+
+    <VOERTUIGGENERATOR>
+        <baan>Sintbernardsesteenweg</baan>
+        <frequentie>1</frequentie>
+        <type>auto</type>
+    </VOERTUIGGENERATOR>
+
+    <KRUISPUNT>
+        <baan positie="135">Middelheimlaan</baan>
+        <baan positie="160">Groeneborgerlaan</baan>
+        <baan positie="185">Sintbernardsesteenweg</baan>
+    </KRUISPUNT>
+
+    <KRUISPUNT>
+        <baan positie="60">Middelheimlaan</baan>
+        <baan positie="60">Groeneborgerlaan</baan>
+        <baan positie="60">Sintbernardsesteenweg</baan>
+    </KRUISPUNT>
 
 </VERKEERSSITUATIE>

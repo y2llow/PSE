@@ -18,6 +18,8 @@ class Simulator {
     string graphical_impression;
     map<string, string> banen_3d_content;
 
+    bool isConsistent = true;
+
     Simulator* _initCheck; // Voor properlyInit
 
 public:
@@ -102,6 +104,8 @@ public:
      * @pre properlyInit() == true && baan is niet leeg
      */
     void generate3dfile(const string& baan);
+
+    void geldigeTypen(const string& type);
 };
 
 #endif //SIMULATION_H
