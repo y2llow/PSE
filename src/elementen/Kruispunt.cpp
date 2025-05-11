@@ -59,7 +59,7 @@ double Kruispunt::getTimeSince() const
 
 void Kruispunt::increaseTimeSince(const double i)
 {
-    time_since_last_change += i / getBannen().size();
+    time_since_last_change += i / (double)getBannen().size();
 }
 
 void Kruispunt::setTimeSince(const double t)
@@ -78,16 +78,20 @@ void Kruispunt::setActiveVerkeerslicht(Verkeerslicht* verkeerslicht)
     active_verkeerslicht_ = verkeerslicht;
 
     verkeerslicht->setState(LightState::GREEN);
-    verkeerslicht->setCyclus(1000);
+    verkeerslicht->setTimeSince(0);
+    time_since_last_change = 0;
+    // verkeerslicht->setCyclus(1000);
 
-    auto kruispunten = get<1>(verkeerslichtenStaanOpKruispunt());
+    auto verkeerslichten = get<1>(verkeerslichtenStaanOpKruispunt());
 
-    for (const auto k : kruispunten)
+    for (const auto v : verkeerslichten)
     {
-        if (k != active_verkeerslicht_)
+        if (v != active_verkeerslicht_ && v->getState() != LightState::RED)
         {
-            k->setState(LightState::RED);
-            k->setCyclus(1000);
+            v->setState(LightState::ORANGE);
+            v->setTimeSince(0);
+            time_since_last_change = 0;
+            // v->setCyclus(1000);
         }
     }
 }

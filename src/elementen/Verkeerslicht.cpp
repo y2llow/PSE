@@ -67,9 +67,9 @@ void Verkeerslicht::switchColor()
 int Verkeerslicht::getWaitingVehicles() const
 {
     int vehicles_that_wait = 0;
-    for (auto v : baan->getVoertuigen())
+    for (const auto v : baan->getVoertuigen())
     {
-        if (abs(v->getPositie() - positie) < 50)
+        if (positie - v->getPositie() > 0 && positie - v->getPositie() < 50)
         {
             vehicles_that_wait++;
         }
@@ -93,13 +93,13 @@ void Verkeerslicht::updateVerkeerslicht()
 {
     tijd_sinds_laatste_verandering += SIMULATIE_TIJD;
 
-    if (tijd_sinds_laatste_verandering > cyclus)
+    if ((state == LightState::ORANGE && tijd_sinds_laatste_verandering >
+        cyclus * .1))
     {
         switchColor();
         tijd_sinds_laatste_verandering = 0;
     }
-
-    if (state == LightState::ORANGE && tijd_sinds_laatste_verandering > cyclus * 0.1)
+    if ((tijd_sinds_laatste_verandering > cyclus) && (kruispunt == nullptr))
     {
         switchColor();
         tijd_sinds_laatste_verandering = 0;

@@ -70,12 +70,15 @@ void Simulator::simulationRun()
                 {
                     current_green = bestCandidate;
                     kruispunt->setActiveVerkeerslicht(bestCandidate);
+
+                    for (auto l : lichten)
+                        l->setCyclus(bestCandidate->getCyclus());
                 }
 
                 kruispunt->increaseTimeSince(SIMULATIE_TIJD);
 
-                const bool mag_veranderen = kruispunt->getTimeSince() > 10;
-                const bool moet_veranderen = kruispunt->getTimeSince() >= 60;
+                const bool mag_veranderen = current_green->getTimeSince() > 10;
+                const bool moet_veranderen = current_green->getTimeSince() >= 60;
 
                 if (!mag_veranderen) continue;
 
@@ -94,23 +97,26 @@ void Simulator::simulationRun()
                                 return a->getWaitingVehicles() < b->getWaitingVehicles();
                             });
                     }
+
                     kruispunt->setActiveVerkeerslicht(bestCandidate);
-                    kruispunt->setTimeSince(0);
                     // cout << "+===============================================\n\n\n";
                 }
 
-                if (!moet_veranderen && bestCandidate != current_green && bestCandidate->getWaitingVehicles() != current_green->getWaitingVehicles())
+                if (!moet_veranderen && bestCandidate != current_green && bestCandidate->getWaitingVehicles() >
+                    current_green->getWaitingVehicles())
                 {
+                    // cout << current_time << endl;
+                    // if (bestCandidate->getBaan()->getNaam() == "Groeneborgerlaan")
+                    //     cout << "It has " << bestCandidate->getWaitingVehicles() << endl;
                     kruispunt->setActiveVerkeerslicht(bestCandidate);
-                    kruispunt->setTimeSince(0);
                 }
 
 
-                for (const auto l : lichten)
-                {
-                    if (l != kruispunt->getActiveVerkeerslicht())
-                        l->setState(LightState::RED);
-                }
+                // for (const auto l : lichten)
+                // {
+                //     if (l != kruispunt->getActiveVerkeerslicht() && l->getState() != LightState::ORANGE)
+                //         l->setState(LightState::RED);
+                // }
             }
         }
     }
@@ -191,9 +197,13 @@ void Simulator::makeGraphicalImpression()
         for (const auto v : b->getVerkeerslichten())
         {
             const int p = round(v->getPositie());
-            verkeerslichten[p] = (v->getState() == LightState::GREEN) ? 'G' : 'R';
+            verkeerslichten[p] = v->getState() == LightState::GREEN
+                                     ? 'G'
+                                     : v->getState() == LightState::RED
+                                     ? 'R'
+                                     : 'O';
 
-            second_line[p] = v->getState() == LightState::GREEN ? 'G' : 'R';
+            second_line[p] = v->getState() == LightState::GREEN ? 'G' : v->getState() == LightState::RED ? 'R' : 'O';
         }
 
         // ============ Print the baan and the voertuigen =============

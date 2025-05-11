@@ -36,20 +36,20 @@
 
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
-        <positie>60</positie>
-        <cyclus>14</cyclus>
+        <positie>70</positie>
+        <cyclus>11</cyclus>
     </VERKEERSLICHT>
 
     <VERKEERSLICHT>
         <baan>Groeneborgerlaan</baan>
-        <positie>60</positie>
-        <cyclus>15</cyclus>
+        <positie>70</positie>
+        <cyclus>20</cyclus>
     </VERKEERSLICHT>
 
     <VERKEERSLICHT>
         <baan>Sintbernardsesteenweg</baan>
-        <positie>60</positie>
-        <cyclus>20</cyclus>
+        <positie>70</positie>
+        <cyclus>50</cyclus>
     </VERKEERSLICHT>
 
     <VOERTUIG>
@@ -89,6 +89,12 @@
         <type>auto</type>
     </VOERTUIGGENERATOR>
 
+    <VOERTUIGGENERATOR>
+        <baan>Groeneborgerlaan</baan>
+        <frequentie>2</frequentie>
+        <type>auto</type>
+    </VOERTUIGGENERATOR>
+
     <KRUISPUNT>
         <baan positie="135">Middelheimlaan</baan>
         <baan positie="160">Groeneborgerlaan</baan>
@@ -96,9 +102,9 @@
     </KRUISPUNT>
 
     <KRUISPUNT>
-        <baan positie="60">Middelheimlaan</baan>
-        <baan positie="60">Groeneborgerlaan</baan>
-        <baan positie="60">Sintbernardsesteenweg</baan>
+        <baan positie="70">Middelheimlaan</baan>
+        <baan positie="70">Groeneborgerlaan</baan>
+        <baan positie="70">Sintbernardsesteenweg</baan>
     </KRUISPUNT>
 
 </VERKEERSSITUATIE>
