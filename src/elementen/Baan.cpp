@@ -89,11 +89,6 @@ const vector<Kruispunt*>& Baan::getKruispunten() const
     return kruispunten;
 }
 
-bool Baan::verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt)
-{
-    auto pp = kruispunt->getPositions();
-    return pp[this] == verkeerslicht->getPositie();
-}
 
 void Baan::sortVoertuigenByPosition() {
     REQUIRE(properlyInit(), "Baan is niet correct geïnitialiseerd");
@@ -108,10 +103,15 @@ void Baan::sortVoertuigenByPosition() {
     }
 }
 
-void Baan::sortVerkeerslichtenByVoertuigen()
-{
-    sort(verkeerslichten.begin(), verkeerslichten.end(), [](const Verkeerslicht* a, const Verkeerslicht* b)
-    {
-        return a->getWaitingVehicles() > b->getWaitingVehicles();
-    });
-}
+//bool Baan::verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt)
+//{
+//    auto pp = kruispunt->getPositions();
+//    return pp[this] == verkeerslicht->getPositie();
+//}
+//void Baan::sortVerkeerslichtenByVoertuigen()
+//{
+//    sort(verkeerslichten.begin(), verkeerslichten.end(), [](const Verkeerslicht* a, const Verkeerslicht* b)
+//    {
+//        return a->getWaitingVehicles() > b->getWaitingVehicles();
+//    });
+//}

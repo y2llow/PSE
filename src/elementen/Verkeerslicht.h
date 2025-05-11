@@ -98,16 +98,50 @@ public:
      */
     void updateVerkeerslicht();
 
+    /**
+    * @brief Geeft het bijbehorend KRUISPUNT terug
+    * @pre properlyInit() == true
+    */
     [[nodiscard]] Kruispunt* getKruispunt() const;
+
+    /**
+     * @brief Zet het KRUISPUNT van het verkeerslicht
+     * @pre properlyInit() == true
+     * @post getKruispunt() == Kruispunt;
+     */
     void setKruispunt(Kruispunt* kruispunt);
 
+
+    /**
+    * @brief Geeft de STATE van het verkeerslicht GREEN,ORANGE,RED
+    * @pre properlyInit() == true
+    */
     [[nodiscard]] LightState getState() const;
+
+    /**
+     * @brief Zet de STATE van het verkeerslicht
+     * @pre properlyInit() == true
+     * @post getState() == state;
+     */
     void setState(LightState state);
 
-
+    /**
+    * @brief Geeft het aantal wachttende voertuigen achter het verkeerslicht
+    * @pre properlyInit() == true
+    */
     int getWaitingVehicles() const;
 
+    /**
+     * @brief kies de tijd_sinds_laatste_verandering van het verkeerslicht
+     * @pre properlyInit() == true
+     * @post getTimeSince() == i;
+     */
     void setTimeSince(int i);
+
+    /**
+     * @brief geeft de tijd_sinds_laatste_verandering van het verkeerslicht
+    * @pre properlyInit() == true
+    */
     double getTimeSince();
 
 };

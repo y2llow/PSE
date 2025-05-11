@@ -158,16 +158,9 @@ public:
      */
     void sortVoertuigenByPosition();
 
-    /**
-     * @brief Sorteert verkeerslichten op positie (oplopend).
-     * @pre properlyInit() == true
-     * @post Voor alle geldige i: getVerkeerslichten()[i]->getPositie() <= getVerkeerslichten()[i+1]->getPositie()
-     */
-    void sortVerkeerslichtenByPosition();
-
-    bool verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt);
-
-    void sortVerkeerslichtenByVoertuigen();
+//    bool verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt);
+//
+//    void sortVerkeerslichtenByVoertuigen();
 };
 
 #endif // BAAN_H
