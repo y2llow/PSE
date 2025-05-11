@@ -121,7 +121,7 @@ void Verkeerslicht::updateVerkeerslicht()
 
         for (const auto v : voertuigen)
         {
-            if (v->getPositie() < positie)
+            if (v->getPositie() < positie && !v->isPrioriteitsVoertuig())
             {
                 eerst_voertuig = v;
                 break;
@@ -135,13 +135,6 @@ void Verkeerslicht::updateVerkeerslicht()
 
         if (afstand_van_licht > VERTRAAG_AFSTAND)
             return;
-
-        // ======== IF het eerste voertuig voor het verkeerslicht is een prioriteitsvoertuig ========
-        if (eerst_voertuig->isPrioriteitsVoertuig())
-        {
-            // ======= THEN voertuig hoeft niet te vertragen of te stoppen =======
-            return;
-        }
 
         if (afstand_van_licht > STOP_AFSTAND && afstand_van_licht < VERTRAAG_AFSTAND &&
             eerst_voertuig->getState() != State::SLOWINGDOWN && eerst_voertuig->getState() != State::STOPPING)
