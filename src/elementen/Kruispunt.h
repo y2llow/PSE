@@ -23,7 +23,7 @@ class Kruispunt
     double time_since_last_change = 0;
 
 public:
-    Kruispunt() = default;
+    // Kruispunt() = default;
 
     Kruispunt(const vector<Baan*>& b, const map<Baan*, int>& p): bannen(b), positions(p)
     {

@@ -16,7 +16,6 @@ class Simulator {
     vector<Baan*> banen;
 
     string graphical_impression;
-    map<string, string> banen_3d_content;
 
     bool isConsistent = true;
 
@@ -29,6 +28,10 @@ public:
      */
     Simulator() {
         _initCheck = this;
+    }
+
+    Simulator(const vector<Baan*>& _banen): banen(_banen), _initCheck(nullptr)
+    {
     }
 
     /**
@@ -99,13 +102,8 @@ public:
      */
     void simulate(int times);
 
-    /**
-     * @brief Genereert een 3D-bestand voor een specifieke baan
-     * @pre properlyInit() == true && baan is niet leeg
-     */
-    void generate3dfile(const string& baan);
-
     void geldigeTypen(const string& type);
+
 };
 
 #endif //SIMULATION_H

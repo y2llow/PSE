@@ -55,6 +55,8 @@ set(RELEASE_SOURCE_FILES
         src/DesignByContract.cpp
         src/elementen/Kruispunt.cpp
         src/elementen/Kruispunt.h
+#        src/simulatie/XMLParser.cpp
+#        src/simulatie/XMLParser.h
 
 )
 
@@ -92,6 +94,8 @@ set(DEBUG_SOURCE_FILES
         src/DesignByContract.cpp
         src/elementen/Kruispunt.cpp
         src/elementen/Kruispunt.h
+#        src/simulatie/XMLParser.cpp
+#        src/simulatie/XMLParser.h
 )
 
 # Create RELEASE target
