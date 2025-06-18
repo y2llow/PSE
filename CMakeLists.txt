@@ -54,7 +54,10 @@ set(RELEASE_SOURCE_FILES
         utils/Game.h
         src/DesignByContract.cpp
         src/elementen/Kruispunt.cpp
-        src/elementen/Kruispunt.h
+        src/logs_and_errors/Logger.cpp
+        src/logs_and_errors/Logger.h
+        src/logs_and_errors/ErrorOutput.cpp
+        src/logs_and_errors/ErrorOutput.h
 #        src/simulatie/XMLParser.cpp
 #        src/simulatie/XMLParser.h
 
@@ -94,7 +97,11 @@ set(DEBUG_SOURCE_FILES
         src/DesignByContract.cpp
         src/elementen/Kruispunt.cpp
         src/elementen/Kruispunt.h
-#        src/simulatie/XMLParser.cpp
+        src/logs_and_errors/Logger.cpp
+        src/logs_and_errors/Logger.h
+        src/logs_and_errors/ErrorOutput.cpp
+        src/logs_and_errors/ErrorOutput.h
+        #        src/simulatie/XMLParser.cpp
 #        src/simulatie/XMLParser.h
 )
 

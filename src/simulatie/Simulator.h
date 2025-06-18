@@ -1,13 +1,10 @@
-//
-// Created by eraya on 13/03/2025.
-//
-
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
 #include <vector>
 #include "../../src/elementen/Baan.h"
 #include "../../src/elementen/Voertuig.h"
+#include "../logs_and_errors/ErrorOutput.h"
 
 using namespace std;
 
@@ -21,17 +18,22 @@ class Simulator {
 
     Simulator* _initCheck; // Voor properlyInit
 
+    ErrorOutput* errorOutput; // Pointer zodat default constructor kan werken
+
+
 public:
+    // Constructor met ErrorOutput
+    explicit Simulator(ErrorOutput& errorOutput);
+
     /**
-     * @brief Standaard constructor
+     * @brief Standaard constructor (DEPRECATED - gebruik constructor met ErrorOutput)
      * @post properlyInit() == true
      */
-    Simulator() {
-        _initCheck = this;
+    Simulator() : _initCheck(this), errorOutput(nullptr) {
+        // Standaard constructor zonder logging - niet aanbevolen voor productie
     }
 
-    Simulator(const vector<Baan*>& _banen): banen(_banen), _initCheck(nullptr)
-    {
+    Simulator(const vector<Baan*>& _banen): banen(_banen), _initCheck(nullptr), errorOutput(nullptr) {
     }
 
     /**
@@ -103,6 +105,12 @@ public:
     void simulate(int times);
 
     void geldigeTypen(const string& type);
+
+private:
+    /**
+     * @brief Helper functie om error te loggen (werkt ook zonder ErrorOutput)
+     */
+    void logError(const string& message, const string& context = "");
 
 };
 

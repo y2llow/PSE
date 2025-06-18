@@ -1,7 +1,3 @@
-//
-// Created by Abdellah on 4/28/2025.
-//
-
 #ifndef PARSER_H
 #define PARSER_H
 #include <map>
@@ -9,13 +5,13 @@
 
 #include "Simulator.h"
 #include "../TinyXML/tinyxml.h"
+#include "../logs_and_errors/ErrorOutput.h"
 
 using namespace std;
 
 class Parser
 {
     static map<string, Baan*> banenMap;
-
     static Parser* _initCheck; // Voor properlyInit
 
 public:
@@ -32,6 +28,7 @@ public:
     static void initialize() {
         static Parser instance;
         _initCheck = &instance;
+        banenMap.clear(); // Clear voor nieuwe parse sessie
     }
 
     /**
@@ -39,49 +36,54 @@ public:
      * @pre properlyInit() == true && filename is niet leeg && sim != nullptr
      * @return true als het bestand succesvol is verwerkt
      */
+    static bool parseElements(const std::string& filename, Simulator* sim, ErrorOutput& errorOutput);
+
+    /**
+     * @brief Backwards compatibility - gebruik versie met ErrorOutput
+     */
     static bool parseElements(const std::string& filename, Simulator* sim);
 
     /**
      * @brief Verwerkt banen uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseBanen(TiXmlElement* elem, Simulator* sim);
+    static void parseBanen(TiXmlElement* elem, Simulator* sim, ErrorOutput& errorOutput);
 
     /**
      * @brief Verwerkt voertuigen uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVoertuigen(TiXmlElement* elem);
+    static void parseVoertuigen(TiXmlElement* elem, ErrorOutput& errorOutput);
 
     /**
      * @brief Verwerkt kruispunten uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseKruisPunten(TiXmlElement* elem);
+    static void parseKruisPunten(TiXmlElement* elem, ErrorOutput& errorOutput);
 
     /**
      * @brief Verwerkt verkeerslichten uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVerkeerslichten(TiXmlElement* elem);
+    static void parseVerkeerslichten(TiXmlElement* elem, ErrorOutput& errorOutput);
 
     /**
      * @brief Verwerkt bushaltes uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseBushaltes(TiXmlElement* elem);
+    static void parseBushaltes(TiXmlElement* elem, ErrorOutput& errorOutput);
 
     /**
      * @brief Verwerkt voertuiggeneratoren uit de XML
      * @pre properlyInit() == true && elem != nullptr && sim != nullptr
      */
-    static void parseVoertuiggeneratoren(TiXmlElement* elem);
+    static void parseVoertuiggeneratoren(TiXmlElement* elem, ErrorOutput& errorOutput);
 
     /**
      * @brief Markeert een exception in het verwerkingsproces
      * @pre properlyInit() == true
      */
-    static void exceptionFound(bool& geldig, const string& message);
+    static void exceptionFound(bool& geldig, const string& message, ErrorOutput& errorOutput);
 
     /**
      * @brief Koppelt verkeerslichten op kruispunten aan elkaar

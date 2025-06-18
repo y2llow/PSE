@@ -1,0 +1,100 @@
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>Middelheimlaan</naam>
+        <lengte>500</lengte>
+    </BAAN>
+
+    <BAAN>
+        <naam>Groeneborgerlaan</naam>
+        <lengte>300</lengte>
+    </BAAN>
+
+    <BAAN>
+        <naam>Sintbernardsesteenweg</naam>
+        <lengte>200</lengte>
+    </BAAN>
+
+    <!-- ERROR 1: Verkeerslicht buiten baan grenzen -->
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>600</positie>  <!-- Positie 600 > lengte 500 -->
+        <cyclus>10</cyclus>
+    </VERKEERSLICHT>
+
+    <!-- ERROR 2: Verkeerslicht op negatieve positie -->
+    <VERKEERSLICHT>
+        <baan>Groeneborgerlaan</baan>
+        <positie>-50</positie>  <!-- Negatieve positie -->
+        <cyclus>15</cyclus>
+    </VERKEERSLICHT>
+
+    <!-- ERROR 3: Verkeerslicht op niet-bestaande baan -->
+    <VERKEERSLICHT>
+        <baan>NietBestaandeBaan</baan>
+        <positie>100</positie>
+        <cyclus>20</cyclus>
+    </VERKEERSLICHT>
+
+    <!-- ERROR 4: Voertuig buiten baan grenzen -->
+    <VOERTUIG>
+        <baan>Sintbernardsesteenweg</baan>
+        <positie>250</positie>  <!-- Positie 250 > lengte 200 -->
+        <type>auto</type>
+    </VOERTUIG>
+
+    <!-- ERROR 5: Ongeldig voertuigtype -->
+    <VOERTUIG>
+        <baan>Middelheimlaan</baan>
+        <positie>50</positie>
+        <type>helicopter</type>  <!-- Ongeldig type -->
+    </VOERTUIG>
+
+    <!-- ERROR 6: Voertuig op negatieve positie -->
+    <VOERTUIG>
+        <baan>Groeneborgerlaan</baan>
+        <positie>-10</positie>  <!-- Negatieve positie -->
+        <type>bus</type>
+    </VOERTUIG>
+
+    <!-- ERROR 7: Voertuig op niet-bestaande baan -->
+    <VOERTUIG>
+        <baan>FantasieBaan</baan>
+        <positie>100</positie>
+        <type>auto</type>
+    </VOERTUIG>
+
+    <!-- ERROR 8: Generator met ongeldig type -->
+    <VOERTUIGGENERATOR>
+        <baan>Middelheimlaan</baan>
+        <frequentie>1</frequentie>
+        <type>motorfiets</type>  <!-- Ongeldig type -->
+    </VOERTUIGGENERATOR>
+
+    <!-- ERROR 9: Generator op niet-bestaande baan -->
+    <VOERTUIGGENERATOR>
+        <baan>OnbekendeStraat</baan>
+        <frequentie>2</frequentie>
+        <type>auto</type>
+    </VOERTUIGGENERATOR>
+
+    <!-- ERROR 10: Kruispunt met posities buiten baan -->
+    <KRUISPUNT>
+        <baan positie="700">Middelheimlaan</baan>  <!-- 700 > 500 -->
+        <baan positie="400">Groeneborgerlaan</baan>  <!-- 400 > 300 -->
+        <baan positie="250">Sintbernardsesteenweg</baan>  <!-- 250 > 200 -->
+    </KRUISPUNT>
+
+    <!-- ERROR 11: Kruispunt met negatieve posities -->
+    <KRUISPUNT>
+        <baan positie="-100">Middelheimlaan</baan>
+        <baan positie="-50">Groeneborgerlaan</baan>
+        <baan positie="-25">Sintbernardsesteenweg</baan>
+    </KRUISPUNT>
+
+    <!-- ERROR 12: Kruispunt op niet-bestaande baan -->
+    <KRUISPUNT>
+        <baan positie="100">SpookBaan</baan>
+        <baan positie="100">Groeneborgerlaan</baan>
+    </KRUISPUNT>
+
+</VERKEERSSITUATIE>
