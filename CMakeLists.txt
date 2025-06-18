@@ -101,6 +101,7 @@ set(DEBUG_SOURCE_FILES
         src/logs_and_errors/Logger.h
         src/logs_and_errors/ErrorOutput.cpp
         src/logs_and_errors/ErrorOutput.h
+        test/ErrorTest.cpp
         #        src/simulatie/XMLParser.cpp
 #        src/simulatie/XMLParser.h
 )
