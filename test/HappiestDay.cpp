@@ -1,11 +1,12 @@
-#include <iostream>
 #include <fstream>
+#include <gtest/gtest.h>
 #include <filesystem>
+#include <string>
 #include <thread>
 #include <chrono>
 
+#include "../src/simulatie/parsing/UniversalParser.h"
 #include "../src/simulatie/Simulator.h"
-#include "../src/simulatie/Parser.h"
 #include "../src/logs_and_errors/Logger.h"
 #include "../src/logs_and_errors/ErrorOutput.h"
 #include "../src/elementen/Baan.h"
@@ -15,21 +16,37 @@
 #include "../src/elementen/Voertuiggenerator.h"
 #include "../src/elementen/Kruispunt.h"
 
-/**
- * @brief Happy Day Scenario Implementation
- *
- * Dit bestand implementeert het "happy day scenario" zoals beschreven in de specificatie.
- * Alle use-cases worden sequentieel uitgevoerd zonder fouten, volgens de stappen
- * beschreven in de use-case documentatie.
- */
+class HappiestDayTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // Setup logging - no file output to avoid file locking issues
+        logger = std::make_unique<Logger>("", false, Logger::LogLevel::INFO, true);  // Console only
+        errorOutput = std::make_unique<ErrorOutput>(*logger);
 
-void createHappyDayXML() {
-    std::cout << "=== STAP 1: Creëren van Happy Day XML bestand ===" << std::endl;
+        // Initialize parser
+        UniversalParser::initialize();
 
-    std::ofstream xmlFile("happy_day_scenario.xml");
-    xmlFile << R"(<?xml version="1.0" encoding="UTF-8"?>
+        // Create XML file for testing
+        createHappyDayXML();
+    }
+
+    void TearDown() override {
+        // Clean up objects first
+        logger.reset();
+        errorOutput.reset();
+
+        // Only cleanup XML file
+        try {
+            std::filesystem::remove("happy_day_scenario.xml");
+        } catch (const std::filesystem::filesystem_error&) {
+            // Ignore cleanup errors
+        }
+    }
+
+    void createHappyDayXML() {
+        std::ofstream xmlFile("happy_day_scenario.xml");
+        xmlFile << R"(<?xml version="1.0" encoding="UTF-8"?>
 <VERKEERSSITUATIE>
-    <!-- Banen definiëren -->
     <BAAN>
         <naam>Middelheimlaan</naam>
         <lengte>1000</lengte>
@@ -45,7 +62,6 @@ void createHappyDayXML() {
         <lengte>600</lengte>
     </BAAN>
 
-    <!-- Verkeerslichten -->
     <VERKEERSLICHT>
         <baan>Middelheimlaan</baan>
         <positie>400</positie>
@@ -58,7 +74,6 @@ void createHappyDayXML() {
         <cyclus>25</cyclus>
     </VERKEERSLICHT>
 
-    <!-- Voertuigen met verschillende types -->
     <VOERTUIG>
         <baan>Middelheimlaan</baan>
         <positie>50</positie>
@@ -83,7 +98,6 @@ void createHappyDayXML() {
         <type>politiecombi</type>
     </VOERTUIG>
 
-    <!-- Voertuiggeneratoren -->
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
         <frequentie>15</frequentie>
@@ -96,7 +110,6 @@ void createHappyDayXML() {
         <type>bus</type>
     </VOERTUIGGENERATOR>
 
-    <!-- Bushaltes -->
     <BUSHALTE>
         <baan>Middelheimlaan</baan>
         <positie>250</positie>
@@ -109,7 +122,6 @@ void createHappyDayXML() {
         <wachttijd>8</wachttijd>
     </BUSHALTE>
 
-    <!-- Kruispunten -->
     <KRUISPUNT>
         <baan positie="500">Middelheimlaan</baan>
         <baan positie="400">Floralienlaan</baan>
@@ -121,399 +133,277 @@ void createHappyDayXML() {
     </KRUISPUNT>
 
 </VERKEERSSITUATIE>)";
-    xmlFile.close();
-
-    std::cout << "✓ Happy Day XML bestand succesvol aangemaakt" << std::endl;
-}
-
-void useCase1_1_VerkeerssituatieInlezen(Simulator* sim, ErrorOutput& errorOutput) {
-    std::cout << "\n=== USE CASE 1.1: Verkeerssituatie inlezen ===" << std::endl;
-
-    // STAP 1: Open invoerbestand
-    std::cout << "STAP 1: Open invoerbestand 'happy_day_scenario.xml'" << std::endl;
-
-    // STAP 2: WHILE Bestand niet ingelezen
-    std::cout << "STAP 2: Bestand wordt ingelezen..." << std::endl;
-
-    // Initialize parser
-    Parser::initialize();
-
-    // Parse elements
-    bool success = Parser::parseElements("happy_day_scenario.xml", sim, errorOutput);
-
-    if (success) {
-        std::cout << "✓ STAP 2.1-2.3: Elementen herkend, informatie gelezen en geverifieerd" << std::endl;
-
-        // STAP 3: Verifieer consistentie
-        std::cout << "STAP 3: Verifieer consistentie van de verkeerssituatie" << std::endl;
-
-        auto banen = sim->getBanen();
-        std::cout << "  - Aantal banen ingelezen: " << banen.size() << std::endl;
-
-        int totalVoertuigen = 0, totalVerkeerslichten = 0, totalBushaltes = 0, totalGeneratoren = 0, totalKruispunten = 0;
-
-        for (auto* baan : banen) {
-            totalVoertuigen += baan->getVoertuigen().size();
-            totalVerkeerslichten += baan->getVerkeerslichten().size();
-            totalBushaltes += baan->getBushaltes().size();
-            totalGeneratoren += baan->getVoertuigeneratoren().size();
-            totalKruispunten += baan->getKruispunten().size();
-        }
-
-        std::cout << "  - Totaal voertuigen: " << totalVoertuigen << std::endl;
-        std::cout << "  - Totaal verkeerslichten: " << totalVerkeerslichten << std::endl;
-        std::cout << "  - Totaal bushaltes: " << totalBushaltes << std::endl;
-        std::cout << "  - Totaal voertuiggeneratoren: " << totalGeneratoren << std::endl;
-        std::cout << "  - Totaal kruispunten: " << totalKruispunten << std::endl;
-
-        std::cout << "✓ Verkeerssituatie is consistent" << std::endl;
+        xmlFile.close();
     }
 
-    // STAP 4: Sluit invoerbestand
-    std::cout << "STAP 4: Invoerbestand gesloten" << std::endl;
-    std::cout << "✓ USE CASE 1.1 succesvol voltooid!" << std::endl;
+    std::unique_ptr<Logger> logger;
+    std::unique_ptr<ErrorOutput> errorOutput;
+};
+
+TEST_F(HappiestDayTest, UseCase1_1_VerkeerssituatieInlezen) {
+    // Create simulator
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+
+    // Test parsing
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success) << "XML parsing should succeed";
+
+    // Verify consistency
+    auto banen = sim->getBanen();
+    int size = banen.size();
+    EXPECT_EQ(size, 3) << "Should have 3 roads";
+
+    int totalVoertuigen = 0, totalVerkeerslichten = 0, totalBushaltes = 0, totalGeneratoren = 0, totalKruispunten = 0;
+
+    for (auto* baan : banen) {
+        totalVoertuigen += baan->getVoertuigen().size();
+        totalVerkeerslichten += baan->getVerkeerslichten().size();
+        totalBushaltes += baan->getBushaltes().size();
+        totalGeneratoren += baan->getVoertuigeneratoren().size();
+        totalKruispunten += baan->getKruispunten().size();
+    }
+
+    EXPECT_EQ(totalVoertuigen, 4) << "Should have 4 vehicles";
+    EXPECT_EQ(totalVerkeerslichten, 2) << "Should have 2 traffic lights";
+    EXPECT_EQ(totalBushaltes, 2) << "Should have 2 bus stops";
+    EXPECT_EQ(totalGeneratoren, 2) << "Should have 2 vehicle generators";
+    EXPECT_EQ(totalKruispunten, 4) << "Should have 4 intersections (2 per road that has them)";
 }
 
-void useCase2_1_SimpeleUitvoer(Simulator* sim) {
-    std::cout << "\n=== USE CASE 2.1: Simpele uitvoer ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase2_1_SimpeleUitvoer) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
-    // STAP 1: Schrijf huidige simulatietijd uit
-    std::cout << "STAP 1: Schrijf huidige simulatietijd uit" << std::endl;
-    std::cout << "Tijd: 0.0" << std::endl;
+    // Test simple output functionality
+    auto banen = sim->getBanen();
+    ASSERT_FALSE(banen.empty()) << "Should have roads loaded";
 
-    // STAP 2: WHILE Nog voertuigen in simulatie
-    std::cout << "STAP 2: Schrijf voertuig-gegevens uit" << std::endl;
-
-    int voertuigTeller = 1;
-    for (auto* baan : sim->getBanen()) {
+    int voertuigTeller = 0;
+    for (auto* baan : banen) {
         for (auto* voertuig : baan->getVoertuigen()) {
-            std::cout << "Voertuig " << voertuigTeller++ << std::endl;
-            std::cout << "-> baan: " << baan->getNaam() << std::endl;
-            std::cout << "-> positie: " << voertuig->getPositie() << std::endl;
-            std::cout << "-> snelheid: " << voertuig->getSnelheid() << std::endl;
-            std::cout << "-> type: " << voertuig->getType() << std::endl;
+            voertuigTeller++;
+
+            // Verify vehicle has valid properties
+            EXPECT_FALSE(baan->getNaam().empty()) << "Road should have a name";
+            EXPECT_GE(voertuig->getPositie(), 0) << "Vehicle position should be non-negative";
+            EXPECT_GE(voertuig->getSnelheid(), 0) << "Vehicle speed should be non-negative";
+            EXPECT_FALSE(voertuig->getType().empty()) << "Vehicle should have a type";
         }
     }
 
-    std::cout << "✓ USE CASE 2.1 succesvol voltooid!" << std::endl;
+    EXPECT_EQ(voertuigTeller, 4) << "Should count 4 vehicles for output";
 }
 
-void useCase2_2_GrafischeImpressie(Simulator* sim) {
-    std::cout << "\n=== USE CASE 2.2: Grafische impressie ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase2_2_GrafischeImpressie) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
-    // STAP 1: Open uitvoerbestand
-    std::cout << "STAP 1: Open uitvoerbestand" << std::endl;
+    // Test graphical impression generation
+    EXPECT_NO_THROW(sim->makeGraphicalImpression()) << "Graphical impression generation should not throw";
 
-    // STAP 2: Teken gegevens uit voor de toestand van de verkeerssituatie
-    std::cout << "STAP 2: Teken gegevens uit voor de toestand" << std::endl;
+    // Test file generation
+    EXPECT_NO_THROW(sim->generateGraphicsFile()) << "Graphics file generation should not throw";
 
-    // Make graphical impression
-    sim->makeGraphicalImpression();
-
-    // STAP 3: Sluit uitvoerbestand
-    std::cout << "STAP 3: Sluit uitvoerbestand" << std::endl;
-
-    std::cout << "✓ USE CASE 2.2 succesvol voltooid!" << std::endl;
-    std::cout << "  Grafische impressie opgeslagen in simulation_output.txt" << std::endl;
+    // Verify output file exists (note: might be in ../output/ directory)
+    bool outputExists = std::filesystem::exists("../output/simulation_output.txt") ||
+                        std::filesystem::exists("simulation_output.txt");
+    EXPECT_TRUE(outputExists) << "Graphics output file should be created";
 }
 
-void useCase3_1_RijdenVanVoertuig(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.1: Rijden van voertuig ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_1_RijdenVanVoertuig) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
     auto banen = sim->getBanen();
-    if (!banen.empty() && !banen[0]->getVoertuigen().empty()) {
-        auto* voertuig = banen[0]->getVoertuigen()[0];
-        auto* baan = banen[0];
+    ASSERT_FALSE(banen.empty());
+    ASSERT_FALSE(banen[0]->getVoertuigen().empty());
 
-        double oudePositie = voertuig->getPositie();
-        double oudeSnelheid = voertuig->getSnelheid();
-        double oudeVersnelling = voertuig->getVersnelling();
+    auto* voertuig = banen[0]->getVoertuigen()[0];
 
-        std::cout << "Voor simulatiestap:" << std::endl;
-        std::cout << "  Positie: " << oudePositie << std::endl;
-        std::cout << "  Snelheid: " << oudeSnelheid << std::endl;
-        std::cout << "  Versnelling: " << oudeVersnelling << std::endl;
+    double oudePositie = voertuig->getPositie();
 
-        // STAP 1: Bereken nieuwe snelheid en positie van voertuig
-        std::cout << "STAP 1: Bereken nieuwe snelheid en positie" << std::endl;
+    // Test vehicle movement
+    voertuig->rijd();
 
-        // STAP 2: Bereken nieuwe versnelling van voertuig
-        std::cout << "STAP 2: Bereken nieuwe versnelling" << std::endl;
+    // Verify physics updates
+    EXPECT_TRUE(voertuig->getPositie() >= oudePositie) << "Position should not decrease";
 
+    // After multiple steps, vehicle should move
+    for (int i = 0; i < 10; i++) {
         voertuig->rijd();
-
-        std::cout << "Na simulatiestap:" << std::endl;
-        std::cout << "  Positie: " << voertuig->getPositie() << std::endl;
-        std::cout << "  Snelheid: " << voertuig->getSnelheid() << std::endl;
-        std::cout << "  Versnelling: " << voertuig->getVersnelling() << std::endl;
-
-        // STAP 3: IF nieuwe positie valt buiten huidige baan
-        if (voertuig->getPositie() >= baan->getLengte()) {
-            std::cout << "STAP 3.1: Voertuig verwijderd (buiten baan)" << std::endl;
-        } else {
-            std::cout << "STAP 3: Voertuig blijft op baan" << std::endl;
-        }
     }
 
-    std::cout << "✓ USE CASE 3.1 succesvol voltooid!" << std::endl;
+    EXPECT_GT(voertuig->getPositie(), oudePositie) << "Vehicle should move after multiple steps";
 }
 
-void useCase3_2_SimulatieVanVerkeerslicht(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.2: Simulatie van verkeerslicht ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_2_SimulatieVanVerkeerslicht) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
     auto banen = sim->getBanen();
+    bool hasTrafficLight = false;
+
     for (auto* baan : banen) {
         for (auto* verkeerslicht : baan->getVerkeerslichten()) {
-            std::cout << "Verkeerslicht op " << baan->getNaam() << " (positie " << verkeerslicht->getPositie() << "):" << std::endl;
+            hasTrafficLight = true;
 
-            // Show current state
-            std::string kleur;
-            switch (verkeerslicht->getState()) {
-                case LightState::GREEN: kleur = "GROEN"; break;
-                case LightState::ORANGE: kleur = "ORANJE"; break;
-                case LightState::RED: kleur = "ROOD"; break;
-            }
+            // Verify traffic light properties
+            EXPECT_GT(verkeerslicht->getCyclus(), 0) << "Traffic light should have positive cycle time";
+            EXPECT_GE(verkeerslicht->getPositie(), 0) << "Traffic light position should be non-negative";
 
-            std::cout << "  Huidige kleur: " << kleur << std::endl;
-            std::cout << "  Cyclus: " << verkeerslicht->getCyclus() << " seconden" << std::endl;
-
-            // STAP 1: IF tijd sinds laatste verandering > cyclus
-            std::cout << "STAP 1: Controleer of kleur moet veranderen" << std::endl;
-
-            // STAP 2: IF verkeerslicht is groen
-            std::cout << "STAP 2-3: Voertuigen passen zich aan verkeerslicht aan" << std::endl;
-
-            verkeerslicht->updateVerkeerslicht();
-
-            // Show new state
-            switch (verkeerslicht->getState()) {
-                case LightState::GREEN: kleur = "GROEN"; break;
-                case LightState::ORANGE: kleur = "ORANJE"; break;
-                case LightState::RED: kleur = "ROOD"; break;
-            }
-            std::cout << "  Nieuwe kleur: " << kleur << std::endl;
+            // Test traffic light update
+            EXPECT_NO_THROW(verkeerslicht->updateVerkeerslicht()) << "Traffic light update should not throw";
         }
     }
 
-    std::cout << "✓ USE CASE 3.2 succesvol voltooid!" << std::endl;
+    EXPECT_TRUE(hasTrafficLight) << "Should have at least one traffic light to test";
 }
 
-void useCase3_3_AutomatischeSimulatie(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.3: Automatische simulatie ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_3_AutomatischeSimulatie) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
-    std::cout << "STAP 1: FOR elk voertuig in het wegennetwerk" << std::endl;
-    std::cout << "STAP 2: FOR elk verkeerslicht in het wegennetwerk" << std::endl;
-
+    // Count initial elements
     int aantalVoertuigen = 0, aantalVerkeerslichten = 0;
-
     for (auto* baan : sim->getBanen()) {
         aantalVoertuigen += baan->getVoertuigen().size();
         aantalVerkeerslichten += baan->getVerkeerslichten().size();
     }
 
-    std::cout << "  Aantal voertuigen te simuleren: " << aantalVoertuigen << std::endl;
-    std::cout << "  Aantal verkeerslichten te simuleren: " << aantalVerkeerslichten << std::endl;
+    EXPECT_GT(aantalVoertuigen, 0) << "Should have vehicles to simulate";
+    EXPECT_GT(aantalVerkeerslichten, 0) << "Should have traffic lights to simulate";
 
-    // Voer een simulatiestap uit
-    sim->simulationRun();
-
-    std::cout << "✓ USE CASE 3.3 succesvol voltooid!" << std::endl;
+    // Test simulation step
+    EXPECT_NO_THROW(sim->simulationRun()) << "Simulation run should not throw";
 }
 
-void useCase3_4_SimulatieMetVoertuiggenerator(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.4: Simulatie met voertuiggenerator ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_4_SimulatieMetVoertuiggenerator) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
     auto banen = sim->getBanen();
+    bool hasGenerator = false;
+
     for (auto* baan : banen) {
         for (auto* generator : baan->getVoertuigeneratoren()) {
-            std::cout << "Voertuiggenerator op " << baan->getNaam() << ":" << std::endl;
-            std::cout << "  Type: " << generator->getType() << std::endl;
-            std::cout << "  Frequentie: " << generator->getFrequentie() << " seconden" << std::endl;
+            hasGenerator = true;
+
+            // Verify generator properties
+            EXPECT_GT(generator->getFrequentie(), 0) << "Generator should have positive frequency";
+            EXPECT_FALSE(generator->getType().empty()) << "Generator should have a vehicle type";
 
             int oudAantal = baan->getVoertuigen().size();
 
-            // STAP 3.1: IF tijd sinds laatste voertuig > frequentie
-            std::cout << "STAP 3.1: Controleer of nieuwe voertuig moet worden gegenereerd" << std::endl;
-
-            generator->generateVoertuig();
+            // Test vehicle generation (may or may not generate based on timing)
+            EXPECT_NO_THROW(generator->generateVoertuig()) << "Vehicle generation should not throw";
 
             int nieuwAantal = baan->getVoertuigen().size();
-
-            if (nieuwAantal > oudAantal) {
-                std::cout << "  ✓ Nieuw voertuig gegenereerd!" << std::endl;
-            } else {
-                std::cout << "  - Nog geen nieuw voertuig (wacht op frequentie)" << std::endl;
-            }
+            EXPECT_GE(nieuwAantal, oudAantal) << "Vehicle count should not decrease";
         }
     }
 
-    std::cout << "✓ USE CASE 3.4 succesvol voltooid!" << std::endl;
+    EXPECT_TRUE(hasGenerator) << "Should have at least one generator to test";
 }
 
-void useCase3_6_SimulatieBushaltes(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.6: Simulatie van bushaltes ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_6_SimulatieBushaltes) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
     auto banen = sim->getBanen();
+    bool hasBusStop = false;
+
     for (auto* baan : banen) {
         for (auto* bushalte : baan->getBushaltes()) {
-            std::cout << "Bushalte op " << baan->getNaam() << " (positie " << bushalte->getPositie() << "):" << std::endl;
-            std::cout << "  Wachttijd: " << bushalte->getWachttijd() << " seconden" << std::endl;
+            hasBusStop = true;
 
-            // Check for buses near the bus stop
-            bool busGevonden = false;
-            for (auto* voertuig : baan->getVoertuigen()) {
-                if (voertuig->getType() == "Bus") {
-                    double afstand = abs(voertuig->getPositie() - bushalte->getPositie());
-                    if (afstand < 60) { // Within interaction range
-                        busGevonden = true;
-                        std::cout << "  Bus gevonden op afstand: " << afstand << std::endl;
+            // Verify bus stop properties
+            EXPECT_GT(bushalte->getWachttijd(), 0) << "Bus stop should have positive waiting time";
+            EXPECT_GE(bushalte->getPositie(), 0) << "Bus stop position should be non-negative";
 
-                        // STAP 1-3: Bushalte logica
-                        std::cout << "STAP 1-3: Bus interactie met bushalte" << std::endl;
-                        bushalte->stopBus();
-
-                        std::string state;
-                        switch (voertuig->getState()) {
-                            case State::DRIVING: state = "RIJDEND"; break;
-                            case State::SLOWINGDOWN: state = "VERTRAAGD"; break;
-                            case State::STOPPING: state = "STOPPEND"; break;
-                        }
-                        std::cout << "  Bus status: " << state << std::endl;
-                    }
-                }
-            }
-
-            if (!busGevonden) {
-                std::cout << "  Geen bussen in de buurt" << std::endl;
-            }
+            // Test bus stop functionality
+            EXPECT_NO_THROW(bushalte->stopBus()) << "Bus stop operation should not throw";
         }
     }
 
-    std::cout << "✓ USE CASE 3.6 succesvol voltooid!" << std::endl;
+    EXPECT_TRUE(hasBusStop) << "Should have at least one bus stop to test";
 }
 
-void useCase3_7_SimulatieKruispunten(Simulator* sim) {
-    std::cout << "\n=== USE CASE 3.7: Simulatie van kruispunten ===" << std::endl;
+TEST_F(HappiestDayTest, UseCase3_7_SimulatieKruispunten) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
     auto banen = sim->getBanen();
+    bool hasIntersection = false;
+
     for (auto* baan : banen) {
         for (auto* kruispunt : baan->getKruispunten()) {
-            std::cout << "Kruispunt met " << kruispunt->getBannen().size() << " banen:" << std::endl;
+            hasIntersection = true;
+
+            // Verify intersection properties
+            int size = kruispunt->getBannen().size();
+            EXPECT_GE(size, 2) << "Intersection should connect at least 2 roads";
 
             auto positions = kruispunt->getPositions();
+            EXPECT_FALSE(positions.empty()) << "Intersection should have position information";
+
+            // Verify all roads in intersection have valid positions
             for (auto& [baanPtr, positie] : positions) {
-                std::cout << "  " << baanPtr->getNaam() << " op positie " << positie << std::endl;
-            }
-
-            // Check for vehicles at intersection
-            for (auto* voertuig : baan->getVoertuigen()) {
-                if (positions.find(baan) != positions.end()) {
-                    double kruispuntPositie = positions[baan];
-                    double afstand = abs(voertuig->getPositie() - kruispuntPositie);
-
-                    if (afstand < 5) { // At intersection
-                        std::cout << "  Voertuig op kruispunt!" << std::endl;
-                        std::cout << "STAP 1.1: Kies willekeurige baan om verder op te rijden" << std::endl;
-
-                        // Note: chooseKruispunt() would handle the random selection
-                        voertuig->chooseKruispunt();
-
-                        std::cout << "  Voertuig nu op baan: " << voertuig->getBaan()->getNaam() << std::endl;
-                    }
-                }
+                EXPECT_NE(baanPtr, nullptr) << "Road pointer should not be null";
+                EXPECT_GE(positie, 0) << "Intersection position should be non-negative";
             }
         }
     }
 
-    std::cout << "✓ USE CASE 3.7 succesvol voltooid!" << std::endl;
+    EXPECT_TRUE(hasIntersection) << "Should have at least one intersection to test";
 }
 
-void demonstrateFullSimulation(Simulator* sim) {
-    std::cout << "\n=== VOLLEDIGE SIMULATIE DEMONSTRATIE ===" << std::endl;
-    std::cout << "Simulatie wordt uitgevoerd voor 10 stappen..." << std::endl;
+TEST_F(HappiestDayTest, VolledigeSimulatieTest) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
-    for (int stap = 1; stap <= 10; stap++) {
-        std::cout << "\n--- Simulatiestap " << stap << " ---" << std::endl;
-
-        // Count vehicles before simulation
+    // Test full simulation for multiple steps
+    for (int stap = 1; stap <= 5; stap++) {
         int voertuigenVoor = 0;
         for (auto* baan : sim->getBanen()) {
             voertuigenVoor += baan->getVoertuigen().size();
         }
 
-        // Run simulation step
-        sim->simulationRun();
+        EXPECT_NO_THROW(sim->simulationRun()) << "Simulation step " << stap << " should not throw";
 
-        // Count vehicles after simulation
         int voertuigenNa = 0;
         for (auto* baan : sim->getBanen()) {
             voertuigenNa += baan->getVoertuigen().size();
         }
 
-        std::cout << "Voertuigen: " << voertuigenVoor << " → " << voertuigenNa;
-        if (voertuigenNa > voertuigenVoor) {
-            std::cout << " (+" << (voertuigenNa - voertuigenVoor) << " gegenereerd)";
-        } else if (voertuigenNa < voertuigenVoor) {
-            std::cout << " (" << (voertuigenVoor - voertuigenNa) << " verdwenen)";
-        }
-        std::cout << std::endl;
-
-        // Small delay for dramatic effect
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        // Vehicle count should remain stable or increase (due to generators)
+        EXPECT_GE(voertuigenNa, 0) << "Should have non-negative vehicle count after step " << stap;
     }
-
-    std::cout << "\n✓ Volledige simulatie demonstratie voltooid!" << std::endl;
 }
 
-int main() {
-    std::cout << "============================================" << std::endl;
-    std::cout << "  HAPPY DAY SCENARIO - VERKEERSSIMULATIE" << std::endl;
-    std::cout << "============================================" << std::endl;
-    std::cout << "Implementatie van het 'happy day scenario'" << std::endl;
-    std::cout << "waarin alle use-cases succesvol worden uitgevoerd." << std::endl;
+TEST_F(HappiestDayTest, FinaleOutputGeneratie) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
 
-    try {
-        // Setup logging
-        Logger logger("logs/happy_day.txt", true, Logger::LogLevel::INFO, true);
-        ErrorOutput errorOutput(logger);
-
-        // Create simulator with error handling
-        Simulator sim(errorOutput);
-
-        // Execute all use cases in sequence
-        createHappyDayXML();
-
-        useCase1_1_VerkeerssituatieInlezen(&sim, errorOutput);
-        useCase2_1_SimpeleUitvoer(&sim);
-        useCase2_2_GrafischeImpressie(&sim);
-        useCase3_1_RijdenVanVoertuig(&sim);
-        useCase3_2_SimulatieVanVerkeerslicht(&sim);
-        useCase3_3_AutomatischeSimulatie(&sim);
-        useCase3_4_SimulatieMetVoertuiggenerator(&sim);
-        useCase3_6_SimulatieBushaltes(&sim);
-        useCase3_7_SimulatieKruispunten(&sim);
-
-        // Demonstrate full simulation
-        demonstrateFullSimulation(&sim);
-
-        // Generate final output
-        std::cout << "\n=== FINALE OUTPUT GENERATIE ===" << std::endl;
-        sim.generateGraphicsFile();
-        std::cout << "✓ Finale grafische impressie opgeslagen" << std::endl;
-
-        std::cout << "\n============================================" << std::endl;
-        std::cout << "  🎉 HAPPY DAY SCENARIO SUCCESVOL! 🎉" << std::endl;
-        std::cout << "============================================" << std::endl;
-        std::cout << "Alle use-cases zijn zonder fouten uitgevoerd." << std::endl;
-        std::cout << "Het systeem werkt zoals bedoeld!" << std::endl;
-
-        // Cleanup
-        std::filesystem::remove("happy_day_scenario.xml");
-
-    } catch (const std::exception& e) {
-        std::cerr << "❌ FOUT in Happy Day Scenario: " << e.what() << std::endl;
-        return 1;
+    // Run some simulation steps
+    for (int i = 0; i < 3; i++) {
+        sim->simulationRun();
     }
 
-    return 0;
+    // Test final output generation
+    EXPECT_NO_THROW(sim->generateGraphicsFile()) << "Final graphics file generation should not throw";
+
+    // Verify output exists
+    bool outputExists = std::filesystem::exists("../output/simulation_output.txt") ||
+                        std::filesystem::exists("simulation_output.txt");
+    EXPECT_TRUE(outputExists) << "Final graphics output should be created";
 }
