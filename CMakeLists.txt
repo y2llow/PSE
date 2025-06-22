@@ -36,8 +36,6 @@ set(RELEASE_SOURCE_FILES
         src/simulatie/Simulator.cpp
         main.cpp
         src/elementen/Constants.h
-        src/simulatie/Parser.cpp
-        src/simulatie/Parser.h
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
         src/elementen/voertuigen/Auto.cpp
@@ -58,8 +56,13 @@ set(RELEASE_SOURCE_FILES
         src/logs_and_errors/Logger.h
         src/logs_and_errors/ErrorOutput.cpp
         src/logs_and_errors/ErrorOutput.h
-#        src/simulatie/XMLParser.cpp
-#        src/simulatie/XMLParser.h
+        src/simulatie/parsing/UniversalParser.cpp
+        src/simulatie/parsing/UniversalParser.h
+        src/simulatie/parsing/factory/ParserFactory.cpp
+        src/simulatie/parsing/factory/ParserFactory.h
+        src/simulatie/parsing/strategies/XMLParserStrategy.cpp
+        src/simulatie/parsing/strategies/XMLParserStrategy.h
+        src/simulatie/parsing/interfaces/IParserStrategy.h
 
 )
 
@@ -74,8 +77,8 @@ set(DEBUG_SOURCE_FILES
         src/elementen/Voertuiggenerator.cpp
         src/simulatie/Simulator.cpp
         src/elementen/Constants.h
-        src/simulatie/Parser.cpp
-        src/simulatie/Parser.h
+#        src/simulatie/Parser.cpp
+#        src/simulatie/Parser.h
         src/elementen/Bushalte.cpp
         src/elementen/Bushalte.h
         src/elementen/voertuigen/Auto.cpp
@@ -103,6 +106,15 @@ set(DEBUG_SOURCE_FILES
         src/logs_and_errors/ErrorOutput.h
         test/ErrorTest.cpp
         test/HappiestDay.cpp
+        src/simulatie/parsing/UniversalParser.cpp
+        src/simulatie/parsing/UniversalParser.h
+        src/simulatie/parsing/factory/ParserFactory.cpp
+        src/simulatie/parsing/factory/ParserFactory.h
+        src/simulatie/parsing/strategies/XMLParserStrategy.cpp
+        src/simulatie/parsing/strategies/XMLParserStrategy.h
+        src/simulatie/parsing/interfaces/IParserStrategy.h
+        src/simulatie/parsing/strategies/JSONParserStrategy.cpp
+        src/simulatie/parsing/strategies/JSONParserStrategy.h
         #        src/simulatie/XMLParser.cpp
 #        src/simulatie/XMLParser.h
 )

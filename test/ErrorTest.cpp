@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../src/simulatie/Parser.h"
+#include "../src/simulatie/parsing/UniversalParser.h"
 #include "../src/simulatie/Simulator.h"
 #include "../src/logs_and_errors/Logger.h"
 #include "../src/logs_and_errors/ErrorOutput.h"
@@ -141,9 +141,9 @@ TEST_F(ErrorTest, ParserErrorsWithInvalidXML) {
     xmlFile.close();
 
     // Test parsing with errors
-    Parser::initialize();
+    UniversalParser::initialize();
     auto sim = std::make_unique<Simulator>(errorOutput);
-    Parser::parseElements("test_invalid.xml", sim.get(), errorOutput);
+    UniversalParser::parseElements("test_invalid.xml", sim.get(), errorOutput);
 
 
     std::string actualContent = readFile("test_errors.txt");
@@ -184,10 +184,10 @@ TEST_F(ErrorTest, SimulatorBoundsChecking) {
 </VERKEERSSITUATIE>)";
     xmlFile.close();
 
-    Parser::initialize();
+    UniversalParser::initialize();
     auto sim = std::make_unique<Simulator>(errorOutput);
 
-    if (Parser::parseElements("test_bounds.xml", sim.get(), errorOutput)) {
+    if (UniversalParser::parseElements("test_bounds.xml", sim.get(), errorOutput)) {
         // Run simulation - should generate error
         sim->simulate(0);
     }
@@ -233,10 +233,10 @@ TEST_F(ErrorTest, NoErrorsWithValidInput) {
 </VERKEERSSITUATIE>)";
     xmlFile.close();
 
-    Parser::initialize();
+    UniversalParser::initialize();
     auto sim = std::make_unique<Simulator>(errorOutput);
 
-    bool result = Parser::parseElements("test_valid.xml", sim.get(), errorOutput);
+    bool result = UniversalParser::parseElements("test_valid.xml", sim.get(), errorOutput);
     EXPECT_TRUE(result) << "Valid XML should parse successfully";
 
     if (result) {
@@ -283,7 +283,7 @@ TEST_F(ErrorTest, DebugParserErrors) {
     errorOutput.logError("MANUAL TEST ERROR");
 
     // Test parsing with errors
-    Parser::initialize();
+    UniversalParser::initialize();
     auto sim = std::make_unique<Simulator>(errorOutput);
 
 
@@ -320,10 +320,10 @@ TEST_F(ErrorTest, DebugSimulatorBounds) {
 </VERKEERSSITUATIE>)";
     xmlFile.close();
 
-    Parser::initialize();
+    UniversalParser::initialize();
     auto sim = std::make_unique<Simulator>(errorOutput);
 
-    if (Parser::parseElements("test_bounds.xml", sim.get(), errorOutput)) {
+    if (UniversalParser::parseElements("test_bounds.xml", sim.get(), errorOutput)) {
 
         auto banen = sim->getBanen();
 

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "../src/elementen/Verkeerslicht.h"
-#include "../src/simulatie/Parser.h"
+#include "../src/simulatie/parsing/UniversalParser.h"
 #include "../src/simulatie/Simulator.h"
 
 #include <random>
@@ -54,7 +54,7 @@ TEST_F(VoertuigTest, VoertuigMaximumSnelheid)
         sim = new Simulator();
 
         // Parse the test file
-        ASSERT_TRUE(Parser::parseElements(test_file, sim))
+        ASSERT_TRUE(UniversalParser::parseElements(test_file, sim))
                                     << "Failed to parse test file: " << test_file;
 
         // Verify initial conditions

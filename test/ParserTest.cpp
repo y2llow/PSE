@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "../../src/simulatie/Simulator.h"
-#include "../../src/simulatie/Parser.h"
+#include "../src/simulatie/parsing/UniversalParser.h"
 
 class SimulationTestingParser : public testing::Test {
 protected:
@@ -13,8 +13,8 @@ protected:
 };
 
 TEST_F(SimulationTestingParser, EmptyXMLFileTest) {
-    Parser::initialize();
-    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml", sim);
+    UniversalParser::initialize();
+    UniversalParser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/empty_file.xml", sim);
 
     EXPECT_EQ(int(sim->getBanen().size()), 1); // Moet 1 zijn anders zal onze assertion failen
 
@@ -27,11 +27,11 @@ TEST_F(SimulationTestingParser, EmptyXMLFileTest) {
 }
 
 TEST_F(SimulationTestingParser, DifferentOrderOfElements) {
-    Parser::initialize();
+    UniversalParser::initialize();
     // Run parser and log relevant output to a file
     std::ofstream actual_file("../outputs/output_different_order.txt");
 
-    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml", sim);
+    UniversalParser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/verschillende_volgorde_van_elementen.xml", sim);
 
     actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
 
@@ -56,11 +56,11 @@ TEST_F(SimulationTestingParser, DifferentOrderOfElements) {
 
 
 TEST_F(SimulationTestingParser, InvalidVehiclePositionsTest) {
-    Parser::initialize();
+    UniversalParser::initialize();
     // Test parser handling of vehicles with invalid positions (outside baan boundaries)
     std::ofstream actual_file("../outputs/output_invalid_positions.txt");
 
-    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ongeldige_voertuig_posities.xml", sim);
+    UniversalParser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ongeldige_voertuig_posities.xml", sim);
 
     actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
 
@@ -92,11 +92,11 @@ TEST_F(SimulationTestingParser, InvalidVehiclePositionsTest) {
 }
 
 TEST_F(SimulationTestingParser, MissingRequiredFieldsTest) {
-    Parser::initialize();
+    UniversalParser::initialize();
     // Test parser handling of elements with missing required fields
     std::ofstream actual_file("../outputs/output_missing_fields.txt");
 
-    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ontbrekende_velden.xml", sim);
+    UniversalParser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ontbrekende_velden.xml", sim);
 
     actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
 

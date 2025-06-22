@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/simulatie/Parser.h"
+#include "../src/simulatie/parsing/UniversalParser.h"
 #include "../src/simulatie/Simulator.h"
 #include "../src/elementen/Verkeerslicht.h"
 #include "../src/elementen/Voertuiggenerator.h"
