@@ -54,66 +54,78 @@ TEST_F(SimulationTestingParser, DifferentOrderOfElements) {
     EXPECT_EQ(actual_ss.str(), expected_ss.str());
 }
 
-//TEST_F(SimulationTestingParser, InvalidXMLFileTest) {
-//    Parser::initialize();
-//    std::ofstream actual_file("outputs/output_invalid_xml.txt");
-//
-//    testing::internal::CaptureStderr();
-//    EXPECT_FALSE(Parser::parseElements("xml/parserTests/empty_file.xml", sim));
-//    std::string output1 = testing::internal::GetCapturedStderr();
-//
-//    actual_file << output1;
-//
-//    testing::internal::CaptureStderr();
-//    EXPECT_FALSE(Parser::parseElements("xml/parserTests/malformed.xml", sim));
-//    std::string output2 = testing::internal::GetCapturedStderr();
-//
-//    actual_file << output2;
-//    actual_file.close();
-//
-//    std::ifstream actual("outputs/output_invalid_xml.txt");
-//    std::ifstream expected("outputs/expected_invalid_xml.txt");
-//
-//    std::stringstream actual_ss, expected_ss;
-//    actual_ss << actual.rdbuf();
-//    expected_ss << expected.rdbuf();
-//
-//    EXPECT_EQ(actual_ss.str(), expected_ss.str());
-//}
 
-//TEST_F(SimulationTestingParser, CombinedErrorTests) {
-//    Parser::initialize();
-//    std::ofstream actual_file("outputs/output_combined_errors.txt");
-//
-//    testing::internal::CaptureStderr();
-//    Parser::parseElements("xml/parserTests/gecombineerde_foute.xml", sim);
-//    std::string output = testing::internal::GetCapturedStderr();
-//
-//    actual_file << output;
-//    actual_file.close();
-//
-//    std::ifstream actual("outputs/output_combined_errors.txt");
-//    std::ifstream expected("outputs/expected_combined_errors.txt");
-//
-//    std::stringstream actual_ss, expected_ss;
-//    actual_ss << actual.rdbuf();
-//    expected_ss << expected.rdbuf();
-//
-//    EXPECT_EQ(actual_ss.str(), expected_ss.str());
-//}
+TEST_F(SimulationTestingParser, InvalidVehiclePositionsTest) {
+    Parser::initialize();
+    // Test parser handling of vehicles with invalid positions (outside baan boundaries)
+    std::ofstream actual_file("../outputs/output_invalid_positions.txt");
 
-//TEST(CompareOutput, MatchExpectedErrors) {
-//    Parser::initialize();
-//    std::ifstream actual_file("outputs/test_output.txt");
-//    std::ifstream expected_file("outputs/expected_errors.txt");
-//
-//    std::stringstream actual_stream, expected_stream;
-//    actual_stream << actual_file.rdbuf();
-//    expected_stream << expected_file.rdbuf();
-//
-//    std::string actual = actual_stream.str();
-//    std::string expected = expected_stream.str();
-//
-//    EXPECT_EQ(actual, expected);
-//}
+    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ongeldige_voertuig_posities.xml", sim);
 
+    actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
+
+    if (!sim->getBanen().empty()) {
+        Baan* baan = sim->getBanen()[0];
+        actual_file << "Baan lengte: " << baan->getLengte() << "\n";
+        actual_file << "Geldige voertuigen: " << baan->getVoertuigen().size() << "\n";
+
+        // Count vehicles that should have been rejected due to invalid positions
+        int validVehicleCount = 0;
+        for (auto& voertuig : baan->getVoertuigen()) {
+            if (voertuig->getPositie() >= 0 && voertuig->getPositie() < baan->getLengte()) {
+                validVehicleCount++;
+            }
+        }
+        actual_file << "Voertuigen binnen grenzen: " << validVehicleCount << "\n";
+    }
+
+    actual_file.close();
+
+    // Compare to expected file
+    std::ifstream actual("../outputs/output_invalid_positions.txt");
+    std::ifstream expected("../outputs/expected_invalid_positions.txt");
+    std::stringstream actual_ss, expected_ss;
+    actual_ss << actual.rdbuf();
+    expected_ss << expected.rdbuf();
+
+    EXPECT_EQ(actual_ss.str(), expected_ss.str());
+}
+
+TEST_F(SimulationTestingParser, MissingRequiredFieldsTest) {
+    Parser::initialize();
+    // Test parser handling of elements with missing required fields
+    std::ofstream actual_file("../outputs/output_missing_fields.txt");
+
+    Parser::parseElements("../test/specificatie1/1_1_verkeerssituatie_inlezen/ontbrekende_velden.xml", sim);
+
+    actual_file << "Aantal banen: " << sim->getBanen().size() << "\n";
+
+    // Count elements that were successfully parsed despite some having missing fields
+    int totalVerkeerslichten = 0;
+    int totalVoertuiggeneratoren = 0;
+    int totalBushaltes = 0;
+    int totalVoertuigen = 0;
+
+    for (auto& baan : sim->getBanen()) {
+        totalVerkeerslichten += baan->getVerkeerslichten().size();
+        totalVoertuiggeneratoren += baan->getVoertuigeneratoren().size();
+        totalBushaltes += baan->getBushaltes().size();
+        totalVoertuigen += baan->getVoertuigen().size();
+    }
+
+    actual_file << "Verkeerslichten: " << totalVerkeerslichten << "\n";
+    actual_file << "Voertuiggeneratoren: " << totalVoertuiggeneratoren << "\n";
+    actual_file << "Bushaltes: " << totalBushaltes << "\n";
+    actual_file << "Voertuigen: " << totalVoertuigen << "\n";
+
+    actual_file.close();
+
+    // Compare to expected file
+    std::ifstream actual("../outputs/output_missing_fields.txt");
+    std::ifstream expected("../outputs/expected_missing_fields.txt");
+    std::stringstream actual_ss, expected_ss;
+    actual_ss << actual.rdbuf();
+    expected_ss << expected.rdbuf();
+
+    EXPECT_EQ(actual_ss.str(), expected_ss.str());
+}

@@ -110,7 +110,7 @@ void Parser::parseVoertuigen(TiXmlElement* elem, ErrorOutput& errorOutput)
             try
             {
                 positie = stoi(subElem->GetText());
-                if (positie < 0)
+                if (positie < 0 )
                 {
                     errorOutput.handleError("Voertuig positie moet positief zijn: " + to_string(positie), "Parser::parseVoertuigen");
                     geldig = false;
