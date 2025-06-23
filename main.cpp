@@ -18,7 +18,7 @@ int main()
     ErrorOutput errorOutput(logger);
 
     try {
-        UniversalParser::initialize();       // 🆕 GEBRUIK NIEUWE UNIVERSAL PARSER
+        UniversalParser::initialize();
 
         // Gebruik ErrorOutput constructor
         auto sim = std::make_unique<Simulator>(errorOutput);
