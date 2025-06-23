@@ -11,7 +11,7 @@ using namespace std;
 int main()
 {
     // Setup logging system
-    Logger logger(R"(C:\Users\Familie Goyvaerts\CLionProjects\PSE\output\errors.txt)",
+    Logger logger("../output/errors.txt",
                   false,                    // Geen console output
                   Logger::LogLevel::ERROR,      // Alleen errors
                   true);                        // Clear file eerst
@@ -25,7 +25,7 @@ int main()
 
         // Test eerst met je originele XML - nu met automatische format detectie!
         if (UniversalParser::parseElements("../src/voorbeeldXML/voorbeeld10.xml", sim.get(), errorOutput)) {
-            sim->simulate(1000);
+            sim->simulate(10000);
         } else {
             errorOutput.logError("XML parsing gefaald");
             return 1;

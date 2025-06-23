@@ -14,13 +14,6 @@ include_directories(./gtest/include)
 # Set Library dir
 link_directories(./gtest/lib)
 
-# Don't use local SFML files
-## Remove or comment out these:
- set(SFML_STATIC_LIBRARIES TRUE)
- set(SFML_DIR "${CMAKE_SOURCE_DIR}/utils/sfml-files/lib/cmake/SFML")
-
-# Use system SFML
-find_package(SFML 2.5 REQUIRED graphics window system)
 
 # Set source files for RELEASE target
 # Only add cpp files, no h files!
@@ -48,8 +41,6 @@ set(RELEASE_SOURCE_FILES
         src/elementen/voertuigen/Politiecombi.h
         src/elementen/voertuigen/Ziekenwagen.cpp
         src/elementen/voertuigen/Ziekenwagen.h
-        utils/Game.cpp
-        utils/Game.h
         src/DesignByContract.cpp
         src/elementen/Kruispunt.cpp
         src/logs_and_errors/Logger.cpp
@@ -132,5 +123,3 @@ add_test(
         COMMAND debug_target
 )
 
-
-target_link_libraries(release_target sfml-graphics sfml-window sfml-system)

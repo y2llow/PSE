@@ -9,36 +9,6 @@
         <lengte>220</lengte>
     </BAAN>
 
-    <VOERTUIG>
-        <baan>Floralienlaan</baan>
-        <positie>20</positie>
-        <type>bus</type>
-    </VOERTUIG>
-
-    <VOERTUIG>
-        <baan>Middelheimlaan</baan>
-        <positie>10</positie>
-        <type>auto</type>
-    </VOERTUIG>
-
-    <VERKEERSLICHT>
-        <baan>Middelheimlaan</baan>
-        <positie>100</positie>
-        <cyclus>10</cyclus>
-    </VERKEERSLICHT>
-
-
-    <VERKEERSLICHT>
-        <baan>Floralienlaan</baan>
-        <positie>100</positie>
-        <cyclus>20</cyclus>
-    </VERKEERSLICHT>
-
-    <VERKEERSLICHT>
-        <baan>Floralienlaan</baan>
-        <positie>15</positie>
-        <cyclus>6</cyclus>
-    </VERKEERSLICHT>
 
     <VOERTUIGGENERATOR>
         <baan>Middelheimlaan</baan>
@@ -46,9 +16,10 @@
         <type>auto</type>
     </VOERTUIGGENERATOR>
 
+
     <VOERTUIGGENERATOR>
         <baan>Floralienlaan</baan>
-        <frequentie>2</frequentie>
+        <frequentie>1</frequentie>
         <type>bus</type>
     </VOERTUIGGENERATOR>
 
@@ -57,10 +28,34 @@
         <baan positie="15">Floralienlaan</baan>
     </KRUISPUNT>
 
+    <VERKEERSLICHT>
+        <baan>Floralienlaan</baan>
+        <positie>15</positie>
+        <cyclus>5</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>10</positie>
+        <cyclus>15</cyclus>
+    </VERKEERSLICHT>
+
     <KRUISPUNT>
         <baan positie="100">Middelheimlaan</baan>
         <baan positie="100">Floralienlaan</baan>
     </KRUISPUNT>
+
+    <VERKEERSLICHT>
+        <baan>Floralienlaan</baan>
+        <positie>100</positie>
+        <cyclus>5</cyclus>
+    </VERKEERSLICHT>
+
+    <VERKEERSLICHT>
+        <baan>Middelheimlaan</baan>
+        <positie>100</positie>
+        <cyclus>15</cyclus>
+    </VERKEERSLICHT>
 
 
 
