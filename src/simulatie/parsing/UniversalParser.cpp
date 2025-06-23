@@ -1,9 +1,3 @@
-//============================================================================
-// Name        : UniversalParser.cpp
-// Author      : Universal Parser System
-// Description : Implementation of Universal Parser with backwards compatibility
-//============================================================================
-
 #include "UniversalParser.h"
 #include "../Simulator.h"
 #include "../../logs_and_errors/Logger.h"
@@ -27,7 +21,6 @@ bool UniversalParser::parseFile(const std::string& filename, Simulator* sim, Err
     IParserStrategy* strategy = ParserFactory::getParserForFile(filename);
     if (!strategy) {
         errorOutput.handleError("Geen ondersteunde parser gevonden voor: " + filename, "UniversalParser::parseFile");
-        printSupportedFormats(errorOutput);
         return false;
     }
 
@@ -39,39 +32,10 @@ bool UniversalParser::parseElements(const std::string& filename, Simulator* sim,
     return parseFile(filename, sim, errorOutput);
 }
 
+// Fallback logger voor oude code
 bool UniversalParser::parseElements(const std::string& filename, Simulator* sim) {
-    // Fallback logger voor oude code
     static Logger fallbackLogger("logs/parser_fallback.txt", true, Logger::LogLevel::ERROR);
     static ErrorOutput fallbackErrorOutput(fallbackLogger);
 
     return parseFile(filename, sim, fallbackErrorOutput);
-}
-
-void UniversalParser::printSupportedFormats(ErrorOutput& errorOutput) {
-    auto extensions = ParserFactory::getSupportedExtensions();
-    auto strategies = ParserFactory::getRegisteredStrategyNames();
-
-    std::string extensionList = "Ondersteunde formaten: ";
-    for (size_t i = 0; i < extensions.size(); ++i) {
-        extensionList += extensions[i];
-        if (i < extensions.size() - 1) {
-            extensionList += ", ";
-        }
-    }
-
-    std::string strategyList = "Beschikbare parsers: ";
-    for (size_t i = 0; i < strategies.size(); ++i) {
-        strategyList += strategies[i];
-        if (i < strategies.size() - 1) {
-            strategyList += ", ";
-        }
-    }
-
-    errorOutput.handleInfo(extensionList, "UniversalParser");
-    errorOutput.handleInfo(strategyList, "UniversalParser");
-}
-
-bool UniversalParser::isFileSupported(const std::string& filename) {
-    IParserStrategy* strategy = ParserFactory::getParserForFile(filename);
-    return strategy != nullptr;
 }

@@ -43,31 +43,7 @@ public:
      */
     static IParserStrategy* getParserForFile(const std::string& filename);
 
-    /**
-     * @brief Geeft alle ondersteunde extensies terug
-     * @return vector van ondersteunde extensies
-     * @post Retourneert alle geregistreerde extensies
-     */
-    static std::vector<std::string> getSupportedExtensions();
 
-    /**
-     * @brief Geeft namen van alle geregistreerde strategies terug
-     * @return vector van strategy namen
-     */
-    static std::vector<std::string> getRegisteredStrategyNames();
-
-    /**
-     * @brief Controleert of een extensie ondersteund wordt
-     * @param extension De te controleren extensie
-     * @return true als extensie ondersteund wordt
-     */
-    static bool isExtensionSupported(const std::string& extension);
-
-    /**
-     * @brief Reset de factory (vooral voor testing)
-     * @post initialized == false && strategies is leeg
-     */
-    static void reset();
 };
 
 #endif // PARSER_FACTORY_H

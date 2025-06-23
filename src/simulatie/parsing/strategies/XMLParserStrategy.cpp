@@ -443,10 +443,6 @@ bool XMLParserStrategy::geldigeTypen(const std::string& type) {
            type == "politiecombi" || type == "ziekenwagen";
 }
 
-void XMLParserStrategy::VerkeerslichtenOpKruispunten() {
-    // Implementatie voor het koppelen van verkeerslichten op kruispunten
-    // Dit zou geïmplementeerd worden als nodig
-}
 
 bool XMLParserStrategy::parseFile(const std::string& filename, Simulator* sim, ErrorOutput& errorOutput) {
     if (!sim) {

@@ -62,12 +62,7 @@ public:
      */
     std::string getStrategyName() const override;
 
-    /**
-     * @brief Koppelt verkeerslichten op kruispunten aan elkaar
-     * @pre banenMap is gevuld met geldige banen
-     * @post Verkeerslichten op kruispunten zijn aan elkaar gekoppeld
-     */
-    static void VerkeerslichtenOpKruispunten();
+
 };
 
 #endif // XML_PARSER_STRATEGY_H

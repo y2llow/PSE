@@ -60,19 +60,7 @@ public:
      */
     static bool parseElements(const std::string& filename, Simulator* sim);
 
-    /**
-     * @brief Geeft info over ondersteunde formaten
-     * @param errorOutput Voor logging van de info
-     * @post Ondersteunde formaten zijn gelogd
-     */
-    static void printSupportedFormats(ErrorOutput& errorOutput);
 
-    /**
-     * @brief Controleert of een bestand ondersteund wordt
-     * @param filename Het te controleren bestand
-     * @return true als het bestand geparst kan worden
-     */
-    static bool isFileSupported(const std::string& filename);
 };
 
 #endif // UNIVERSAL_PARSER_H
