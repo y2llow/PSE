@@ -158,9 +158,6 @@ public:
      */
     void sortVoertuigenByPosition();
 
-//    bool verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt);
-//
-//    void sortVerkeerslichtenByVoertuigen();
 };
 
 #endif // BAAN_H

@@ -102,16 +102,3 @@ void Baan::sortVoertuigenByPosition() {
                "Voertuigen zijn niet correct gesorteerd op positie (aflopend)");
     }
 }
-
-//bool Baan::verkeerslichtOpKruispunt(const Verkeerslicht* verkeerslicht, const Kruispunt* kruispunt)
-//{
-//    auto pp = kruispunt->getPositions();
-//    return pp[this] == verkeerslicht->getPositie();
-//}
-//void Baan::sortVerkeerslichtenByVoertuigen()
-//{
-//    sort(verkeerslichten.begin(), verkeerslichten.end(), [](const Verkeerslicht* a, const Verkeerslicht* b)
-//    {
-//        return a->getWaitingVehicles() > b->getWaitingVehicles();
-//    });
-//}
