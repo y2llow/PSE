@@ -1,1 +1,6 @@
-[2025-06-24 10:54:58] [ERROR] FOUT: Onbekend voertuigtype: 10 Type AUTO wordt gebruikt.
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseBanen] FOUT: De lengte van een baan is geen integer: honderd
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseBanen] FOUT: Baan wordt overgeslagen vanwege ongeldige eigenschappen
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseBanen] FOUT: De lengte van een baan is geen integer: vijftig
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseBanen] FOUT: Baan wordt overgeslagen vanwege ongeldige eigenschappen
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Baan niet gevonden voor voertuig: TestBaan1
+[2025-06-24 12:11:50] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Voertuig wordt overgeslagen vanwege ongeldige eigenschappen

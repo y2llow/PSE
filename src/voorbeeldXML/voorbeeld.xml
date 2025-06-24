@@ -1,11 +1,15 @@
 <VERKEERSSITUATIE>
     <BAAN>
-        <naam>TestBaan</naam>
-        <lengte>100</lengte>
+        <naam>TestBaan1</naam>
+        <lengte>honderd</lengte>
+    </BAAN>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>vijftig</lengte>
     </BAAN>
     <VOERTUIG>
-        <baan>TestBaan</baan>
-        <positie>5</positie>
-        <type>10</type>
+        <baan>TestBaan1</baan>
+        <positie>hon</positie>
+        <type>auto</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>
