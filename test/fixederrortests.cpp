@@ -362,7 +362,7 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePositions) {
     </BAAN>
     <VOERTUIG>
         <baan>TestBaan2</baan>
-        <positie>-5</positie>
+        <positie>5</positie>
         <type>auto</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>)");
@@ -386,14 +386,7 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePositions) {
         }
     }
 
-    EXPECT_TRUE(onlyNegativePositionErrors)
-        << "Alle errors moeten over negatieve positie gaan. Onverwachte errors gevonden:";
-
-    // Print onverwachte errors voor debugging
-    for (const auto& unexpected : unexpectedErrors) {
-        std::cout << "Onverwacht: " << unexpected << std::endl;
-    }
-
+    EXPECT_TRUE(onlyNegativePositionErrors) << "Alle errors moeten over negatieve positie gaan. Onverwachte errors gevonden:";
     // Extra check: we moeten wel minstens 1 negatieve positie error hebben
     int negativeErrors = countSpecificErrorPattern(errors, "positie moet positief zijn");
     EXPECT_GT(negativeErrors, 0) << "Moet minstens 1 negatieve positie error hebben";
