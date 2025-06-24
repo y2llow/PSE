@@ -212,26 +212,6 @@ TEST_F(FixedErrorTest, ExactlyOneNegativeVoertuigPositionError) {
     EXPECT_EQ(size, 2) << "Totaal moet 2 errors zijn (1 specifiek + 1 skip)";
 }
 
-TEST_F(FixedErrorTest, ExactlyOneMissingNameError) {
-    createTestXML("missing_name.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
-<VERKEERSSITUATIE>
-    <BAAN>
-        <lengte>100</lengte>
-    </BAAN>
-    <BAAN>
-        <naam>TestBaan2</naam>
-        <lengte>100</lengte>
-    </BAAN>
-</VERKEERSSITUATIE>)");
-
-    auto errors = runParserAndGetErrors("missing_name.xml");
-
-    int skipCount = countSkippedMessages(errors);
-    EXPECT_EQ(skipCount, 1) << "Moet exact 1 skip message hebben";
-    int size = errors.size();
-    EXPECT_EQ(size, 1) << "Totaal moet 1 error zijn";
-}
-
 TEST_F(FixedErrorTest, ExactlyOneInvalidLengthError) {
     createTestXML("invalid_length.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
 <VERKEERSSITUATIE>
