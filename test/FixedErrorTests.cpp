@@ -336,6 +336,11 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePositions) {
         <positie>-10</positie>
         <type>auto</type>
     </VOERTUIG>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>-10</positie>
+        <cyclus>100</cyclus>
+    </VERKEERSLICHT>
     <VOERTUIG>
         <baan>TestBaan</baan>
         <positie>-5</positie>
