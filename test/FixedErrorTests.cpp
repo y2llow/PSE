@@ -202,7 +202,7 @@ TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
     </VERKEERSLICHT>
     <VOERTUIG>
         <baan>TestBaan</baan>
-        <positie>0</positie>
+        <positie>10</positie>
         <type>auto</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>)");
