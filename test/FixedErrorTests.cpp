@@ -397,7 +397,7 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_OutOfBounds) {
     </VOERTUIG>
     <VOERTUIG>
         <baan>TestBaan</baan>
-        <positie>100</positie>
+        <positie>1000</positie>
         <type>bus</type>
     </VOERTUIG>
     <BAAN>
