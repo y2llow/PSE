@@ -368,6 +368,11 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidIntegers) {
         <naam>TestBaan2</naam>
         <lengte>vijftig</lengte>
     </BAAN>
+    <VERKEERSLICHT>
+        <baan>TestBaan1</baan>
+        <positie>huh</positie>
+        <cyclus>100</cyclus>
+    </VERKEERSLICHT>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("only_invalid_int.xml");
@@ -428,6 +433,11 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_OutOfBounds) {
         <positie>250</positie>
         <type>bus</type>
     </VOERTUIG>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>1000</positie>
+        <cyclus>100</cyclus>
+    </VERKEERSLICHT>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("only_bounds.xml");
