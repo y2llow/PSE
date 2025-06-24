@@ -101,6 +101,93 @@ protected:
         return getErrorMessages("test_errors.txt");
     }
 
+    bool containsOnlySpecificErrorType(
+        const std::vector<std::string>& errors,
+        const std::vector<std::string>& allowedPatterns,
+        const std::vector<std::string>& alwaysAllowedPatterns = {"wordt overgeslagen"}) {
+
+        for (const auto& error : errors) {
+            bool isAllowed = false;
+
+            // Check always allowed patterns first (zoals "overgeslagen")
+            for (const auto& alwaysAllowed : alwaysAllowedPatterns) {
+                if (error.find(alwaysAllowed) != std::string::npos) {
+                    isAllowed = true;
+                    break;
+                }
+            }
+
+            // Als nog niet toegestaan, check specifieke patterns
+            if (!isAllowed) {
+                for (const auto& pattern : allowedPatterns) {
+                    if (error.find(pattern) != std::string::npos) {
+                        isAllowed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isAllowed) {
+                std::cout << "Onverwachte error gevonden: " << error << std::endl;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool hasAtLeastOneError(const std::vector<std::string>& errors, const std::string& expectedPattern) {
+        for (const auto& error : errors) {
+            if (error.find(expectedPattern) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void debugPrintErrors(const std::vector<std::string>& errors, const std::string& testName) {
+        std::cout << "\n=== DEBUG ERRORS VOOR " << testName << " ===" << std::endl;
+        if (errors.empty()) {
+            std::cout << "Geen errors gevonden." << std::endl;
+        } else {
+            for (size_t i = 0; i < errors.size(); ++i) {
+                std::cout << i << ": " << errors[i] << std::endl;
+            }
+        }
+        std::cout << "Totaal: " << errors.size() << " errors" << std::endl;
+        std::cout << "==========================================\n" << std::endl;
+    }
+
+    void testOnlySpecificErrorType(
+        const std::string& xmlContent,
+        const std::vector<std::string>& allowedPatterns,
+        const std::string& testName,
+        int expectedMinCount = 1) {
+
+        std::string filename = testName + ".xml";
+        createTestXML(filename, xmlContent);
+
+        auto errors = runParserAndGetErrors(filename);
+
+        // Debug output indien gewenst
+        if (errors.size() > 10) { // Alleen bij veel errors
+            debugPrintErrors(errors, testName);
+        }
+
+        // Check dat alleen toegestane errors voorkomen
+        EXPECT_TRUE(containsOnlySpecificErrorType(errors, allowedPatterns))
+            << "Test " << testName << ": Alleen specifieke error types toegestaan";
+
+        // Check dat we minstens het verwachte aantal errors hebben
+        int totalAllowedErrors = 0;
+        for (const auto& pattern : allowedPatterns) {
+            totalAllowedErrors += countSpecificErrorPattern(errors, pattern);
+        }
+
+        EXPECT_GE(totalAllowedErrors, expectedMinCount)
+            << "Test " << testName << ": Moet minstens " << expectedMinCount << " errors hebben";
+    }
+
 private:
     std::vector<std::string> temp_files;
 };
@@ -180,8 +267,6 @@ TEST_F(FixedErrorTest, ExactlyOneMissingNameError) {
 
     auto errors = runParserAndGetErrors("missing_name.xml");
 
-    // Voor missing naam krijgen we alleen "overgeslagen" message, geen specifieke "baan zonder naam"
-    // Dus verwacht: 0 specifieke "baan zonder naam" + 1 "overgeslagen" = totaal 1
     int skipCount = countSkippedMessages(errors);
     EXPECT_EQ(skipCount, 1) << "Moet exact 1 skip message hebben";
     int size = errors.size();
@@ -194,6 +279,14 @@ TEST_F(FixedErrorTest, ExactlyOneInvalidLengthError) {
     <BAAN>
         <naam>TestBaan</naam>
         <lengte>honderd</lengte>
+    </BAAN>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>honderd</lengte>
+    </BAAN>
+   <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>100</lengte>
     </BAAN>
 </VERKEERSSITUATIE>)");
 
@@ -218,6 +311,11 @@ TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
         <positie>75</positie>
         <type>auto</type>
     </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>0</positie>
+        <type>auto</type>
+    </VOERTUIG>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("out_of_bounds.xml");
@@ -230,7 +328,7 @@ TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
     EXPECT_EQ(size, 1) << "Totaal moet 1 error zijn";
 }
 
-TEST_F(FixedErrorTest, ComplexCombinationError) {
+TEST_F(FixedErrorTest, Exact1IntErrorExact1NegativeIntError) {
     createTestXML("complex_errors.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
 <VERKEERSSITUATIE>
     <BAAN>
@@ -245,14 +343,6 @@ TEST_F(FixedErrorTest, ComplexCombinationError) {
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("complex_errors.xml");
-
-    /*
-    Verwachte output:
-    1. "De lengte van een baan is geen integer: abc"
-    2. "Baan wordt overgeslagen vanwege ongeldige eigenschappen"
-    3. "Baan niet gevonden voor voertuig: TestBaan"
-    4. "Voertuig wordt overgeslagen vanwege ongeldige eigenschappen"
-    */
 
     int integerErrors = countSpecificErrorPattern(errors, "geen integer");
     int notFoundErrors = countSpecificErrorPattern(errors, "Baan niet gevonden");
@@ -300,7 +390,7 @@ TEST_F(FixedErrorTest, NoErrorsForValidInput) {
 
 // =============== SPECIFIC ERROR TYPE TESTS ===============
 
-TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePosition) {
+TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePositions) {
     createTestXML("only_negative.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
 <VERKEERSSITUATIE>
     <BAAN>
@@ -314,43 +404,255 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_NegativePosition) {
     </VOERTUIG>
     <VOERTUIG>
         <baan>TestBaan</baan>
-        <positie>-10</positie>
+        <positie>-5</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>5</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan2</baan>
+        <positie>-5</positie>
         <type>auto</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("only_negative.xml");
 
-    // Test dat ALLEEN negatieve positie errors voorkomen
-    int negativeErrors = countSpecificErrorPattern(errors, "positie moet positief zijn");
-    int integerErrors = countSpecificErrorPattern(errors, "geen integer");
-    int doubleErrors = countSpecificErrorPattern(errors, "geen double");
-    int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
+    // Check dat ALLE errors over negatieve positie gaan (of "overgeslagen" zijn)
+    bool onlyNegativePositionErrors = true;
+    std::vector<std::string> unexpectedErrors;
 
-    EXPECT_GT(negativeErrors, 0) << "Moet meer als 0 negatieve positie error hebben";
-    EXPECT_EQ(integerErrors, 0) << "Mag geen integer errors hebben";
-    EXPECT_EQ(doubleErrors, 0) << "Mag geen double errors hebben";
-    EXPECT_EQ(boundsErrors, 0) << "Mag geen bounds errors hebben";
+    for (const auto& error : errors) {
+        // Skip "overgeslagen" messages - die zijn verwacht als gevolg van andere errors
+        if (error.find("wordt overgeslagen") != std::string::npos) {
+            continue;
+        }
+
+        // Check of dit een negatieve positie error is
+        if (error.find("positie moet positief zijn") == std::string::npos) {
+            onlyNegativePositionErrors = false;
+            unexpectedErrors.push_back(error);
+        }
+    }
+
+    EXPECT_TRUE(onlyNegativePositionErrors)
+        << "Alle errors moeten over negatieve positie gaan. Onverwachte errors gevonden:";
+
+    // Print onverwachte errors voor debugging
+    for (const auto& unexpected : unexpectedErrors) {
+        std::cout << "Onverwacht: " << unexpected << std::endl;
+    }
+
+    // Extra check: we moeten wel minstens 1 negatieve positie error hebben
+    int negativeErrors = countSpecificErrorPattern(errors, "positie moet positief zijn");
+    EXPECT_GT(negativeErrors, 0) << "Moet minstens 1 negatieve positie error hebben";
 }
 
-TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidInteger) {
+TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidIntegers) {
     createTestXML("only_invalid_int.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
 <VERKEERSSITUATIE>
     <BAAN>
-        <naam>TestBaan</naam>
+        <naam>TestBaan1</naam>
         <lengte>honderd</lengte>
+    </BAAN>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>vijftig</lengte>
     </BAAN>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("only_invalid_int.xml");
 
-    // Test dat ALLEEN invalid integer errors voorkomen
-    int integerErrors = countSpecificErrorPattern(errors, "geen integer");
-    int negativeErrors = countSpecificErrorPattern(errors, "positie moet positief zijn");
-    int doubleErrors = countSpecificErrorPattern(errors, "geen double");
+    // Check dat ALLE errors over invalid integers gaan (of "overgeslagen" zijn)
+    bool onlyIntegerErrors = true;
+    std::vector<std::string> unexpectedErrors;
 
-    EXPECT_GT(integerErrors, 0) << "Moet meer als 0 negatieve positie error hebben";
-    EXPECT_EQ(negativeErrors, 0) << "Mag geen negatieve positie errors hebben";
-    EXPECT_EQ(doubleErrors, 0) << "Mag geen double errors hebben";
+    for (const auto& error : errors) {
+        // Skip "overgeslagen" messages
+        if (error.find("wordt overgeslagen") != std::string::npos) {
+            continue;
+        }
+
+        // Check of dit een integer error is
+        if (error.find("geen integer") == std::string::npos) {
+            onlyIntegerErrors = false;
+            unexpectedErrors.push_back(error);
+        }
+    }
+
+    EXPECT_TRUE(onlyIntegerErrors)
+        << "Alle errors moeten over invalid integers gaan. Onverwachte errors gevonden:";
+
+    // Print onverwachte errors voor debugging
+    for (const auto& unexpected : unexpectedErrors) {
+        std::cout << "Onverwacht: " << unexpected << std::endl;
+    }
+
+    // Extra check: we moeten wel minstens 1 integer error hebben
+    int integerErrors = countSpecificErrorPattern(errors, "geen integer");
+    EXPECT_GT(integerErrors, 0) << "Moet minstens 1 integer error hebben";
 }
 
+TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidDouble) {
+    createTestXML("only_invalid_double.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>50</positie>
+        <type>auto</type>
+        <snelheid>snel</snelheid>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>25</positie>
+        <type>bus</type>
+        <snelheid>heel_snel</snelheid>
+    </VOERTUIG>
+</VERKEERSSITUATIE>)");
+
+    auto errors = runParserAndGetErrors("only_invalid_double.xml");
+
+    // Check dat ALLE errors over invalid doubles gaan (of "overgeslagen" zijn)
+    bool onlyDoubleErrors = true;
+    std::vector<std::string> unexpectedErrors;
+
+    for (const auto& error : errors) {
+        // Skip "overgeslagen" messages
+        if (error.find("wordt overgeslagen") != std::string::npos) {
+            continue;
+        }
+
+        // Check of dit een double error is
+        if (error.find("geen double") == std::string::npos) {
+            onlyDoubleErrors = false;
+            unexpectedErrors.push_back(error);
+        }
+    }
+
+    EXPECT_TRUE(onlyDoubleErrors)
+        << "Alle errors moeten over invalid doubles gaan. Onverwachte errors gevonden:";
+
+    // Print onverwachte errors voor debugging
+    for (const auto& unexpected : unexpectedErrors) {
+        std::cout << "Onverwacht: " << unexpected << std::endl;
+    }
+
+    // Extra check: we moeten wel minstens 1 double error hebben
+    int doubleErrors = countSpecificErrorPattern(errors, "geen double");
+    EXPECT_GT(doubleErrors, 0) << "Moet minstens 1 double error hebben";
+}
+
+TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidVehicleType) {
+    createTestXML("only_invalid_type.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>50</positie>
+        <type>vliegtuig</type>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>25</positie>
+        <type>fiets</type>
+    </VOERTUIG>
+</VERKEERSSITUATIE>)");
+
+    auto errors = runParserAndGetErrors("only_invalid_type.xml");
+
+    // Check dat ALLE errors over invalid vehicle types gaan
+    bool onlyTypeErrors = true;
+    std::vector<std::string> unexpectedErrors;
+
+    for (const auto& error : errors) {
+        // Verwachte error patterns voor vehicle types
+        bool isExpectedError = (error.find("Onbekend voertuigtype") != std::string::npos) ||
+                              (error.find("Ongeldig voertuigtype") != std::string::npos);
+
+        if (!isExpectedError) {
+            onlyTypeErrors = false;
+            unexpectedErrors.push_back(error);
+        }
+    }
+
+    EXPECT_TRUE(onlyTypeErrors)
+        << "Alle errors moeten over invalid vehicle types gaan. Onverwachte errors gevonden:";
+
+    // Print onverwachte errors voor debugging
+    for (const auto& unexpected : unexpectedErrors) {
+        std::cout << "Onverwacht: " << unexpected << std::endl;
+    }
+
+    // Extra check: we moeten wel minstens 1 type error hebben
+    int typeErrors = countSpecificErrorPattern(errors, "voertuigtype");
+    EXPECT_GT(typeErrors, 0) << "Moet minstens 1 vehicle type error hebben";
+}
+
+TEST_F(FixedErrorTest, OnlySpecificErrorType_OutOfBounds) {
+    createTestXML("only_bounds.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>50</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>75</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>100</positie>
+        <type>bus</type>
+    </VOERTUIG>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>150</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan2</baan>
+        <positie>250</positie>
+        <type>bus</type>
+    </VOERTUIG>
+</VERKEERSSITUATIE>)");
+
+    auto errors = runParserAndGetErrors("only_bounds.xml");
+
+    // Check dat ALLE errors over bounds gaan
+    bool onlyBoundsErrors = true;
+    std::vector<std::string> unexpectedErrors;
+
+    for (const auto& error : errors) {
+        // Check of dit een bounds error is
+        if (error.find("buiten baan grenzen") == std::string::npos) {
+            onlyBoundsErrors = false;
+            unexpectedErrors.push_back(error);
+        }
+    }
+
+    EXPECT_TRUE(onlyBoundsErrors)
+        << "Alle errors moeten over bounds gaan. Onverwachte errors gevonden:";
+
+    // Print onverwachte errors voor debugging
+    for (const auto& unexpected : unexpectedErrors) {
+        std::cout << "Onverwacht: " << unexpected << std::endl;
+    }
+
+    // Extra check: we moeten wel minstens 1 bounds error hebben
+    int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
+    EXPECT_GT(boundsErrors, 0) << "Moet minstens 1 bounds error hebben";
+}
