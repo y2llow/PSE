@@ -113,12 +113,25 @@ void XMLParserStrategy::parseVoertuigen(TiXmlElement* elem, ErrorOutput& errorOu
         } else if (propertyName == "type") {
             if (subElem->GetText()) {
                 std::string typeString = subElem->GetText();
-                voertuig = Voertuig::createVoertuig(typeString);
+
+                // Check of de string niet leeg is
+                if (typeString.empty()) {
+                    errorOutput.handleError("Er is een voertuig met een lege type!", "XMLParserStrategy::parseVoertuigen");
+                    geldig = false;
+                    break;
+                }
+
+                voertuig = Voertuig::createVoertuig(typeString, &errorOutput);
                 if (voertuig == nullptr) {
                     errorOutput.handleError("Ongeldig voertuigtype: " + typeString, "XMLParserStrategy::parseVoertuigen");
                     geldig = false;
                     break;
                 }
+            } else {
+                // Geen tekst in het type element
+                errorOutput.handleError("Er is een voertuig zonder type!", "XMLParserStrategy::parseVoertuigen");
+                geldig = false;
+                break;
             }
         } else if (propertyName == "snelheid") {
             if (!subElem->GetText()) {

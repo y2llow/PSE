@@ -24,7 +24,7 @@ int main()
         auto sim = std::make_unique<Simulator>(errorOutput);
 
         // Test eerst met je originele XML - nu met automatische format detectie!
-        if (UniversalParser::parseElements("../src/voorbeeldXML/voorbeeld10.xml", sim.get(), errorOutput)) {
+        if (UniversalParser::parseElements("../src/voorbeeldXML/voorbeeld.xml", sim.get(), errorOutput)) {
             sim->simulate(10000);
         } else {
             errorOutput.logError("XML parsing gefaald");

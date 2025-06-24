@@ -161,6 +161,25 @@ void Voertuig::setState(const State state)
 }
 
 
+Voertuig* Voertuig::createVoertuig(const string& type,  ErrorOutput* errorOutput)
+{
+    if (type == "auto")
+        return new Auto();
+    if (type == "ziekenwagen")
+        return new Ziekenwagen();
+    if (type == "bus")
+        return new Bus();
+    if (type == "brandweerwagen")
+        return new Brandweerwagen();
+    if (type == "politiecombi")
+        return new Politiecombi();
+
+    errorOutput->handleError("Onbekend voertuigtype: " + type + " Type AUTO wordt gebruikt.");
+
+    //cerr << "Onbekend voertuigtype: " << type << ". Type AUTO wordt gebruikt." << endl;
+    return new Auto();
+}
+
 Voertuig* Voertuig::createVoertuig(const string& type)
 {
     if (type == "auto")

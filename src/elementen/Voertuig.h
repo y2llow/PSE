@@ -4,6 +4,7 @@
 
 #include "Baan.h"
 
+class ErrorOutput;
 class Simulator;
 using namespace std;
 
@@ -249,6 +250,7 @@ public:
      * @brief Creëert een voertuig van het gegeven type
      * @return een pointer naar een nieuw voertuig
      */
+    static Voertuig* createVoertuig(const string& type, ErrorOutput* errorOutput);
     static Voertuig* createVoertuig(const string& type);
 
     /**
