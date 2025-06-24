@@ -263,12 +263,12 @@ TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
     </BAAN>
     <VOERTUIG>
         <baan>TestBaan</baan>
-        <positie>0</positie>
+        <positie>10</positie>
         <type>auto</type>
     </VOERTUIG>
     <VERKEERSLICHT>
         <baan>TestBaan</baan>
-        <positie>100</positie>
+        <positie>1000</positie>
         <cyclus>2</cyclus>
     </VERKEERSLICHT>
     <VOERTUIG>
