@@ -1,2 +1,2 @@
-[2025-06-24 12:29:15] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Voertuig positie moet positief zijn: -10
-[2025-06-24 12:29:15] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Voertuig wordt overgeslagen vanwege ongeldige eigenschappen
+[2025-06-24 12:36:52] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Voertuig positie moet positief zijn: -10
+[2025-06-24 12:36:52] [ERROR] [XMLParserStrategy::parseVoertuigen] FOUT: Voertuig wordt overgeslagen vanwege ongeldige eigenschappen

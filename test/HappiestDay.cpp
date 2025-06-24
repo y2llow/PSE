@@ -407,3 +407,21 @@ TEST_F(HappiestDayTest, FinaleOutputGeneratie) {
                         std::filesystem::exists("simulation_output.txt");
     EXPECT_TRUE(outputExists) << "Final graphics output should be created";
 }
+TEST_F(HappiestDayTest, FinaleOutputGeneraties) {
+    auto sim = std::make_unique<Simulator>(*errorOutput);
+    bool success = UniversalParser::parseElements("happy_day_scenario.xml", sim.get(), *errorOutput);
+    ASSERT_TRUE(success);
+
+    // Run some simulation steps
+    for (int i = 0; i < 3; i++) {
+        sim->simulationRun();
+    }
+
+    // Test final output generation
+    EXPECT_NO_THROW(sim->generateGraphicsFile()) << "Final graphics file generation should not throw";
+
+    // Verify output exists
+    bool outputExists = std::filesystem::exists("../output/simulation_output.txt") ||
+                        std::filesystem::exists("simulation_output.txt");
+    EXPECT_TRUE(outputExists) << "Final graphics output should be created";
+}
