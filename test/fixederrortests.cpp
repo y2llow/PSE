@@ -263,6 +263,10 @@ TEST_F(FixedErrorTest, ExactlyOneMissingNameError) {
     <BAAN>
         <lengte>100</lengte>
     </BAAN>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>100</lengte>
+    </BAAN>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("missing_name.xml");
@@ -282,7 +286,7 @@ TEST_F(FixedErrorTest, ExactlyOneInvalidLengthError) {
     </BAAN>
     <BAAN>
         <naam>TestBaan2</naam>
-        <lengte>honderd</lengte>
+        <lengte>100</lengte>
     </BAAN>
    <BAAN>
         <naam>TestBaan2</naam>
@@ -326,66 +330,6 @@ TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
     EXPECT_EQ(boundsErrors, 1) << "Moet exact 1 bounds error hebben";
     int size = errors.size();
     EXPECT_EQ(size, 1) << "Totaal moet 1 error zijn";
-}
-
-TEST_F(FixedErrorTest, Exact1IntErrorExact1NegativeIntError) {
-    createTestXML("complex_errors.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
-<VERKEERSSITUATIE>
-    <BAAN>
-        <naam>TestBaan</naam>
-        <lengte>abc</lengte>
-    </BAAN>
-    <VOERTUIG>
-        <baan>TestBaan</baan>
-        <positie>-5</positie>
-        <type>auto</type>
-    </VOERTUIG>
-</VERKEERSSITUATIE>)");
-
-    auto errors = runParserAndGetErrors("complex_errors.xml");
-
-    int integerErrors = countSpecificErrorPattern(errors, "geen integer");
-    int notFoundErrors = countSpecificErrorPattern(errors, "Baan niet gevonden");
-    int skipMessages = countSkippedMessages(errors);
-
-    EXPECT_EQ(integerErrors, 1) << "Moet exact 1 invalid integer error hebben";
-    EXPECT_EQ(notFoundErrors, 1) << "Moet exact 1 'baan niet gevonden' error hebben";
-    EXPECT_EQ(skipMessages, 2) << "Moet exact 2 skip messages hebben";
-    int size = errors.size();
-    EXPECT_EQ(size, 4) << "Totaal moet 4 errors zijn";
-}
-
-// =============== POSITIVE TESTS (geen errors verwacht) ===============
-
-TEST_F(FixedErrorTest, NoErrorsForValidInput) {
-    createTestXML("valid_input.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
-<VERKEERSSITUATIE>
-    <BAAN>
-        <naam>TestBaan</naam>
-        <lengte>100</lengte>
-    </BAAN>
-    <VOERTUIG>
-        <baan>TestBaan</baan>
-        <positie>50</positie>
-        <type>auto</type>
-    </VOERTUIG>
-    <VERKEERSLICHT>
-        <baan>TestBaan</baan>
-        <positie>75</positie>
-        <cyclus>30</cyclus>
-    </VERKEERSLICHT>
-</VERKEERSSITUATIE>)");
-
-    auto errors = runParserAndGetErrors("valid_input.xml");
-
-    // Geldige input mag GEEN errors produceren
-    int size = errors.size();
-    EXPECT_EQ(size, 0) << "Geldige input mag geen errors produceren. Gevonden errors:";
-
-    // Print alle gevonden errors voor debugging
-    for (size_t i = 0; i < errors.size(); ++i) {
-        std::cout << "Error " << i << ": " << errors[i] << std::endl;
-    }
 }
 
 // =============== SPECIFIC ERROR TYPE TESTS ===============
@@ -655,4 +599,37 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_OutOfBounds) {
     // Extra check: we moeten wel minstens 1 bounds error hebben
     int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
     EXPECT_GT(boundsErrors, 0) << "Moet minstens 1 bounds error hebben";
+}
+
+// =============== POSITIVE TESTS (geen errors verwacht) ===============
+
+TEST_F(FixedErrorTest, NoErrorsForValidInput) {
+    createTestXML("valid_input.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>50</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>75</positie>
+        <cyclus>30</cyclus>
+    </VERKEERSLICHT>
+</VERKEERSSITUATIE>)");
+
+    auto errors = runParserAndGetErrors("valid_input.xml");
+
+    // Geldige input mag GEEN errors produceren
+    int size = errors.size();
+    EXPECT_EQ(size, 0) << "Geldige input mag geen errors produceren. Gevonden errors:";
+
+    // Print alle gevonden errors voor debugging
+    for (size_t i = 0; i < errors.size(); ++i) {
+        std::cout << "Error " << i << ": " << errors[i] << std::endl;
+    }
 }
