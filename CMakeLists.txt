@@ -106,7 +106,7 @@ set(DEBUG_SOURCE_FILES
         src/simulatie/parsing/interfaces/IParserStrategy.h
         src/simulatie/parsing/strategies/JSONParserStrategy.cpp
         src/simulatie/parsing/strategies/JSONParserStrategy.h
-        test/fixederrortests.cpp
+        test/FixedErrorTests.cpp
         #        src/simulatie/XMLParser.cpp
 #        src/simulatie/XMLParser.h
 )
