@@ -183,6 +183,39 @@ private:
 };
 
 // =============== TESTS MET CORRECTE VERWACHTINGEN ===============
+TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
+    createTestXML("out_of_bounds.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<VERKEERSSITUATIE>
+    <BAAN>
+        <naam>TestBaan</naam>
+        <lengte>50</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>10</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>1000</positie>
+        <cyclus>2</cyclus>
+    </VERKEERSLICHT>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>0</positie>
+        <type>auto</type>
+    </VOERTUIG>
+</VERKEERSSITUATIE>)");
+
+    auto errors = runParserAndGetErrors("out_of_bounds.xml");
+
+    // Voor bounds error krijgen we alleen de specifieke error, geen "overgeslagen" message
+    // omdat het voertuig direct wordt weggegooid
+    int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
+    EXPECT_EQ(boundsErrors, 1) << "Moet exact 1 bounds error hebben";
+    int size = errors.size();
+    EXPECT_EQ(size, 1) << "Totaal moet 1 error zijn";
+}
 
 TEST_F(FixedErrorTest, ExactlyOneNegativeVoertuigPositionError) {
     createTestXML("single_negative.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
@@ -232,40 +265,6 @@ TEST_F(FixedErrorTest, ExactlyOneInvalidLengthError) {
         << "Moet exact 1 invalid integer error + 1 skip message hebben";
     int size = errors.size();
     EXPECT_EQ(size, 2) << "Totaal moet 2 errors zijn";
-}
-
-TEST_F(FixedErrorTest, ExactlyOneOutOfBoundsError) {
-    createTestXML("out_of_bounds.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
-<VERKEERSSITUATIE>
-    <BAAN>
-        <naam>TestBaan</naam>
-        <lengte>50</lengte>
-    </BAAN>
-    <VOERTUIG>
-        <baan>TestBaan</baan>
-        <positie>10</positie>
-        <type>auto</type>
-    </VOERTUIG>
-    <VERKEERSLICHT>
-        <baan>TestBaan</baan>
-        <positie>1000</positie>
-        <cyclus>2</cyclus>
-    </VERKEERSLICHT>
-    <VOERTUIG>
-        <baan>TestBaan</baan>
-        <positie>0</positie>
-        <type>auto</type>
-    </VOERTUIG>
-</VERKEERSSITUATIE>)");
-
-    auto errors = runParserAndGetErrors("out_of_bounds.xml");
-
-    // Voor bounds error krijgen we alleen de specifieke error, geen "overgeslagen" message
-    // omdat het voertuig direct wordt weggegooid
-    int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
-    EXPECT_EQ(boundsErrors, 1) << "Moet exact 1 bounds error hebben";
-    int size = errors.size();
-    EXPECT_EQ(size, 1) << "Totaal moet 1 error zijn";
 }
 
 // =============== SPECIFIC ERROR TYPE TESTS ===============
@@ -373,11 +372,6 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_InvalidIntegers) {
     EXPECT_TRUE(onlyIntegerErrors)
         << "Alle errors moeten over invalid integers gaan. Onverwachte errors gevonden:";
 
-    // Print onverwachte errors voor debugging
-    for (const auto& unexpected : unexpectedErrors) {
-        std::cout << "Onverwacht: " << unexpected << std::endl;
-    }
-
     // Extra check: we moeten wel minstens 1 integer error hebben
     int integerErrors = countSpecificErrorPattern(errors, "geen integer");
     EXPECT_GT(integerErrors, 0) << "Moet minstens 1 integer error hebben";
@@ -432,11 +426,6 @@ TEST_F(FixedErrorTest, OnlySpecificErrorType_OutOfBounds) {
 
     EXPECT_TRUE(onlyBoundsErrors)
         << "Alle errors moeten over bounds gaan. Onverwachte errors gevonden:";
-
-    // Print onverwachte errors voor debugging
-    for (const auto& unexpected : unexpectedErrors) {
-        std::cout << "Onverwacht: " << unexpected << std::endl;
-    }
 
     // Extra check: we moeten wel minstens 1 bounds error hebben
     int boundsErrors = countSpecificErrorPattern(errors, "buiten baan grenzen");
