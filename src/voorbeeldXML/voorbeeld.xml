@@ -1,15 +1,34 @@
 <VERKEERSSITUATIE>
     <BAAN>
-        <naam>TestBaan1</naam>
-        <lengte>honderd</lengte>
-    </BAAN>
-    <BAAN>
-        <naam>TestBaan2</naam>
-        <lengte>vijftig</lengte>
+        <naam>TestBaan</naam>
+        <lengte>100</lengte>
     </BAAN>
     <VOERTUIG>
-        <baan>TestBaan1</baan>
-        <positie>hon</positie>
+        <positie>-10</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VERKEERSLICHT>
+        <baan>TestBaan</baan>
+        <positie>10</positie>
+        <cyclus>100</cyclus>
+    </VERKEERSLICHT>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>5</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <VOERTUIG>
+        <baan>TestBaan</baan>
+        <positie>5</positie>
+        <type>auto</type>
+    </VOERTUIG>
+    <BAAN>
+        <naam>TestBaan2</naam>
+        <lengte>100</lengte>
+    </BAAN>
+    <VOERTUIG>
+        <baan>TestBaan2</baan>
+        <positie>5</positie>
         <type>auto</type>
     </VOERTUIG>
 </VERKEERSSITUATIE>
