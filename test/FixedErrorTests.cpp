@@ -243,10 +243,6 @@ TEST_F(FixedErrorTest, ExactlyOneInvalidLengthError) {
         <naam>TestBaan2</naam>
         <lengte>100</lengte>
     </BAAN>
-   <BAAN>
-        <naam>TestBaan2</naam>
-        <lengte>100</lengte>
-    </BAAN>
 </VERKEERSSITUATIE>)");
 
     auto errors = runParserAndGetErrors("invalid_length.xml");
