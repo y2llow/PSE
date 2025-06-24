@@ -79,10 +79,7 @@ protected:
     }
 
     // Helper om te controleren of we exact de verwachte pattern + skip combinatie hebben
-    bool hasExpectedErrorPattern(const std::vector<std::string>& messages,
-                                 const std::string& specificError,
-                                 int expectedSpecificCount,
-                                 int expectedSkipCount) {
+    bool hasExpectedErrorPattern(const std::vector<std::string>& messages,const std::string& specificError,int expectedSpecificCount,int expectedSkipCount) {
         int specificCount = countSpecificErrorPattern(messages, specificError);
         int skipCount = countSkippedMessages(messages);
 
@@ -101,10 +98,7 @@ protected:
         return getErrorMessages("test_errors.txt");
     }
 
-    bool containsOnlySpecificErrorType(
-        const std::vector<std::string>& errors,
-        const std::vector<std::string>& allowedPatterns,
-        const std::vector<std::string>& alwaysAllowedPatterns = {"wordt overgeslagen"}) {
+    bool containsOnlySpecificErrorType(const std::vector<std::string>& errors,const std::vector<std::string>& allowedPatterns,const std::vector<std::string>& alwaysAllowedPatterns = {"wordt overgeslagen"}) {
 
         for (const auto& error : errors) {
             bool isAllowed = false;
@@ -158,11 +152,7 @@ protected:
         std::cout << "==========================================\n" << std::endl;
     }
 
-    void testOnlySpecificErrorType(
-        const std::string& xmlContent,
-        const std::vector<std::string>& allowedPatterns,
-        const std::string& testName,
-        int expectedMinCount = 1) {
+    void testOnlySpecificErrorType(const std::string& xmlContent,const std::vector<std::string>& allowedPatterns,const std::string& testName,int expectedMinCount = 1) {
 
         std::string filename = testName + ".xml";
         createTestXML(filename, xmlContent);
